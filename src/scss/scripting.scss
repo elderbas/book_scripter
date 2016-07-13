@@ -1,0 +1,25 @@
+@import "colors";
+@import "mixins";
+
+
+.script-list-container {
+  @include simpleBoxShadowByColor($themeLightGrey);
+  @include simpleGradientByColor($themeLightGrey, $themeLightGreyMinus1);
+  margin: 1rem;
+  padding: 1rem;
+
+  .script-list {
+    list-style-type: none;
+
+    li {
+      margin-bottom: 5px;
+    }
+  }
+}
+
+.book-text-container {
+  @include simpleBoxShadowByColor($themeGrey);
+  @include simpleGradientByColor($themeGrey, $themeGreyMinus1);
+  margin: 1rem;
+  padding: 1rem;
+}
