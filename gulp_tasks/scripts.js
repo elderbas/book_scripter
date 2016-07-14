@@ -12,7 +12,11 @@ function scripts() {
       rules: {
         'padded-blocks': 0,
         'space-before-function-paren': 0,
-        'prefer-arrow-callback': 0,
+        'prefer-arrow-callback': 0
+      },
+      globals: {
+        '$': false,
+        'jquery': false
       }
     }))
     .pipe(eslint.format())

@@ -8,7 +8,7 @@ angular.module('app').directive('bookText', function () {
 
   // http://unicode-table.com/en/201C/
   function link (scope, element) {
-    element.on('mouseup', function (e) {
+    element.on('mouseup', function () {
       console.log($.selection().charCodeAt(0));
 
       console.log(element.text());

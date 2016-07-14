@@ -1,7 +1,8 @@
 <section class="script-list-container">
     <ul class="script-list">
-        <li ng-repeat="item in items">
-            {{item}}
+        <li ng-repeat="item in listItems">
+            <span class="name-to-text">{{item.nameToText}}</span>:
+            <span class="script-list-text">{{item.text}}</span>
         </li>
     </ul>
 </section>

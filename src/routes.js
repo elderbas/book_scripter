@@ -16,6 +16,10 @@ function routesConfig($stateProvider, $urlRouterProvider, $locationProvider) {
       url: '/scripting',
       template: '<scripting></scripting>'
     })
+    .state('bookupload', {
+      url: '/bookupload',
+      templateUrl: 'app/bookupload/main.html'
+    })
 
   ;
 }

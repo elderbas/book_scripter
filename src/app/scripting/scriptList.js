@@ -12,13 +12,11 @@ function scriptList() {
   return {
     restrict: 'E',
     scope: {
-      blah: "="
+      listItems: "="
     },
     templateUrl: 'app/scripting/scriptList.html',
     link
   };
 
-  function link (scope) {
-    scope.items = ['a', 'b', 'c'];
-  }// end link()
+  function link () {}
 }// end scriptList()

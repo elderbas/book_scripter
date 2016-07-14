@@ -1,3 +1,3 @@
 // 'app' angular module initialization
 angular
-  .module('app', ['ui.router']);
+  .module('app', ['ui.router', 'ngFileUpload']);

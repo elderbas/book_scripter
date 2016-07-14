@@ -1,6 +1,9 @@
 @import "colors";
 @import "mixins";
 
+.main-container {
+  background-color: lightcoral;
+}
 
 .script-list-container {
   @include simpleBoxShadowByColor($themeLightGrey);
@@ -8,9 +11,14 @@
   margin: 1rem;
   padding: 1rem;
 
+  .script-list-text {
+    color: grey;
+  }
+
   .script-list {
     list-style-type: none;
-
+    margin: 0px;
+    padding: 0px;
     li {
       margin-bottom: 5px;
     }

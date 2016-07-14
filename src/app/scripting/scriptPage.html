@@ -1,7 +1,10 @@
 <div class="main-container">
     <fountain-header></fountain-header>
-    <main class="main">
-        <script-list></script-list>
+    <main class="main" ng-controller="ScriptPageCtrl">
+        {{name}}
+        <script-list
+                list-items="scriptList"
+        ></script-list>
         <book-text></book-text>
     </main>
     <fountain-footer></fountain-footer>

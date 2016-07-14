@@ -2,6 +2,7 @@
 @import "scss/mixins";
 
 @import "scss/scripting";
+@import "scss/bookupload";
 
 
 
@@ -50,6 +51,12 @@ a {
   text-align: right;
   margin: 1rem;
   white: white;
+}
+
+.header_links {
+  font-size: 1rem;
+  float: right;
+  color: dodgerblue;
 }
 
 .title {
