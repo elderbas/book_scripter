@@ -18,6 +18,7 @@ gulp.task('serve', gulp.series('inject', 'watch', 'browsersync'));
 gulp.task('serve:dist', gulp.series('default', 'browsersync:dist'));
 gulp.task('default', gulp.series('clean', 'build'));
 gulp.task('watch', watch);
+//gulp.task('watch-dat-back', gulp.series('watch-test-backend'));
 
 function reloadBrowserSync(cb) {
   browserSync.reload();
@@ -36,5 +37,9 @@ function watch(done) {
     conf.path.src('**/*.css')
   ], gulp.series('styles'));
   gulp.watch(conf.path.src('**/*.js'), gulp.series('inject'));
+
+  gulp.watch([
+    'server/app.js', 'server/test/**', 'server/src/**'
+  ], gulp.series('test-backend'));
   done();
 }
