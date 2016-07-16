@@ -29,7 +29,6 @@ function BookUploadCtrl ($scope, Upload, $timeout) {
       console.log('making the call');
       file.upload = Upload.upload({
         url: 'http://localhost:3333/book_data',
-        // url: 'http://localhost:5858/book_data',
         data: {
           file,
           customBookName: ($scope.whichFileName === 'custom' ? $scope.customBookName : null)

@@ -20,7 +20,7 @@ router.get('/', function (req, res) {
 // input - (required) bookName to check
 // output - [] of {blockId: #, status: string} (in short - a portion of what's on all of them)
 // gets the status of all blocks for a specific book
-router.get('/status/:bookName', function (req, res) {
+router.get('/:bookName/status/', function (req, res) {
   const bookNameToGetStatuses = _.get(req, 'params.bookName');
   if (!bookNameToGetStatuses) { return res.send('hey, where\'s the bookName beef?'); }
 
@@ -28,11 +28,32 @@ router.get('/status/:bookName', function (req, res) {
   fse.ensureFile(filePath, function (err) {
     if (err) { return res.send(err); }
     const db = lowdb(filePath);
-    let responseStuff = db.get('book.formattedSnippets')
-      .map((v) => { return {blockId: v.blockId, status: v.status}; })
-      .value();
-    console.log(responseStuff);
-    return res.send('Book split up and stored.')
+    let allStatuses = db.get('book.snippetBlocks')
+                        .map((v) => { return {blockId: v.blockId, status: v.status}; })
+                        .value();
+    return res.send(allStatuses);
+  });
+});
+
+/*
+* input: bookName - string of book (without the .json extension)
+*        blockId - string (integer of the block of scriptedSnippet to grab)
+* return: {block: <blockObj>, blob: <blobById>}
+* */
+router.get('/:bookName/:blockId', function (req, res) {
+  const bookName = _.get(req, 'params.bookName');
+  if (!bookName) { return res.send('hey, where\'s the bookName beef?'); }
+  const blockId = _.get(req, 'params.blockId');
+  if (blockId === undefined) { return res.send('hey, where\'s the blockId beef?'); }
+
+
+  let filePath = `${_serverDir_}/db/${bookName}.json`;
+  fse.ensureFile(filePath, function (err) {
+    if (err) { return res.send(err); }
+    const db = lowdb(filePath);
+    let snippetBlockById = db.get(`book.snippetBlocks[${blockId}]`).value();
+    let textBlobById = db.get(`book.textBlobs[${blockId}]`).value();
+    return res.send({snippetBlockById, textBlobById});
   });
 });
 

@@ -7,7 +7,7 @@ function bookStorageFormat(bookName, textBlobs) {
     characterNames: [],
     textBlobs
   };
-  objToStore.formattedSnippets = _.range(textBlobs.length).map((nil, index) => {
+  objToStore.snippetBlocks = _.range(textBlobs.length).map((nil, index) => {
     return {
       blockId: index,
       dateCompleted: null,
