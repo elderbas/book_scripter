@@ -1,6 +1,7 @@
 "use strict";
 let express = require('express');
 let app = express();
+let _ = require('lodash');
 
 let cors = require('cors');
 let fileUpload = require('express-fileupload');
@@ -17,19 +18,27 @@ app.get('/book_data', function (req, res) {
 
 // https://www.npmjs.com/package/express-fileupload
 app.post('/book_data', function (req, res) {
-  if (!req.files || !req.files.file) {
+
+  // get raw text data from book
+  const file = _.get('req.files.file');
+  if (!_.get(file)) {
     console.log('NO FILES UPLOADED');
-    res.send('Hello World!');
+    res.send('NO FILES UPLOADED');
     return;
   }
-  req.files.file.mv(`./book_files/${req.files.file.name}`, function(err) {
-    if (err) {
-      res.status(500).send(err);
-    }
-    else {
-      res.send('File uploaded!');
-    }
-  });
+  let bookSplitter = require('./src/bookSplitter');
+  //let objToStore = requ
+
+  // process raw data to split blobs of text for storage
+
+  //file.mv(`./book_files/${req.files.file.name}`, function(err) {
+  //  if (err) {
+  //    res.status(500).send(err);
+  //  }
+  //  else {
+  //    res.send('File uploaded!');
+  //  }
+  //});
 });
 
 

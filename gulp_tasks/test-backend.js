@@ -1,12 +1,13 @@
 "use strict";
 const gulp = require('gulp');
 let mocha = require('gulp-mocha');
+let util = require('gulp-util');
 
 
 gulp.task('test-backend', function () {
   return gulp.src(['server/test/**/*.js'], { read: false })
-  .pipe(mocha({ reporter: 'min' }));
-  // .on('error', util.log)
+  .pipe(mocha({ reporter: 'min' }))
+   .on('error', util.log);
   // .on('message', util.log);
 });
 

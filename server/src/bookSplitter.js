@@ -4,12 +4,24 @@ module.exports = bookSplitter;
 
 
 /*
+ input value(s):
+   configObj keys
+   - textToSplit: da big text
+   - stringToMatch: string to match for where to split at
+   - indexIntervalCount: at every X index, (plus count to get to a regexPattern), split at that point
+   example: {
+     textToSplit: '"Charlie was there" "Ok cool let's go"'
+     stringToMatch: ' '
+     indexIntervalCount: 5
+   }
 
- configObj keys
- - textToSplit: da big text
- - stringToMatch: string to match for where to split at
- - indexIntervalCount: at every X index, (plus count to get to a regexPattern), split at that point
-
+  return value:
+    string[]
+    example
+    [
+      '"Charlie was there"',
+      '"Ok cool let's go"'
+    ]
  */
 function bookSplitter (configObj) {
   if (_.get(configObj, 'textToSplit') === undefined) { throw new Error('missing textToSplit on bookSplitter'); }

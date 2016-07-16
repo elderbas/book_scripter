@@ -38,6 +38,7 @@ function watch(done) {
   ], gulp.series('styles'));
   gulp.watch(conf.path.src('**/*.js'), gulp.series('inject'));
 
+  // only cares about code affecting unit tests for backend
   gulp.watch([
     'server/app.js', 'server/test/**', 'server/src/**'
   ], gulp.series('test-backend'));
