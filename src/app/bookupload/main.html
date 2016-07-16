@@ -10,11 +10,42 @@
             </ul>
             <div></div>
             <h2>Upload a Book</h2>
-            <button type="file" ngf-select="uploadFiles($file, $invalidFiles)"
-                    accept="text/*" ngf-max-height="1000" ngf-max-size="10MB">
-                Select File</button>
+            <form name="bookForm">
+                <fieldset>
+                    <legend>upload book .txt file</legend>
+                    <br>
+                    <label>
+                        Use name of file <input type="radio" ng-model="whichFileName" value="default">
+                    </label>
+                    <label>
+                        Use custom name <input type="radio" ng-model="whichFileName" value="custom">
+                    </label>
+                    <br>
+                    <div ng-show="whichFileName === 'custom' ">
+                        <br>
+                        Bookname:
+                        <input type="text" name="bookName" ng-model="customBookName" ng-minlength="1">
+                        <span ng-if="bookForm.customBookName.$touched && !bookForm.customBookName.$valid"> at least 1 character</span>
+                    </div>
+                    <br>
+                    .txt file:
+                    <input type="file"
+                           name="file"
+                           ngf-select
+                           accept="text/*"
+                           ng-model="bookFile"
+                           ngf-max-size="10MB"
+                           required>
+                    <br><br>
+
+                    <button ng-click="uploadFile(bookFile)"
+                            ng-disabled="!bookForm.$valid">
+                        Submit
+                    </button>
+                </fieldset>
+            </form>
+
             <br><br>
-            File:
             <div style="font:smaller">{{f.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
       <span class="progress" ng-show="f.progress >= 0">
           <div style="width:{{f.progress}}%"

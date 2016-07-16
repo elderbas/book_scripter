@@ -2,9 +2,9 @@
 
 function bookStorageFormat(bookName, textBlobs) {
   return {
+    indexAt: 0,
     bookName,
-    textBlobs,
-    indexAt: 0
+    textBlobs
   }
 }
 

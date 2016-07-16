@@ -45,19 +45,34 @@ describe('bookSplitter', () => {
     expect(splitResult[2]).to.equal('c');
   });
 
-  it('splits on more complicated', function () {
+  it('splits on pattern match where indexIntervalCount is GREATER than index of first strPattern match', function () {
     let splitResult = bookSplitter({
       strPattern: '\n\n',
       indexIntervalCount: 10,
       textToSplit: [
-        '“Hey what are you doing today sir duggins?” said Billy\n\n',
+        '“Hey what are you doing today sir duggins?” said Billy\n\n', // length of 56
         '“By George I don\'t know. What do you think?” responded Charles\n\n',
-        'By then both men were very agitated. And it soon spiraled out of control from there.',
+        'Bye Bye'
       ].join('')
     });
     expect(splitResult[0]).to.equal('“Hey what are you doing today sir duggins?” said Billy\n\n');
     expect(splitResult[1]).to.equal('“By George I don\'t know. What do you think?” responded Charles\n\n');
-    expect(splitResult[2]).to.equal('By then both men were very agitated. And it soon spiraled out of control from there.');
+    expect(splitResult[2]).to.equal('Bye Bye');
+  });
+
+  it('splits on pattern match where indexIntervalCount is LESSER than index of first strPattern match', function () {
+    let splitResult = bookSplitter({
+      strPattern: '\n\n',
+      indexIntervalCount: 50,
+      textToSplit: [
+        '“You know what?” said Billy\n\n', // length of 29
+        '“I am through” responded Charles\n\n',
+        'Bye Bye'
+      ].join('')
+    });
+    // we want it to catch after first occurrences of the pattern occur based on the indexIntervalCount
+    expect(splitResult[0]).to.equal('“You know what?” said Billy\n\n“I am through” responded Charles\n\n');
+    expect(splitResult[1]).to.equal('Bye Bye');
   });
 });
 
