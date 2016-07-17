@@ -14,6 +14,7 @@ function ScriptPageCtrl ($scope, BookHelper, AllWebServices) {
 
     // null will get the default stuff per the backend input description for the endpoint
     AllWebServices.dataForInitializeScriptPage().then((resp) => {
+      console.log('resp', resp);
       $scope.textBlobWorkZone.textBlobById = _.get(resp, 'data.textBlobById');
       $scope.snippetList = _.get(resp, 'data.snippetBlockById.snippets');
     });
@@ -27,5 +28,5 @@ function ScriptPageCtrl ($scope, BookHelper, AllWebServices) {
   ];
 
   // use cookie to get last block
-
+  $scope.initialize();
 }

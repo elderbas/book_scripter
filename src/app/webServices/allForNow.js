@@ -37,7 +37,8 @@ function AllWebServices (Upload, $http, BookHelper) {
    *  {snippetById, textBlobById, indexAt, characterList}
    * */
   function dataForInitializeScriptPage () {
-    return $http.get(`${baseUrl}/book_data/${BookHelper.bookNameWorkingOn}/${null}/true`);
+    let url = `${baseUrl}/book_data/${BookHelper.getBookNameWorkingOn()}/snippetsAndBlobs/null/true`;
+    return $http.get(url);
   }
 
 }
