@@ -5,8 +5,9 @@
         <div class="book-upload-container">
             <h2>Already Uploaded</h2>
             <ul>
-                <li>blah1</li>
-                <li>blah2</li>
+                <li ng-repeat="bookName in bookNamesList">
+                    <a href="#" ng-click="directToWorkPage(bookName)">{{bookName}}</a>
+                </li>
             </ul>
             <div></div>
             <h2>Upload a Book</h2>
@@ -15,13 +16,13 @@
                     <legend>upload book .txt file</legend>
                     <br>
                     <label>
-                        Use name of file <input type="radio" ng-model="whichFileName" value="default">
+                        Use name of file <input type="radio" ng-model="whichFileNameType" value="default">
                     </label>
                     <label>
-                        Use custom name <input type="radio" ng-model="whichFileName" value="custom">
+                        Use custom name <input type="radio" ng-model="whichFileNameType" value="custom">
                     </label>
                     <br>
-                    <div ng-show="whichFileName === 'custom' ">
+                    <div ng-show="whichFileNameType === 'custom' ">
                         <br>
                         Bookname:
                         <input type="text" name="bookName" ng-model="customBookName" ng-minlength="1">

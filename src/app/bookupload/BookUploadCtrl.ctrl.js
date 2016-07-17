@@ -1,24 +1,40 @@
 angular.module('app').controller('BookUploadCtrl', [
   '$scope',
-  'Upload',
   '$timeout',
+  'AllWebServices',
+  'BookHelper',
+  '$location',
   BookUploadCtrl
 ]);
 // https://github.com/danialfarid/ng-file-upload
-function BookUploadCtrl ($scope, Upload, $timeout) {
-  $scope.whichFileName = 'default';
+function BookUploadCtrl ($scope, $timeout, AllWebServices, BookHelper, $location) {
+  $scope.whichFileNameType = 'default';
+  fillInBookNames();
+
+  function fillInBookNames () {
+    AllWebServices.getBookNames().then(function (resp) {
+      $scope.bookNamesList = resp.data;
+    });
+  }
+
+  $scope.directToWorkPage = bookName => {
+    console.log('clicked on book name to go to!!!', bookName);
+    // save somewhere this book name in a more "globalyish" variable
+    BookHelper.bookNameWorkingOn = bookName;
+    // redirect page to the work page for this book
+    $location.path('/scripting');
+  };
 
   $scope.validateBookName = () => {
-    if ($scope.whichFileName === 'default') {
+    if ($scope.whichFileNameType === 'default') {
       return true;
-    } else if ($scope.whichFileName === 'custom' && !$scope.customBookName) {
+    } else if ($scope.whichFileNameType === 'custom' && !$scope.customBookName) {
       console.error('Whoops. Forgot a book name.');
       return false;
     }
     return true;
   };
   $scope.uploadFile = function(file, errFiles) {
-    console.log('inside upload file');
     if (!$scope.validateBookName()) {
       return false;
     }
@@ -27,15 +43,8 @@ function BookUploadCtrl ($scope, Upload, $timeout) {
     $scope.errFile = errFiles && errFiles[0];
     if (file) {
       console.log('making the call');
-      file.upload = Upload.upload({
-        url: 'http://localhost:3333/book_data',
-        data: {
-          file,
-          customBookName: ($scope.whichFileName === 'custom' ? $scope.customBookName : null)
-        }
-        // data: {file}
-      });
-
+      // oh no - bad practice here. somebody get a noose
+      file.upload = AllWebServices.uploadBook(file, $scope.whichFileNameType, $scope.customBookName);
       file.upload.then(function (response) {
         $timeout(function () {
           file.result = response.data;

@@ -1,11 +1,11 @@
 <div class="main-container">
     <fountain-header></fountain-header>
     <main class="main" ng-controller="ScriptPageCtrl">
-        {{name}}
-        <script-list
-                list-items="scriptList"
-        ></script-list>
-        <book-text></book-text>
+        <h2 class="bookNameHeader">
+            {{bookNameCurrentlyBeingWorkedOn}}
+        </h2>
+        <script-list list-items="scriptList"></script-list>
+        <book-text text-blob-work-zone="textBlobWorkZone"></book-text>
     </main>
     <fountain-footer></fountain-footer>
 </div>

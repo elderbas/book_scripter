@@ -7,12 +7,13 @@ const conf = require('../conf/gulp.conf');
 gulp.task('scripts', scripts);
 
 function scripts() {
-  return gulp.src(conf.path.src('**/*.js'))
+  return gulp.src([conf.path.src('**/*.js')])
     .pipe(eslint({
       rules: {
         'padded-blocks': 0,
         'space-before-function-paren': 0,
-        'prefer-arrow-callback': 0
+        'prefer-arrow-callback': 0,
+        'no-alert': 0,
       },
       globals: {
         '$': false,

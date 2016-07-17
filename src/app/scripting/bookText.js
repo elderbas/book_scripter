@@ -2,7 +2,9 @@ angular.module('app').directive('bookText', function () {
   return {
     link,
     templateUrl: 'app/scripting/bookText.html',
-    scope: {},
+    scope: {
+      textBlobWorkZone: '='
+    },
     restrict: 'E'
   };
 
