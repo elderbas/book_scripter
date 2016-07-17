@@ -6,7 +6,7 @@
 }
 
 .script-list-container {
-  @include simpleBoxShadowByColor($themeLightGrey);
+  @include boxShadowAnimateHover();
   @include simpleGradientByColor($themeLightGrey, $themeLightGreyMinus1);
   margin: 1rem;
   padding: 1rem;
@@ -26,12 +26,39 @@
 }
 
 .book-text-container {
-  @include simpleBoxShadowByColor($themeGrey);
   @include simpleGradientByColor($themeGrey, $themeGreyMinus1);
-  margin: 1rem;
   padding: 1rem;
+  margin: 1rem auto 1rem auto;
+  overflow: auto;
+  height: 700px;
+  width: 50%;
+  @include boxShadowAnimateHover();
 }
 
 .bookNameHeader {
   margin: 7px 0px -5px 17px;
+}
+
+.snippet-type-dropdown {
+  background-color: deepskyblue;
+  border: 1px solid black;
+  text-align: center;
+  cursor: default;
+
+  padding: 0;
+  margin: 0;
+  width: 130px;
+
+  position: absolute;
+  left: 436px;
+  top: 268px;
+
+  li {
+    list-style-type: none;
+    @include boxShadowAnimateHover(0.15s);
+
+    &:not(:first-child) {
+      border-top: 1px solid black;
+    }
+  }
 }

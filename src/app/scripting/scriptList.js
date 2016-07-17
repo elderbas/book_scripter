@@ -1,4 +1,7 @@
-angular.module('app').directive('scriptList', [scriptList]);
+angular.module('app').directive('scriptList', [
+  'CollectionHelper',
+  scriptList
+]);
 
 /**
  * @ngdoc function
@@ -7,7 +10,7 @@ angular.module('app').directive('scriptList', [scriptList]);
  * # scriptList
  * Directive of scriptList
  */
-function scriptList() {
+function scriptList (CollectionHelper) {
 
   return {
     restrict: 'E',
@@ -24,9 +27,7 @@ function scriptList() {
    * @param characterName (optional) - string, possible vals - speech, thought, narration, chapter heading (more advanced to come later)
    */
   function createSnippet (snippetType, snippetText, characterName) {
-    let possibleSnippetTypes = [
-      'speech', 'thought', 'narration', 'chapterHeading', 'ignore'
-    ];
+    let possibleSnippetTypes = CollectionHelper.getPossibleSnippetTypes();
     if (!_.some(possibleSnippetTypes, v => v === snippetType)) {
       throw Error('error inside createSnippet');
     }
