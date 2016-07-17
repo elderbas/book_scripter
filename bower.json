@@ -2,11 +2,12 @@
   "name": "fountain-inject",
   "version": "0.0.1",
   "dependencies": {
-    "angular": "1.5.0",
+    "angular": "1.5.7",
     "angular-ui-router": "0.3.1",
     "jquery": "3.1.0",
     "lodash": "4.13.1",
-    "ng-file-upload": "^12.0.4"
+    "ng-file-upload": "^12.0.4",
+    "angular-cookies": "1.5.7"
   },
   "devDependencies": {
     "angular-mocks": "1.5.0"

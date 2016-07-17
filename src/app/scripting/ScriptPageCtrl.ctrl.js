@@ -6,9 +6,18 @@ angular.module('app').controller('ScriptPageCtrl', [
 ]);
 
 function ScriptPageCtrl ($scope, BookHelper, AllWebServices) {
-  console.log('BookHelper name! INSIDE NEW PAGE', BookHelper.bookNameWorkingOn);
-  $scope.bookNameCurrentlyBeingWorkedOn = BookHelper.bookNameWorkingOn;
-  $scope.textBlobWorkZone = {};
+  $scope.initialize = function () {
+    $scope.bookNameCurrentlyBeingWorkedOn = BookHelper.getBookNameWorkingOn();
+
+    // TODO rename this variable and maybe the directive
+    $scope.textBlobWorkZone = {};
+
+    // null will get the default stuff per the backend input description for the endpoint
+    AllWebServices.dataForInitializeScriptPage().then((resp) => {
+      $scope.textBlobWorkZone.textBlobById = _.get(resp, 'data.textBlobById');
+      $scope.snippetList = _.get(resp, 'data.snippetBlockById.snippets');
+    });
+  };
 
   $scope.scriptList = [
     {type: 'chapter_break', text: 'Chapter 1 - The Boy Who Lived'},
@@ -16,13 +25,7 @@ function ScriptPageCtrl ($scope, BookHelper, AllWebServices) {
     {nameToText: 'Narrator', text: 'said Professor McGonagall', type: 'narration'},
     {nameToText: 'Professor Dumbledore', text: '“All day? When you could have been celebrating? I must have passed a dozen feasts and parties on my way here.”'}
   ];
-  AllWebServices.getBlockAndBlobById(0).then(resp => {
-    console.log('resp!!!!', resp);
 
-    $scope.textBlobWorkZone.textBlobById = resp.data.textBlobById;
-  });
-
-  // Get text for first blob of book to work on
-  //
+  // use cookie to get last block
 
 }

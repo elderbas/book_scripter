@@ -1,9 +1,21 @@
 angular.module('app').factory('BookHelper', [
+  '$cookies',
   BookFactory
 ]);
 
-function BookFactory () {
+function BookFactory ($cookies) {
+  let bookNameWorkingOn = $cookies.get('bookNameWorkingOn') || null;
   return {
-    bookNameWorkingOn: null
+    setNewBookNameWorkingOn,
+    getBookNameWorkingOn
   };
-}
+
+  function setNewBookNameWorkingOn (newBookName) {
+    $cookies.put('bookNameWorkingOn', newBookName);
+    bookNameWorkingOn = newBookName;
+  }
+  function getBookNameWorkingOn () {
+    return bookNameWorkingOn;
+  }
+
+}// end function BookFactory

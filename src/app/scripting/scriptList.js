@@ -18,5 +18,27 @@ function scriptList() {
     link
   };
 
-  function link () {}
+  /**
+   * @param snippetType - string, possible vals - speech, thought, narration (more advanced to come later)
+   * @param snippetText - string, text which was uttered, or narrated, or thought, or name of a chapter
+   * @param characterName (optional) - string, possible vals - speech, thought, narration, chapter heading (more advanced to come later)
+   */
+  function createSnippet (snippetType, snippetText, characterName) {
+    let possibleSnippetTypes = [
+      'speech', 'thought', 'narration', 'chapterHeading', 'ignore'
+    ];
+    if (!_.some(possibleSnippetTypes, v => v === snippetType)) {
+      throw Error('error inside createSnippet');
+    }
+    let snippet = {snippetType, snippetText};
+    if (snippetType === 'speech') {
+      snippet.characterName = characterName;
+    }
+    return snippet;
+  }
+
+  function link (scope) {
+
+  }
 }// end scriptList()
+

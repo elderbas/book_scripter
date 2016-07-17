@@ -14,10 +14,14 @@ function scripts() {
         'space-before-function-paren': 0,
         'prefer-arrow-callback': 0,
         'no-alert': 0,
+        'babel/arrow-parens': 0,
+        'no-warning-comments': 0,
+        'prefer-const': 0,
       },
       globals: {
         '$': false,
-        'jquery': false
+        'jquery': false,
+        '_': false
       }
     }))
     .pipe(eslint.format())

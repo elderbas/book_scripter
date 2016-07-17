@@ -6,6 +6,9 @@ let fse = require('fs-extra');
 let fs = require('fs');
 let router = express.Router();
 
+const bookSplitter = require(`${_serverDir_}/src/bookSplitter`);
+const bookStorageFormat = require(`${_serverDir_}/src/bookStorageFormat`);
+
 // input - none BOOK INDEPENDENT
 // response - string[] of book names without the .json
 router.get('/', function (req, res) {
@@ -57,6 +60,44 @@ router.get('/:bookName/:blockId', function (req, res) {
   });
 });
 
+/*
+* great for initializing the page
+* input:
+*   1) bookName - name of book without *.json
+*   2) id  - integer will seek the values
+*         - null will get the valuesa based on 'indexAt'
+*   3) includeCharacterList - booleanValue - if true, then will respond also with 'characterList'
+*
+* return :
+*  {snippetById, textBlobById, indexAt, characterList(optional)}
+* */
+// if this characterList thing gets crazy I'll break it off
+router.get('/:bookName/snippetsAndBlobs/:idOrNull/:includeCharacterList', (req, res) => {
+  const bookName = _.get(req, 'params.bookName');
+  const includeCharList = _.get(req, 'params.characterList');
+  let indexToGrab = _.get(req, 'params.idOrNull');
+  indexToGrab = (indexToGrab === 'null') ? null : indexToGrab; // sends it as a null string if passing null
+  if (!bookName) { return res.send('hey, where\'s the bookName beef?'); }
+
+  let filePath = `${_serverDir_}/db/${bookName}.json`;
+  fse.ensureFile(filePath, function (err) {
+    if (err) { return res.send(err); }
+    const db = lowdb(filePath);
+    if (indexToGrab === null) {
+      indexToGrab = db.get('book.indexAt');
+    }
+    let returnObJ = {
+      snippetBlockById: db.get(`book.snippetBlocks[${indexToGrab}]`).value(),
+      textBlobById: db.get(`book.textBlobs[${indexToGrab}]`).value(),
+      indexToGrab
+    };
+    if (includeCharList) {
+      returnObJ.characterList = db.get(`book.characterList`).value();
+    }
+    return res.send(returnObJ);
+  });
+});//end router.get('/:bookName/snippetsAndBlobs/:idOrNull/:includeCharacterList'
+
 
 // updating an existing
 router.put('/', function () {
@@ -80,8 +121,6 @@ router.post('/', function (req, res) {
     res.send('bad parameters sent. yes this is intentionally vague.');
     return;
   }
-  const bookSplitter = require(`${_serverDir_}/src/bookSplitter`);
-  const bookStorageFormat = require(`${_serverDir_}/src/bookStorageFormat`);
 
   // TODO - need to get custom values for booksplitter
   // for now use default
@@ -91,7 +130,6 @@ router.post('/', function (req, res) {
     indexIntervalCount: 10000
   };
   let objToStore = bookStorageFormat(bookNameToUse, bookSplitter(bookSplitterConfig));
-
   let filePath = `${_serverDir_}/db/${bookNameToUse}.json`;
   fse.ensureFile(filePath, function (err) {
     if (err) { return res.send(err); }

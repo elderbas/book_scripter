@@ -18,9 +18,8 @@ function BookUploadCtrl ($scope, $timeout, AllWebServices, BookHelper, $location
   }
 
   $scope.directToWorkPage = bookName => {
-    console.log('clicked on book name to go to!!!', bookName);
     // save somewhere this book name in a more "globalyish" variable
-    BookHelper.bookNameWorkingOn = bookName;
+    BookHelper.setNewBookNameWorkingOn(bookName);
     // redirect page to the work page for this book
     $location.path('/scripting');
   };
@@ -34,6 +33,7 @@ function BookUploadCtrl ($scope, $timeout, AllWebServices, BookHelper, $location
     }
     return true;
   };
+
   $scope.uploadFile = function(file, errFiles) {
     if (!$scope.validateBookName()) {
       return false;

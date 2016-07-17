@@ -18,12 +18,14 @@ request.get(`${url}/book_data/`, function (err, httpResp, body) {
 	if (err) { return console.log('err', err); }
 
 	let firstBookName = JSON.parse(body)[0];
-	console.log(firstBookName);
 	
-	request.get(`${url}/book_data/${firstBookName}/1`, (err, httpR, body) => {
+	request.get(`${url}/book_data/${firstBookName}/snippetsAndBlobs/null/false`, (err, httpR, body) => {
+		console.log('inside here!')
+		console.log(err);
 		console.log(body);
 	});
 });
+
 
 
 

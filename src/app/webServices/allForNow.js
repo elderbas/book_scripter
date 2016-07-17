@@ -7,7 +7,8 @@ function AllWebServices (Upload, $http, BookHelper) {
   return {
     uploadBook,
     getBookNames,
-    getBlockAndBlobById
+    getBlockAndBlobById,
+    dataForInitializeScriptPage
   };
 
   function uploadBook (file, whichFileNameType, customFileName) {
@@ -25,9 +26,18 @@ function AllWebServices (Upload, $http, BookHelper) {
   }
 
   function getBlockAndBlobById (blockId) {
-    if (BookHelper.bookNameWorkingOn === null) {
+    if (BookHelper.getBookNameWorkingOn() === null) {
       return alert('NO BOOK NAME SPECIFIED.');
     }
     return $http.get(`${baseUrl}/book_data/${BookHelper.bookNameWorkingOn}/${blockId}`);
   }
+
+  /*
+   * return
+   *  {snippetById, textBlobById, indexAt, characterList}
+   * */
+  function dataForInitializeScriptPage () {
+    return $http.get(`${baseUrl}/book_data/${BookHelper.bookNameWorkingOn}/${null}/true`);
+  }
+
 }
