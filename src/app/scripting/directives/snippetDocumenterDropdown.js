@@ -106,9 +106,13 @@ function snippetDocumenterDropdown (CollectionHelper, Snippet) {
       }, jqueryAnimateOptions);
     });
 
+    /*
+    * remove selected text from the extraction area
+    * also automatically put any text BEFORE the selected, while still within
+    * the work zone, to be set to narration
+    * */
     scope.removeSelectedTextFromExtractionArea  = function (textToRemove) {
       console.log('textToRemove', textToRemove);
-
 
       // get all of extraction zone text
       var bookText = scope.textBlobWorkZone.textBlobById;
@@ -116,14 +120,14 @@ function snippetDocumenterDropdown (CollectionHelper, Snippet) {
 
       // remove any text prior to our selection
       var indexOfStartOfExtractionText = textAlreadyThere.indexOf(textToRemove);
-      var textToThrowAway;
+      var textAssumedToBeNarration;
       if (indexOfStartOfExtractionText > 0) {
-        textToThrowAway = textAlreadyThere.slice(0, indexOfStartOfExtractionText);
-        scope.snippetList.push(new Snippet('narration', textToThrowAway));
+        textAssumedToBeNarration = textAlreadyThere.slice(0, indexOfStartOfExtractionText);
+        scope.snippetList.push(new Snippet('narration', textAssumedToBeNarration));
 
         textAlreadyThere = textAlreadyThere.slice(indexOfStartOfExtractionText);
       }
-      console.log('text to throw away', textToThrowAway);
+      console.log('text to throw away', textAssumedToBeNarration);
       // remove extracted text from extraction zone, put new text back, and add to top
       var textWithoutExtracted = textAlreadyThere.replace(textToRemove, '').trim();
       scope.textBlobWorkZone.textBlobById = textWithoutExtracted;
