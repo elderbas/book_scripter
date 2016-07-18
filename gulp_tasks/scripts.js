@@ -17,6 +17,11 @@ function scripts() {
         'babel/arrow-parens': 0,
         'no-warning-comments': 0,
         'prefer-const': 0,
+        'spaced-comment': 0,
+        'no-multiple-empty-lines': 0,
+        'brace-style': 0,
+        'max-statements-per-line': 0,
+        'no-unused-vars': 0
       },
       globals: {
         '$': false,

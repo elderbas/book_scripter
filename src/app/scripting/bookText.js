@@ -1,13 +1,19 @@
 
 angular.module('app').directive('bookText', [
-  'CollectionHelper',
   bookText
 ]);
 
-function bookText (CollectionHelper) {
+function bookText () {
+  let template = `
+    <snippet-documenter-dropdown></snippet-documenter-dropdown>
+    <section class="book-text-container" style="white-space: pre-line;">
+        {{textBlobWorkZone.textBlobById}}
+    </section>
+  `;
+
   return {
     link,
-    templateUrl: 'app/scripting/bookText.html',
+    template,
     scope: {
       textBlobWorkZone: '='
     },
@@ -16,20 +22,27 @@ function bookText (CollectionHelper) {
 
   // http://unicode-table.com/en/201C/
   function link (scope, element) {
+    function positionSnippetDropdown (currentX, currentY) {
+      element.find('.snippet-documenter-dropdown').css({
+        visibility: 'visible',
+        left: `${currentX + 2}px`,
+        top: `${currentY - 102}px`
+      });
+    }
 
-
-    element.on('mouseup', function () {
+    element.on('mouseup', function (e) {
       // on mouseup, show up dropbox close to mouse position
       let textToExtract = $.selection();
       if (textToExtract.trim() === '') {return;}
       console.log('textToExtract', textToExtract);
+      positionSnippetDropdown(e.pageX, e.pageY);
     });
 
-    element.on('dblclick', function () {
-      // on mouseup, show up dropbox close to mouse position
-      let textToExtract = $.selection();
-      if (textToExtract.trim() === '') {return;}
-      console.log('textToExtract', textToExtract);
-    });
+    //element.on('dblclick', function (e) {
+    //  // on mouseup, show up dropbox close to mouse position
+    //  let textToExtract = $.selection();
+    //  if (textToExtract.trim() === '') {return;}
+    //  console.log('textToExtract', textToExtract);
+    //});
   }
 }

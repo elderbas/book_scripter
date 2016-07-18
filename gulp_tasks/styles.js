@@ -8,13 +8,16 @@ const autoprefixer = require('autoprefixer');
 const conf = require('../conf/gulp.conf');
 
 gulp.task('styles', styles);
-
 function styles() {
-  return gulp.src(conf.path.src('index.scss'))
+  return gulp.src([
+    conf.path.src('index.scss'),
+    conf.path.bower_components('font-awesome/scss/font-awesome.scss')
+  ])
     .pipe(sourcemaps.init())
     .pipe(sass({outputStyle: 'expanded'})).on('error', conf.errorHandler('Sass'))
     .pipe(postcss([autoprefixer()])).on('error', conf.errorHandler('Autoprefixer'))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(conf.path.tmp()))
     .pipe(browserSync.stream());
+
 }
