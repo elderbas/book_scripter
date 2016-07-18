@@ -1,5 +1,6 @@
 angular.module('app').directive('snippetDocumenterDropdown', [
   'CollectionHelper',
+  'Snippet',
   snippetDocumenterDropdown
 ]);
 /**
@@ -9,7 +10,7 @@ angular.module('app').directive('snippetDocumenterDropdown', [
  * # snippetTypeDropdown
  * Directive of snippetTypeDropdown
  */
-function snippetDocumenterDropdown (CollectionHelper) {
+function snippetDocumenterDropdown (CollectionHelper, Snippet) {
   let template = `
     <div class="snippet-documenter-dropdown">
       <ul class="snippet-types">
@@ -19,16 +20,17 @@ function snippetDocumenterDropdown (CollectionHelper) {
           </li>
       </ul>
       <div class="snippet-confirm">
-        <div ng-if="selectedSnippetType === 'ignore' " ng-mouseover="setSnippetType('ignore')"><i class="fa fa-check" aria-hidden="true"></i></div>
-        <div ng-if="selectedSnippetType === 'chapterHeading' " ng-mouseover="setSnippetType('chapterHeading')"><i class="fa fa-check" aria-hidden="true"></i></div>
-        <div ng-if="selectedSnippetType === 'narration' " ng-mouseover="setSnippetType('narration')"><i class="fa fa-check" aria-hidden="true"></i></div>
-        <div ng-if="selectedSnippetType === 'thought' ">
-          <!-- character list should become a directive -->
-          <ul><li></li></ul>
-          <input ng-model="newCharacterName" type="text" style="float:left;width:85%;">
+        <div ng-if="selectedSnippetType === hoverableType" ng-repeat="hoverableType in hoverableToSet" ng-mouseover="setSnippetType(hoverableType)">
+          <i class="fa fa-check" aria-hidden="true"></i>
+        </div>
+        <div ng-if="selectedSnippetType === typeReqCharName" ng-repeat="typeReqCharName in charNameRequiredToSet">
+          <ul>
+            <li class="available-characters" ng-repeat="charN in characterNames" ng-click="setSnippetType(typeReqCharName, charN)">{{charN}}</li>
+          </ul>
+          <input ng-model="newCharacterName" type="text" style="float:left; width:85%; background-color: black; color:white;" placeholder="new char name...">
           <!-- TODO would be cool to make this animate from the text box down to the character list below-->
           <span ng-click="addCharacter(newCharacterName); newCharacterName = '';">
-            <i class="fa fa-plus" aria-hidden="true" style="display:inline-block;width:12%;vertical-align: bottom;"></i>
+            <i class="fa fa-plus" aria-hidden="true" style="display:inline-block;width:12%;vertical-align: bottom; background-color:inherit; color:inherit;"></i>
           </span>
         </div>
       </div>
@@ -36,7 +38,6 @@ function snippetDocumenterDropdown (CollectionHelper) {
   `;
   return {
     restrict: 'E',
-    scope: {},
     template,
     link
   };
@@ -51,15 +52,20 @@ function snippetDocumenterDropdown (CollectionHelper) {
   }
 
   function link (scope, element) {
+    scope.hoverableToSet = ['ignore', 'chapterHeading', 'narration'];
+    scope.charNameRequiredToSet = ['thought', 'speech'];
+
     scope.selectedSnippetType = '';
     scope.newCharacterName = '';
     scope.possibleSnippetTypes = CollectionHelper.getPossibleSnippetTypes().reverse();
 
+    // is either in the 'thought' or 'speech' snippet type, and added a character name
     scope.addCharacter = (newCharacterName) => {
       scope.newCharacterName = '';
-      console.log('newCharacterName!!', newCharacterName);
+      scope.characterNames.push(newCharacterName);
     };
 
+    // figuring out which snippet type to show the confirm box for, and how to position it when rendering it
     scope.displaySnippetSelectOptions = (snippetType, event, index) => {
       scope.selectedSnippetType = snippetType;
       let liSnippetTypeSelected = angular.element(event.target);
@@ -74,36 +80,55 @@ function snippetDocumenterDropdown (CollectionHelper) {
     };
 
     /*
+    * @description - user has selected the snippet confirm box of whichever, and this needs to
+    *                send it off wherever it needs to go
     * @param snippetType - required
     *
     * */
-    scope.setSnippetType = function (snippetType) {
+    scope.setSnippetType = function (snippetType, value) {
       // we have the snippet type they've chosen
+      console.log(snippetType, scope.textToExtract, value);
+      scope.snippetList.push(new Snippet(snippetType, scope.textToExtract, value));
+      scope.removeSelectedTextFromExtractionArea(scope.textToExtract);
       element.find('.snippet-documenter-dropdown').css('visibility', 'hidden');
     };
 
-    //let jqueryAnimateOptions = {queue: false, duration: 200};
-    //element.on('mouseleave', function (e) {
-    //  element.animate({
-    //    opacity: 0.05
-    //  }, jqueryAnimateOptions);
-    //});
+    let jqueryAnimateOptions = {queue: false, duration: 100};
+    element.find('.snippet-documenter-dropdown').on('mouseleave', function (e) {
+      element.find('.snippet-documenter-dropdown').animate({
+        opacity: 0.1
+      }, jqueryAnimateOptions);
+    });
 
-    //element.on('mouseenter', function (e) {
-    //  element.animate({
-    //    opacity: 1
-    //  }, jqueryAnimateOptions);
-    //});
+    element.find('.snippet-documenter-dropdown').on('mouseenter', function (e) {
+      element.find('.snippet-documenter-dropdown').animate({
+        opacity: 1
+      }, jqueryAnimateOptions);
+    });
 
-    //$(document).click(function(e) {
-    //  if(!$(e.target).closest('.snippet-document-dropdown').length) {
-    //    if($('.snippet-document-dropdown').is(":visible")) {
-    //      $('.snippet-document-dropdown').hide();
-    //    }
-    //  }
-    //})
+    scope.removeSelectedTextFromExtractionArea  = function (textToRemove) {
+      console.log('textToRemove', textToRemove);
+
+
+      // get all of extraction zone text
+      var bookText = scope.textBlobWorkZone.textBlobById;
+      var textAlreadyThere = bookText.trim(); // get rid of any crap on ends
+
+      // remove any text prior to our selection
+      var indexOfStartOfExtractionText = textAlreadyThere.indexOf(textToRemove);
+      var textToThrowAway;
+      if (indexOfStartOfExtractionText > 0) {
+        textToThrowAway = textAlreadyThere.slice(0, indexOfStartOfExtractionText);
+        scope.snippetList.push(new Snippet('narration', textToThrowAway));
+
+        textAlreadyThere = textAlreadyThere.slice(indexOfStartOfExtractionText);
+      }
+      console.log('text to throw away', textToThrowAway);
+      // remove extracted text from extraction zone, put new text back, and add to top
+      var textWithoutExtracted = textAlreadyThere.replace(textToRemove, '').trim();
+      scope.textBlobWorkZone.textBlobById = textWithoutExtracted;
+    }
 
   }// end link()
-
 
 }// end snippetTypeDropdown()

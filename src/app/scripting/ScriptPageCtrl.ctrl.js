@@ -17,6 +17,7 @@ function ScriptPageCtrl ($scope, BookHelper, AllWebServices) {
       console.log('resp', resp);
       $scope.textBlobWorkZone.textBlobById = _.get(resp, 'data.textBlobById');
       $scope.snippetList = _.get(resp, 'data.snippetBlockById.snippets');
+      $scope.characterNames = _.get(resp, 'data.characterNames');
     });
   };
 

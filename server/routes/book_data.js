@@ -66,15 +66,15 @@ router.get('/:bookName/:blockId', function (req, res) {
 *   1) bookName - name of book without *.json
 *   2) id  - integer will seek the values
 *         - null will get the valuesa based on 'indexAt'
-*   3) includeCharacterList - booleanValue - if true, then will respond also with 'characterList'
+*   3) includeCharacterNames - booleanValue - if true, then will respond also with 'characterNames'
 *
 * return :
-*  {snippetById, textBlobById, indexAt, characterList(optional)}
+*  {snippetById, textBlobById, indexAt, characterNames(optional)}
 * */
 // if this characterList thing gets crazy I'll break it off
-router.get('/:bookName/snippetsAndBlobs/:idOrNull/:includeCharacterList', (req, res) => {
+router.get('/:bookName/snippetsAndBlobs/:idOrNull/:includeCharNames', (req, res) => {
   const bookName = _.get(req, 'params.bookName');
-  const includeCharList = _.get(req, 'params.characterList');
+  const includeCharNames = _.get(req, 'params.includeCharNames');
   let indexToGrab = _.get(req, 'params.idOrNull');
   indexToGrab = (indexToGrab === 'null') ? null : indexToGrab; // sends it as a null string if passing null
   if (!bookName) { return res.send('hey, where\'s the bookName beef?'); }
@@ -91,12 +91,12 @@ router.get('/:bookName/snippetsAndBlobs/:idOrNull/:includeCharacterList', (req, 
       textBlobById: db.get(`book.textBlobs[${indexToGrab}]`).value(),
       indexToGrab
     };
-    if (includeCharList) {
-      returnObJ.characterList = db.get(`book.characterList`).value();
+    if (includeCharNames) {
+      returnObJ.characterNames = db.get(`book.characterNames`).value();
     }
     return res.send(returnObJ);
   });
-});//end router.get('/:bookName/snippetsAndBlobs/:idOrNull/:includeCharacterList'
+});//end router.get('/:bookName/snippetsAndBlobs/:idOrNull/:includeCharNames'
 
 
 // updating an existing

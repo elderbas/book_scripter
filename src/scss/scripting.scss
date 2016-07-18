@@ -71,4 +71,22 @@
   display: none;
   margin: 0;
   padding: 0;
+
+  span {
+    background-color: black;
+    @include boxShadowAnimateHover(0.15s);
+  }
+  i:before {
+    color: white;
+    background-color: black;
+  }
+}
+
+.available-characters {
+  background-color: black;
+  color: white;
+  @include boxShadowAnimateHover(0.15s);
+  &:not(:first-child) {
+    border-top: 1px solid black;
+  }
 }

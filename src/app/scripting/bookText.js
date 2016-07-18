@@ -5,7 +5,7 @@ angular.module('app').directive('bookText', [
 
 function bookText () {
   let template = `
-    <snippet-documenter-dropdown></snippet-documenter-dropdown>
+    <snippet-documenter-dropdown text-to-extract="textToExtract"></snippet-documenter-dropdown>
     <section class="book-text-container" style="white-space: pre-line;">
         {{textBlobWorkZone.textBlobById}}
     </section>
@@ -14,17 +14,16 @@ function bookText () {
   return {
     link,
     template,
-    scope: {
-      textBlobWorkZone: '='
-    },
     restrict: 'E'
   };
 
   // http://unicode-table.com/en/201C/
   function link (scope, element) {
     function positionSnippetDropdown (currentX, currentY) {
+      /* this logic should probably be inside the directive for 'snippetDocumenterDropdown' */
       element.find('.snippet-documenter-dropdown').css({
         visibility: 'visible',
+        opacity: 0.1,
         left: `${currentX + 2}px`,
         top: `${currentY - 102}px`
       });
@@ -32,9 +31,9 @@ function bookText () {
 
     element.on('mouseup', function (e) {
       // on mouseup, show up dropbox close to mouse position
-      let textToExtract = $.selection();
-      if (textToExtract.trim() === '') {return;}
-      console.log('textToExtract', textToExtract);
+      if ($.selection().trim() === '') {return;}
+      scope.textToExtract = $.selection().trim();
+      console.log('scope.textToExtract', scope.textToExtract);
       positionSnippetDropdown(e.pageX, e.pageY);
     });
 
