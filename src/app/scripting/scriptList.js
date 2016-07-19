@@ -16,6 +16,7 @@ function scriptList (CollectionHelper) {
       <ul class="script-list">
           <li ng-repeat="item in snippetList">
               <span ng-if="showCharacterName(item.snippetType)" class="name-to-text">{{item.characterName}}:</span>
+              <span ng-if="item.snippetType === 'narration'" class="name-to-text">Narrator:</span>
               <span class="script-list-text">{{item.text}}</span>
           </li>
       </ul>

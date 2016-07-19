@@ -88,8 +88,8 @@ function snippetDocumenterDropdown (CollectionHelper, Snippet) {
     scope.setSnippetType = function (snippetType, value) {
       // we have the snippet type they've chosen
       console.log(snippetType, scope.textToExtract, value);
-      scope.snippetList.push(new Snippet(snippetType, scope.textToExtract, value));
       scope.removeSelectedTextFromExtractionArea(scope.textToExtract);
+      scope.snippetList.push(new Snippet(snippetType, scope.textToExtract, value));
       element.find('.snippet-documenter-dropdown').css('visibility', 'hidden');
     };
 

@@ -11,9 +11,9 @@ describe('bookStorageFormat', () => {
     expect(bookStorageFormat('Letters of Alphabet', ['a', 'b', 'c'])).to.eql({
       bookName: 'Letters of Alphabet',
       textBlobs: ['a', 'b', 'c'],
-      indexAt: 0,
       characterNames: [],
-      formattedSnippets: [{
+      indexAt: 0,
+      snippetBlocks: [{
         "blockId": 0,
         "dateCompleted": null,
         "status": "untouched",

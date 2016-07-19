@@ -30,6 +30,7 @@ function bookText () {
     }
 
     element.on('mouseup', function (e) {
+      console.log('event object passed in', e);
       // on mouseup, show up dropbox close to mouse position
       if ($.selection().trim() === '') {return;}
       scope.textToExtract = $.selection().trim();
