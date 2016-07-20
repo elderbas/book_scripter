@@ -70,6 +70,15 @@ describe('speechClassifier', () => {
     ]);
   });
 
+  /* RIGHT NOW IT CONSIDERS THIS STRING TO BE A SINGLE NARRATION */
+  //it(`separates narrations by way of double line break (optional feature)`, function () {
+  //  expect(speechClassifier(`A.\nB.\nC.`)).to.deep.equal([
+  //    new Stream(0, 1, 'narration'),
+  //    new Stream(3, 4, 'narration'),
+  //    new Stream(6, 7, 'narration')
+  //  ])
+  //});
+
   it(`for kicks, simple GoT dataset`, function () {
     expect(speechClassifier(gotDataset.simple)).to.deep.equal([
       new Stream(1, 8, 'narration'),
