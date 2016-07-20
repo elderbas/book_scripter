@@ -21,7 +21,7 @@ describe('speechClassifier', () => {
   it('correct order and streams for mixed, also ignoring white spaces', function () {
     const testText = `Abc. “Ok, go.”\nAbc-b.\n \t`;
     expect(speechClassifier(testText)).to.deep.equal([
-      new Stream(0, 4, 'narration'), // include white space up to open quote
+      new Stream(0, 3, 'narration'), // include white space up to open quote
       new Stream(5, 13, 'speech'),
       new Stream(14, 20, 'narration') // include the white space after a quote, and any text up to end up blob
     ]);

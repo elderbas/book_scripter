@@ -9,9 +9,9 @@ class Stream {
     this.type = (type === undefined) ? null: type;
   }
 
-  getFinishedStream () {
+  getAndValidateStream () {
     if (_.some([this.openCharIndex, this.closeCharIndex, this.type], x => x === null)) {
-      throw new Error('cant get a finished stream when one of its props are null')
+      throw new Error('cant get a finished stream when one of its props are null');
     }
     else {
       return this;
