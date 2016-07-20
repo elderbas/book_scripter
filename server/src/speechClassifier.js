@@ -27,10 +27,18 @@ function speechClassifier (str, openChar, closeChar) {
     else if (isNarrationFriendlyChar(currentCharacter)) {
       currentCharIsNarrationFriendlyChar(i);
     }
-    // maybe set the friendlies charIndices here?
-    // unsure about these
     lastNarrationFriendlyCharIndex = isNarrationFriendlyChar(currentCharacter) ? i : lastNarrationFriendlyCharIndex;
     lastSpeechFriendlyCharIndex = isSpeechFriendlyChar(currentCharacter) ? i : lastSpeechFriendlyCharIndex;
+  }//end for loop
+
+  if (!_.isNull(stream1)) { // could be narration or speech obviously
+    if (stream1.type === 'speech') {
+      stream1.type = 'parseError';
+      stream1.closeCharIndex = lastSpeechFriendlyCharIndex;
+    } else if (stream1.type === 'narration') {
+      stream1.closeCharIndex = lastNarrationFriendlyCharIndex;
+    }
+    streamArr.push(stream1);
   }
   return streamArr;
 
