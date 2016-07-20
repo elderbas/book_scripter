@@ -3,7 +3,6 @@ let expect = require('chai').expect;
 let speechClassifier = require('../src/speechClassifier.js');
 let Stream = require('../src/classes/Stream.js');
 
-
 describe('speechClassifier', () => {
   it('exists as a function', function () {
     expect(typeof speechClassifier).to.equal('function');
@@ -14,13 +13,13 @@ describe('speechClassifier', () => {
     expect(speechClassifier(testText)).to.deep.equal([new Stream(0, 4, 'speech')]);
   });
 
-  it('returns object specifying position of speech with only single speech utterance and line breaks', function () {
-    const testText = `\n“Abc”\n`;
-    expect(speechClassifier(testText)).to.deep.equal([new Stream(0, 5, 'speech')]);
+  it('ignore white space on either sides of speech streams', function () {
+    expect(speechClassifier(`\n“Abc” \n `)).to.deep.equal([new Stream(1, 5, 'speech')]);
+    expect(speechClassifier(`\n“Abc”\n\t“Xyz”\n`)).to.deep.equal([new Stream(1, 5, 'speech'), new Stream(8, 12, 'speech')]);
   });
 
-  it('returns object specifying position of speech utterance with narration mixed', function () {
-    const testText = `Abc. “Ok, go.” Abc-b.`;
+  it('correct order and streams for mixed, also ignoring white spaces', function () {
+    const testText = `Abc. “Ok, go.”\nAbc-b.\n \t`;
     expect(speechClassifier(testText)).to.deep.equal([
       new Stream(0, 4, 'narration'), // include white space up to open quote
       new Stream(5, 13, 'speech'),
@@ -29,14 +28,7 @@ describe('speechClassifier', () => {
   });
 
   it('returns multiple objects for multiple sentences', function () {
-    const testText = `Abc. “Ok, go.” Abc-b. “No, you.” Cha cha.`;
-    expect(speechClassifier(testText)).to.deep.equal([
-      {openCharIndex: 0, closeCharIndex: 4}, {openCharIndex: 5, closeCharIndex: 13},
-      {openCharIndex: 14, closeCharIndex: 21}, {openCharIndex: 22, closeCharIndex: 31},
-      {openCharIndex: 32, closeCharIndex: 40}
-    ]);
-
-    expect(speechClassifier(testText)).to.deep.equal([
+    expect(speechClassifier(`Abc. “Ok, go.” Abc-b. “No, you.” Cha cha.`)).to.deep.equal([
       new Stream(0, 4, 'narration'), new Stream(5, 13, 'speech'),
       new Stream(14, 21, 'narration'), new Stream(22, 31, 'speech'),
       new Stream(32, 40, 'narration')
@@ -44,8 +36,16 @@ describe('speechClassifier', () => {
   });
 
   it('returns error object for open char with no matching close pair', function () {
-    const testText = `“Abc. “Abc.”`;
-    expect(speechClassifier(testText)).to.deep.equal([new Stream(0, 5, 'parseError'), new Stream(6, 11, 'speech')]);
+    expect(speechClassifier(`“Abc. “Abc.”`)).to.deep.equal([new Stream(0, 4, 'parseError'), new Stream(6, 11, 'speech')]);
+    expect(speechClassifier(`“Abc. `)).to.deep.equal([new Stream(0, 4, 'parseError')]);
+    expect(speechClassifier(`“ `)).to.deep.equal([new Stream(0, 0, 'parseError')]);
+  });
+
+  it('close quote with no open quote is parse error', function () {
+    expect(speechClassifier(`”`)).to.deep.equal([new Stream(0, 0, 'parseError')]);
+    expect(speechClassifier(`” `)).to.deep.equal([new Stream(0, 0, 'parseError')]);
+    expect(speechClassifier(`Abc”`)).to.deep.equal([new Stream(0, 0, 'parseError')]);
+    expect(speechClassifier(`“Abc””`)).to.deep.equal([new Stream(0, 4, 'speech'), new Stream(5, 5, 'parseError')]);
   });
 });//end describe('bookStorageFormat'
 
