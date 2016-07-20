@@ -43,6 +43,11 @@ describe('speechClassifier', () => {
       new Stream(0, 4, 'parseError'),
       new Stream(6, 11, 'speech')
     ]);
+    let changedSample = `“I saw men freeze last winter, and the one before, when I was half a boy. Everyone talks about snows forty foot deep\n\n“Abc.”`;
+    expect(speechClassifier(changedSample)).to.deep.equal([
+      new Stream(0, 115, 'parseError'),
+      new Stream(118, 123, 'speech')
+    ]);
     expect(speechClassifier(`“Abc. `)).to.deep.equal([new Stream(0, 4, 'parseError')]);
     expect(speechClassifier(`“ `)).to.deep.equal([new Stream(0, 0, 'parseError')]);
   });
