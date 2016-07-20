@@ -5,6 +5,7 @@ let sCHelper = require('../src/speechClassifierHelper.js');
 describe('speechClassifierHelper', () => {
   let isSpeechFriendlyChar = sCHelper.isSpeechFriendlyChar(`“`, `”`);
   let isNarrationFriendlyChar = sCHelper.isNarrationFriendlyChar(`“`, `”`);
+  let isNewlineChar = sCHelper.isNewlineChar;
 
   it('isSpeechFriendlyChar friendlies', function () {
     expect(isSpeechFriendlyChar('“')).to.equal(true);
@@ -36,12 +37,25 @@ describe('speechClassifierHelper', () => {
     expect(isNarrationFriendlyChar(` `)).to.equal(false);
     expect(isNarrationFriendlyChar(`\t`)).to.equal(false);
     expect(isNarrationFriendlyChar(`\n`)).to.equal(false);
+    expect(isNarrationFriendlyChar(`\r`)).to.equal(false);
   });
 
+  it('isNewlineChar true return', function () {
+    expect(isNewlineChar('\n')).to.equal(true);
+    expect(isNewlineChar('\r')).to.equal(true);
+  });
 
-
-
-});
+  it('isNewlineChar false return', function () {
+    expect(isNewlineChar(' ')).to.equal(false);
+    expect(isNewlineChar('a')).to.equal(false);
+    expect(isNewlineChar('1')).to.equal(false);
+    expect(isNewlineChar(',')).to.equal(false);
+    expect(isNewlineChar('“')).to.equal(false);
+    expect(isNewlineChar('“')).to.equal(false);
+    expect(isNewlineChar(`'`)).to.equal(false);
+    expect(isNewlineChar('`')).to.equal(false);
+  });
+}); // end describe
 
 
 

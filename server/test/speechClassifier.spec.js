@@ -70,14 +70,31 @@ describe('speechClassifier', () => {
     ]);
   });
 
-  /* RIGHT NOW IT CONSIDERS THIS STRING TO BE A SINGLE NARRATION */
-  //it(`separates narrations by way of double line break (optional feature)`, function () {
-  //  expect(speechClassifier(`A.\nB.\nC.`)).to.deep.equal([
-  //    new Stream(0, 1, 'narration'),
-  //    new Stream(3, 4, 'narration'),
-  //    new Stream(6, 7, 'narration')
-  //  ])
-  //});
+  it(`separates narrations by way of new line chars using non-default params`, function () {
+    expect(speechClassifier(`A.\nB.\nC.`, null, null, true)).to.deep.equal([
+      new Stream(0, 1, 'narration'),
+      new Stream(3, 4, 'narration'),
+      new Stream(6, 7, 'narration')
+    ]);
+    expect(speechClassifier(`A.\rB.\rC.`, null, null, true)).to.deep.equal([
+      new Stream(0, 1, 'narration'),
+      new Stream(3, 4, 'narration'),
+      new Stream(6, 7, 'narration')
+    ]);
+    expect(speechClassifier(`A.\n\nB.`, null, null, true)).to.deep.equal([
+      new Stream(0, 1, 'narration'), new Stream(4, 5, 'narration')
+    ]);
+    expect(speechClassifier(`\nA.\n\nB.\n`, null, null, true)).to.deep.equal([
+      new Stream(1, 2, 'narration'), new Stream(5, 6, 'narration')
+    ]);
+  });
+
+  it('sets a speech stream as parseError type if a newline comes between an openChar and closeChar', function () {
+    expect(speechClassifier(`“B\n`, null, null, true)).to.deep.equal([new Stream(0, 1, 'parseError')]);
+    expect(speechClassifier(`“B\n”`, null, null, true)).to.deep.equal([
+      new Stream(0, 1, 'parseError'),new Stream(3, 3, 'parseError')
+    ]);
+  });
 
   it(`for kicks, simple GoT dataset`, function () {
     expect(speechClassifier(gotDataset.simple)).to.deep.equal([

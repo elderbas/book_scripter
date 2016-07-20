@@ -5,11 +5,27 @@ let sCHelper = require('./speechClassifierHelper.js');
 
 // flow chart diagram
 // https://www.draw.io/#G0B-uOEq9vSrDJQVN5NVpTclJEMk0
-function speechClassifier (str, openChar, closeChar) {
-  openChar = `“`;
-  closeChar = `”`;
+/*
+  input:
+*   str -> the blob of text to parse out
+*   openChar (optional) -> the opening character for a speech utterance, probably a double open quote
+*   closeChar (optional) -> the opening character for a speech utterance, probably a double close quote
+*   endNarrationStreamsOnNewlineChar (optional) -> the opening character for a speech utterance, probably a double open quote
+*
+* output:
+*   Stream[] (an array of Stream objects)
+* */
+const DEFAULT_OPEN_CHAR = `“`;
+const DEFAULT_CLOSE_CHAR =  `”`;
+const DEFAULT_END_NARR_ON_NEWLINE =  false;
+function speechClassifier (str, openChar, closeChar, endNarrationStreamsOnNewlineChar) {
+  openChar = _.isUndefined(openChar) || _.isNull(openChar) ? DEFAULT_OPEN_CHAR : openChar;
+  closeChar = _.isUndefined(closeChar) || _.isNull(closeChar) ? DEFAULT_CLOSE_CHAR : closeChar;
+  endNarrationStreamsOnNewlineChar = _.isUndefined(endNarrationStreamsOnNewlineChar) ? DEFAULT_END_NARR_ON_NEWLINE : endNarrationStreamsOnNewlineChar;
+
   const isSpeechFriendlyChar = sCHelper.isSpeechFriendlyChar(openChar, closeChar);
   const isNarrationFriendlyChar = sCHelper.isNarrationFriendlyChar(openChar, closeChar);
+  const isNewlineChar = sCHelper.isNewlineChar;
   let lastNarrationFriendlyCharIndex = null;
   let lastSpeechFriendlyCharIndex = null;
   let stream1 = null;
@@ -27,6 +43,10 @@ function speechClassifier (str, openChar, closeChar) {
     else if (isNarrationFriendlyChar(currentCharacter)) {
       currentCharIsNarrationFriendlyChar(i);
     }
+    else if (isNewlineChar(currentCharacter)) {
+      handleNewlineChar();
+    }
+
     lastNarrationFriendlyCharIndex = isNarrationFriendlyChar(currentCharacter) ? i : lastNarrationFriendlyCharIndex;
     lastSpeechFriendlyCharIndex = isSpeechFriendlyChar(currentCharacter) ? i : lastSpeechFriendlyCharIndex;
   }//end for loop
@@ -41,6 +61,18 @@ function speechClassifier (str, openChar, closeChar) {
     streamArr.push(stream1);
   }
   return streamArr;
+
+  // @param i - just the i passed down from the loop
+  function handleNewlineChar (i) {
+    if (!_.isNull(stream1) && endNarrationStreamsOnNewlineChar) {
+      stream1.closeCharIndex = lastNarrationFriendlyCharIndex;
+      if (stream1.type === 'speech') {
+        stream1.type = 'parseError';
+      }
+      streamArr.push(stream1);
+      stream1 = null;
+    }
+  }//end currentCharIsNarrationFriendlyChar
 
   // @param i - just the i passed down from the loop
   function currentCharIsNarrationFriendlyChar (i) {

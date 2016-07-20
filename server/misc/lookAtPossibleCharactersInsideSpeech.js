@@ -11,10 +11,8 @@ function sliceInclusive (indexStartInclusive, indexEndInclusive) {
 
 const speechClassifier = require('../src/speechClassifier');
 
-_.forEach(speechClassifier(dataPiece), function (stream, i) {
-  if (stream.type === 'narration') {
-    console.log(i, sliceInclusive(stream.openCharIndex, stream.closeCharIndex));
-  }
+_.forEach(speechClassifier(dataPiece, null, null, true), function (stream, i) {
+    console.log(stream.type, i, sliceInclusive(stream.openCharIndex, stream.closeCharIndex));
 });
 
 
