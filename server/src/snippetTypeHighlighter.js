@@ -15,7 +15,7 @@ let sCHelper = require('./snippetTypeHighlighterHelper.js');
 * output:
 *   Stream[] (an array of Stream objects) that represent
 *   the start and ending indices for different snippet types, to be
-*   used in the indexHtmlInjector function later
+*   used in the textExtractorForPreInjection function later
 * */
 const DEFAULT_OPEN_CHAR = `“`;
 const DEFAULT_CLOSE_CHAR =  `”`;
