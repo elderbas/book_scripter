@@ -1,14 +1,14 @@
 "use strict";
 let expect = require('chai').expect;
-let speechClassifier = require('../src/speechClassifier.js');
+let snippetTypeHighlighter = require('../src/snippetTypeHighlighter.js');
 
-describe('speechClassifier', () => {
+describe('snippetTypeHighlighter', () => {
   it('exists as a function', function () {
-    expect(typeof speechClassifier).to.equal('function');
+    expect(typeof snippetTypeHighlighter).to.equal('function');
   });
 
   it('gets all characters between two specified characters', function () {
-    //expect(speechClassifier('', 'X', 'Y')).to.deep.equal(['bbb']);
+    //expect(snippetTypeHighlighter('', 'X', 'Y')).to.deep.equal(['bbb']);
   });
 
 });//end describe('bookStorageFormat'

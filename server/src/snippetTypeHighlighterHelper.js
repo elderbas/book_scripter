@@ -1,6 +1,6 @@
 "use strict";
 
-let speechClassifierHelper = {
+let snippetTypeHighlighterHelper = {
   isSpeechFriendlyChar,
   isNarrationFriendlyChar,
   isNewlineChar
@@ -35,4 +35,4 @@ function isNewlineChar (c) {
 }
 
 
-module.exports = speechClassifierHelper;
+module.exports = snippetTypeHighlighterHelper;

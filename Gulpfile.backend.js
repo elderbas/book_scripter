@@ -6,7 +6,10 @@ var util = require('gulp-util');
 gulp.task('test', function () {
   return gulp.src(['server/test/**/*.js'], { read: false })
   .pipe(mocha({ reporter: 'min' }))
-  .on('error', util.log)
+  .on('error', function (err) {
+    util.log(err.toString());
+    this.emit('end');
+  })
   ;
 });
 

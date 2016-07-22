@@ -1,8 +1,8 @@
 "use strict";
 let expect = require('chai').expect;
-let sCHelper = require('../src/speechClassifierHelper.js');
+let sCHelper = require('../src/snippetTypeHighlighterHelper.js');
 
-describe('speechClassifierHelper', () => {
+describe('snippetTypeHighlighterHelper', () => {
   let isSpeechFriendlyChar = sCHelper.isSpeechFriendlyChar(`“`, `”`);
   let isNarrationFriendlyChar = sCHelper.isNarrationFriendlyChar(`“`, `”`);
   let isNewlineChar = sCHelper.isNewlineChar;

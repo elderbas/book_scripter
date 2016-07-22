@@ -1,7 +1,7 @@
 "use strict";
 let _ = require('lodash');
 let Stream = require('./classes/Stream.js');
-let sCHelper = require('./speechClassifierHelper.js');
+let sCHelper = require('./snippetTypeHighlighterHelper.js');
 
 // flow chart diagram
 // https://www.draw.io/#G0B-uOEq9vSrDJQVN5NVpTclJEMk0
@@ -13,12 +13,14 @@ let sCHelper = require('./speechClassifierHelper.js');
 *   endNarrationStreamsOnNewlineChar (optional) -> the opening character for a speech utterance, probably a double open quote
 *
 * output:
-*   Stream[] (an array of Stream objects)
+*   Stream[] (an array of Stream objects) that represent
+*   the start and ending indices for different snippet types, to be
+*   used in the indexHtmlInjector function later
 * */
 const DEFAULT_OPEN_CHAR = `“`;
 const DEFAULT_CLOSE_CHAR =  `”`;
 const DEFAULT_END_NARR_ON_NEWLINE =  false;
-function speechClassifier (str, openChar, closeChar, endNarrationStreamsOnNewlineChar) {
+function snippetTypeHighlighter (str, openChar, closeChar, endNarrationStreamsOnNewlineChar) {
   openChar = _.isUndefined(openChar) || _.isNull(openChar) ? DEFAULT_OPEN_CHAR : openChar;
   closeChar = _.isUndefined(closeChar) || _.isNull(closeChar) ? DEFAULT_CLOSE_CHAR : closeChar;
   endNarrationStreamsOnNewlineChar = _.isUndefined(endNarrationStreamsOnNewlineChar) ? DEFAULT_END_NARR_ON_NEWLINE : endNarrationStreamsOnNewlineChar;
@@ -110,7 +112,7 @@ function speechClassifier (str, openChar, closeChar, endNarrationStreamsOnNewlin
     streamArr.push(stream1);
     stream1 = null;
   }//end currentCharIsCloseChar
-}// end speechClassifier
+}// end snippetTypeHighlighter
 
 
-module.exports = speechClassifier;
+module.exports = snippetTypeHighlighter;

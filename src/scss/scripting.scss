@@ -1,8 +1,9 @@
 @import "colors";
 @import "mixins";
-
+$paperWhite: #F2F2F2;
+$codeBlackBackground: #2D2D2D;
 .main-container {
-  background-color: lightcoral;
+  background-color: $paperWhite;
 }
 
 .script-list-container {
@@ -26,14 +27,15 @@
 }
 
 .book-text-container {
-  @include simpleGradientByColor($themeGrey, $themeGreyMinus1);
+  //@include simpleGradientByColor($themeGrey, $themeGreyMinus1);
+  background-color: $codeBlackBackground;
   @include boxShadowAnimateHover();
   white-space: pre-line;
   padding: 1rem;
   margin: 1rem auto 1rem auto;
   overflow: auto;
   height: 700px;
-  width: 50%;
+  width: 70%;
 }
 
 .bookNameHeader {
@@ -90,3 +92,42 @@
     border-top: 1px solid black;
   }
 }
+
+.simple {
+  &:hover {
+    cursor: crosshair;
+  }
+}
+
+.speech-simple {
+  color: #C5C5C5;
+  @include boxShadowAnimateHover(0.15s);
+}
+
+.narration-simple {
+  color: #646464;
+}
+
+.parseError-simple {
+  color: red;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
