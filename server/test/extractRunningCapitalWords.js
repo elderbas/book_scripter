@@ -24,6 +24,7 @@ describe('extractRunningCapitalWords', () => {
   });
 
   it('isnt fooled by common pronouns', function () {
+
     expect(extractRunningCapitalWords('Bob Jones. He is cool.')).to.deep.equal(['Bob Jones']);
     expect(extractRunningCapitalWords('Bob and Jane. They are cool.')).to.deep.equal(['Bob','Jane']);
   });
@@ -34,6 +35,7 @@ describe('extractRunningCapitalWords', () => {
     expect(extractRunningCapitalWords('Bob Jones: he is cool.')).to.deep.equal(['Bob Jones']);
     expect(extractRunningCapitalWords('Bob Jones; They are cool.')).to.deep.equal(['Bob Jones']);
   });
+
 
 
 });//end describe('bookStorageFormat'
