@@ -57,6 +57,9 @@
   "scripts": {
     "build": "gulp",
     "serve": "gulp serve",
+    "front-serve": "gulp serve",
+    "back-test": "gulp --gulpfile Gulpfile.backend.js --force",
+    "back-serve": "nodemon server/app.js",
     "serve:dist": "gulp serve:dist",
     "test": "gulp test",
     "test:auto": "gulp test:auto",
@@ -82,6 +85,8 @@
     "express-fileupload": "0.0.5",
     "flat-file-db": "^1.0.0",
     "fs-extra": "^0.30.0",
+    "jsonfile": "^2.3.1",
+    "jsonminify": "^0.4.1",
     "lodash": "4.13.1",
     "lowdb": "0.13.1",
     "request": "^2.73.0"

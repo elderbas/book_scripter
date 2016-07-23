@@ -37,9 +37,9 @@ function textExtractorForPreInjection (str, streamArr) {
   return preSnippetArr;
 
   // if this gets any more granular than this, let's break it out
-  function outputForStreamChars(str, type) {
-    return `<span class="simple ${type}-simple">${str}</span>`;
-  }
+  //function outputForStreamChars(str, type) {
+  //  return `<span class="simple ${type}-simple">${str}</span>`;
+  //}
 }
 
 

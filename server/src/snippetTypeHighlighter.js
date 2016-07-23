@@ -2,6 +2,7 @@
 let _ = require('lodash');
 let Stream = require('./classes/Stream.js');
 let sCHelper = require('./snippetTypeHighlighterHelper.js');
+const textExtractorForPreInjection = require('./textExtractorForPreInjection.js');
 
 // flow chart diagram
 // https://www.draw.io/#G0B-uOEq9vSrDJQVN5NVpTclJEMk0
@@ -62,7 +63,9 @@ function snippetTypeHighlighter (str, openChar, closeChar, endNarrationStreamsOn
     }
     streamArr.push(stream1);
   }
-  return streamArr;
+
+  // return them as PreSnippets instead of streams
+  return streamArr
 
   // @param i - just the i passed down from the loop
   function handleNewlineChar (i) {
