@@ -4,10 +4,11 @@
   * will be the text used to try pre-html injection analysis to predict character list and character assignments
   * to the snippets */
 class PreSnippet {
-  constructor (text, type) {
+  constructor (text, type, id) {
     this.text = text;
     this.type = type;
-    this.id = null;
+    this.id = (id === undefined) ? null : id;
+    this.predictedCharacterSpeakerId = null;
   }
 }
 

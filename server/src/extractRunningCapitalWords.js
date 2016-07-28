@@ -1,7 +1,11 @@
 'use strict';
 let _ = require('lodash');
 
-
+/*
+* purpose - to get names out of sentences
+*         - if a name is used as "Bob's", then it will be used as "Bob"
+*
+* */
 function extractRunningCapitalWords(sentence) {
   let runningCapWords = [];
   if (_.isUndefined(sentence) || sentence.length && sentence.trim() === 0) { return runningCapWords; }
@@ -32,7 +36,7 @@ function extractRunningCapitalWords(sentence) {
         startIndexOfRunningWord = endIndexOfRunningWord = null;
       }
     }
-    // if we dont have a cap word, AND startIndex is NOT null, push that index range onto runningCapWords
+    // if we don't have a cap word, AND startIndex is NOT null, push that index range onto runningCapWords
   });
 
   if (!_.isNull(startIndexOfRunningWord) && !_.isNull(endIndexOfRunningWord)){
@@ -42,7 +46,11 @@ function extractRunningCapitalWords(sentence) {
   return filterCommonPronouns(runningCapWords);
 
   function makeDirtyFullNameClean(str) {
-    return str.replace(/[^A-z\s]/g, '').trim();
+    if (/’s\b/.test(str)) {
+      console.log('yayy');
+    }
+    return str;
+    return str.replace(/[^A-z\s-]/g, '').trim();
   }
   function filterCommonPronouns (arr) {
     let pronouns = ['i', 'he', 'she', 'it', 'we', 'they'];

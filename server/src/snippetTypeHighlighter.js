@@ -1,8 +1,8 @@
 "use strict";
-let _ = require('lodash');
-let Stream = require('./classes/Stream.js');
-let sCHelper = require('./snippetTypeHighlighterHelper.js');
-const textExtractorForPreInjection = require('./textExtractorForPreInjection.js');
+const _ = require('lodash');
+const Stream = require('./classes/Stream.js');
+const sCHelper = require('./snippetTypeHighlighterHelper.js');
+const createPreSnippetsForBlob = require('./createPreSnippetsForBlob.js');
 
 // flow chart diagram
 // https://www.draw.io/#G0B-uOEq9vSrDJQVN5NVpTclJEMk0
@@ -16,7 +16,7 @@ const textExtractorForPreInjection = require('./textExtractorForPreInjection.js'
 * output:
 *   Stream[] (an array of Stream objects) that represent
 *   the start and ending indices for different snippet types, to be
-*   used in the textExtractorForPreInjection function later
+*   used in the createPreSnippetsForBlob function later
 * */
 const DEFAULT_OPEN_CHAR = `“`;
 const DEFAULT_CLOSE_CHAR =  `”`;
@@ -65,7 +65,7 @@ function snippetTypeHighlighter (str, openChar, closeChar, endNarrationStreamsOn
   }
 
   // return them as PreSnippets instead of streams
-  return streamArr
+  return streamArr;
 
   // @param i - just the i passed down from the loop
   function handleNewlineChar (i) {

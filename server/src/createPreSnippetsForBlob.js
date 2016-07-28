@@ -1,13 +1,19 @@
 'use strict';
-let _ = require('lodash');
-let Stream = require('./classes/Stream.js');
-let PreSnippet = require('./classes/PreSnippet.js');
-
+const _ = require('lodash');
+const Stream = require('./classes/Stream.js');
+const PreSnippet = require('./classes/PreSnippet.js');
+const snippetTypeHighlighter = require('./snippetTypeHighlighter.js');
 /*
 * input: @param str - text that will have html tags injected around indices believed to be certain types
 *        @param streamArr - arr of Stream objects that will contain where to put the HTML tags around
 * */
-function textExtractorForPreInjection (str, streamArr) {
+const DEFAULT_OPEN_CHAR = `“`;
+const DEFAULT_CLOSE_CHAR =  `”`;
+const DEFAULT_END_NARR_ON_NEWLINE =  false;
+// DEFAULT_OPEN_CHAR, DEFAULT_CLOSE_CHAR, DEFAULT_END_NARR_ON_NEWLINE, for GoT
+// these should stay the same
+function createPreSnippetsForBlob (str) {
+  let streamArr = snippetTypeHighlighter(str, DEFAULT_OPEN_CHAR, DEFAULT_CLOSE_CHAR, DEFAULT_END_NARR_ON_NEWLINE);
   // guarantee we are working with streams and valid text
   if (streamArr.length === 0 || str === '') { return str; }
   let preSnippetArr = [], previousStream;
@@ -34,6 +40,10 @@ function textExtractorForPreInjection (str, streamArr) {
   if (str.length-1 > lastStream.closeCharIndex) {
     preSnippetArr.push(new PreSnippet(str.slice(lastStream.closeCharIndex+1), 'whitespace'));
   }
+  // give ids so easier to track later
+  _.forEach(preSnippetArr, function (ps, i) {
+    ps.id = i;
+  });
   return preSnippetArr;
 
   // if this gets any more granular than this, let's break it out
@@ -46,4 +56,4 @@ function textExtractorForPreInjection (str, streamArr) {
 
 
 
-module.exports = textExtractorForPreInjection;
+module.exports = createPreSnippetsForBlob;

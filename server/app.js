@@ -1,9 +1,9 @@
 "use strict";
 let express = require('express');
 let app = express();
+require('setGlobalVars.js');
 
 
-global._serverDir_ = __dirname;
 const PORT = 3333;
 app.use(require('cors')());
 app.use(require('express-fileupload')());
