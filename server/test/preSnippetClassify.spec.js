@@ -4,6 +4,7 @@ const nlp = require('nlp_compromise');
 const preSnippetClassify = require('../src/preSnippetClassify');
 const PreSnippet = require('../src/classes/PreSnippet');
 const lexiconTagTypes = require('../constants/lexiconTagTypes');
+const buildCustomLexicon = require('../src/buildCustomLexicon');
 
 
 describe('preSnippetClassify', () => {
@@ -31,16 +32,9 @@ describe('preSnippetClassify', () => {
   });
 
   it(`pronoun sentence PC VSS`, function () {
-    let characterList = [
-      {displayName: 'Harry Potter', aliases: ['Harry']},
-      {displayName: 'Albus Dumbledore', aliases: ['Dumbledore']}
-    ];
-    let indexSpeechSelected = 0;
-    customLexicon['asked'] = lexiconTagTypes.VERB_SYNONYM_TO_SPOKE;
-    customLexicon['he'] = lexiconTagTypes.PERSON_PRONOUN;
-
+    let customLexicon = buildCustomLexicon([], ['asked']);
     let input = new PreSnippet(`he asked.`, 'narration', 13);
-    let output = 'PERSON_CONFIRMED VERB_SYNONYM_TO_SPOKE';
+    let output = 'PERSON_PRONOUN VERB_SYNONYM_TO_SPOKE';
     expect(preSnippetClassify(input, customLexicon)).to.deep.equal(output);
   });
 

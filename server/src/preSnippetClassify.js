@@ -13,7 +13,7 @@ const preSnippetClassify = (preSnip, customLexicon) => {
   let nlpTextOutput = nlp.text(preSnip.text);
   nlpTextOutput.sentences.forEach((sentence) => {
     sentence.terms.forEach((term) => {
-      console.log('term', term);
+      // console.log('term', term);
       let termType = lexiconTagTypes[term.tag];
       if (termType) {
         classifyingPieces.push(termType);
