@@ -18,27 +18,27 @@ describe('preSnippetClassify', () => {
   });
 
   it(`single sentence VSS PC`, function () {
-    let characterList = [
+    let charList = [
       {displayName: 'Harry Potter', aliases: ['Harry']},
       {displayName: 'Albus Dumbledore', aliases: ['Dumbledore']}
     ];
-    let indexSpeechSelected = 0;
-    customLexicon['dumbledore'] = lexiconTagTypes.PERSON_CONFIRMED;
-    customLexicon['asked'] = lexiconTagTypes.VERB_SYNONYM_TO_SPOKE;
 
-    let input = new PreSnippet(`asked Dumbledore.`, 'narration', 13);
+    let input = new PreSnippet(`asked Dumbledore`, 'narration', 13);
     let output = 'VERB_SYNONYM_TO_SPOKE PERSON_CONFIRMED';
-    expect(preSnippetClassify(input, customLexicon)).to.deep.equal(output);
+    expect(
+      preSnippetClassify(input, buildCustomLexicon(charList, ['asked']))
+    ).to.deep.equal(output);
   });
 
   it(`pronoun sentence PC VSS`, function () {
-    let customLexicon = buildCustomLexicon([], ['asked']);
     let input = new PreSnippet(`he asked.`, 'narration', 13);
     let output = 'PERSON_PRONOUN VERB_SYNONYM_TO_SPOKE';
-    expect(preSnippetClassify(input, customLexicon)).to.deep.equal(output);
+    expect(
+      preSnippetClassify(input, buildCustomLexicon([], ['asked']))
+    ).to.deep.equal(output);
   });
 
-});//end describe('bookStorageFormat'
+});//end describe('preSnippetClassify'
 
 
 

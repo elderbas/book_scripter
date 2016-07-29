@@ -36,8 +36,6 @@
 //     expect(extractRunningCapitalWords('Bob Jones; They are cool.')).to.deep.equal(['Bob Jones']);
 //   });
 //
-//
-//
 // });//end describe('bookStorageFormat'
 //
 //

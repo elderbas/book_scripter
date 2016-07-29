@@ -15,16 +15,17 @@ const buildCustomLexicon = (characterList, verbsLikeSpoke, optionalIncludePronou
   characterList = characterList || [];
   verbsLikeSpoke = verbsLikeSpoke || [];
   characterList.forEach(currChar => {
-    lexiconAugmentation[currChar.displayName] = lexiconTagType.PERSON_CONFIRMED;
+    lexiconAugmentation[currChar.displayName.toLowerCase()] = lexiconTagType.PERSON_CONFIRMED;
     if (currChar.aliases && currChar.aliases.length > 0) {
-      currChar.aliases.forEach(n => lexiconAugmentation[n] = lexiconTagType.PERSON_CONFIRMED);
+      currChar.aliases.forEach(n => lexiconAugmentation[n.toLowerCase()] = lexiconTagType.PERSON_CONFIRMED);
     }
   });
-  verbsLikeSpoke.forEach(vls => lexiconAugmentation[vls] = lexiconTagType.VERB_SYNONYM_TO_SPOKE);
+  verbsLikeSpoke.forEach(vls => lexiconAugmentation[vls.toLowerCase()] = lexiconTagType.VERB_SYNONYM_TO_SPOKE);
+  verbsLikeSpoke.forEach(vls => lexiconAugmentation[`had ${vls.toLowerCase()}`] = lexiconTagType.VERB_SYNONYM_TO_SPOKE); // for each parsing instances like 'she had yelled'
   if (optionalIncludePronouns === false) {
     return lexiconAugmentation;
   }
-  pronounsAlwaysAdd.forEach(p => lexiconAugmentation[p] = lexiconTagType.PERSON_PRONOUN);
+  pronounsAlwaysAdd.forEach(p => lexiconAugmentation[p.toLowerCase()] = lexiconTagType.PERSON_PRONOUN);
   return lexiconAugmentation;
 };
 
