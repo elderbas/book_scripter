@@ -21,7 +21,6 @@ const SPACE = ' ';
 const NEWLINE = '\n';
 const whitespaceType = (preSnip) => {
   let countObj = _.countBy(preSnip.text.split(''), ch => ch);
-  console.log('countObj', countObj);
   let quantityWhiteSpaces = _.isUndefined(countObj[SPACE]) ? 0 : countObj[SPACE];
   let quantityNewLines = _.isUndefined(countObj[NEWLINE]) ? 0 : countObj[NEWLINE];
   let quantityOthers = Object.keys(countObj).filter(c => c !== SPACE && c !== NEWLINE).length;
@@ -45,7 +44,7 @@ const whitespaceType = (preSnip) => {
     return lexiconTagTypes.WS_NON_WS;
   }
   else {
-    throw new Error('Non space type chars present');
+    throw new Error(`one of the white space classifier conditions didn't hit`);
   }
 };
 

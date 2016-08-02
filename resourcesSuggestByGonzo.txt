@@ -1,0 +1,4 @@
+https://radimrehurek.com/gensim/
+https://research.googleblog.com/2016/05/announcing-syntaxnet-worlds-most.html
+
+reverse text generation
