@@ -31,23 +31,23 @@ describe('classifyPreSnippetArrangement', () => {
   it('exists as a function', function () {
     expect(typeof classifyPreSnippetArrangement).to.equal('function');
   });
-
-  it(``, function () {
-    let indexSelected = 2;
-    let characterList = [new CharacterProfile('Gared')];
-    const LEFT = 0, RIGHT = 1;
-    if (blah[RIGHT][0] === 'PC VSS' || blah[RIGHT][0] === 'VSS PC') {
-
-    }
-    else if (blah[LEFT][0] === 'PC VSS' || blah[LEFT][0] === 'VSS PC') {
-
-    }
-    let output = [[], []];
-
-    expect(
-      classifyPreSnippetArrangement(indexSelected, preSnippetList)
-    ).to.deep.equal()
-  });
+  //
+  // it(``, function () {
+  //   let indexSelected = 2;
+  //   let characterList = [new CharacterProfile('Gared')];
+  //   const LEFT = 0, RIGHT = 1;
+  //   if (blah[RIGHT][0] === 'PC VSS' || blah[RIGHT][0] === 'VSS PC') {
+  //
+  //   }
+  //   else if (blah[LEFT][0] === 'PC VSS' || blah[LEFT][0] === 'VSS PC') {
+  //
+  //   }
+  //   let output = [[], []];
+  //
+  //   expect(
+  //     classifyPreSnippetArrangement(indexSelected, preSnippetList)
+  //   ).to.deep.equal()
+  // });
 
 
 

@@ -9,7 +9,7 @@ class PreSnippet {
     this.type = type;
     this.id = (id === undefined) ? null : id;
     if (type === 'narration') {
-      this.predictedCharacterName = null;
+      this.predictedCharacterNameNormalized = null;
     }
     if (type !== 'speech') {
       this.classification = null;
