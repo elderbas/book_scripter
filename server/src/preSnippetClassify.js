@@ -8,6 +8,8 @@ const narrationType = (preSnip, nlpInstance) => {
     let nlpTextOutput = nlpInstance.text(preSnip.text);
     nlpTextOutput.sentences.forEach((sentence) => {
       sentence.terms.forEach((term) => {
+        // since we added custom lexicon types based on this hash, if the current term's tag type matches
+        // one of these, then it's one we care about looking for
         let termType = lexiconTagTypes[term.tag];
         if (termType && classifyingPieces.length <= 1) {
           classifyingPieces.push(termType);
@@ -21,7 +23,6 @@ const SPACE = ' ';
 const NEWLINE = '\n';
 const whitespaceType = (preSnip) => {
   let countObj = _.countBy(preSnip.text.split(''), ch => ch);
-  console.log('countObj', countObj);
   let quantityWhiteSpaces = _.isUndefined(countObj[SPACE]) ? 0 : countObj[SPACE];
   let quantityNewLines = _.isUndefined(countObj[NEWLINE]) ? 0 : countObj[NEWLINE];
   let quantityOthers = Object.keys(countObj).filter(c => c !== SPACE && c !== NEWLINE).length;
@@ -45,7 +46,7 @@ const whitespaceType = (preSnip) => {
     return lexiconTagTypes.WS_NON_WS;
   }
   else {
-    throw new Error('Non space type chars present');
+    throw new Error(`one of the white space classifier conditions didn't hit`);
   }
 };
 

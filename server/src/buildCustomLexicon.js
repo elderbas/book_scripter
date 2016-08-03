@@ -1,15 +1,12 @@
-/*
-* the nlp library takes an object argument to nlp.lexicon()
-* which will add tags it can detect. This will help to identify
-* in the sentence when a specific character appears
-*
-* */
-
 const lexiconTagType = require('../constants/lexiconTagTypes');
-
 const pronounsAlwaysAdd = [
   'he', 'she'
 ];
+/*
+* builds a custom lexicon based on a character list,
+* verb list (said, spoke),
+* and some defaults
+* */
 const buildCustomLexicon = (characterList, verbsLikeSpoke, optionalIncludePronouns) => {
   let lexiconAugmentation = {};
   characterList = characterList || [];

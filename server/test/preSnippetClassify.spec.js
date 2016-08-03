@@ -12,18 +12,21 @@ describe('preSnippetClassify', () => {
   });
 
   describe('narration type', () => {
-    let charList, inputPreSnippet;
+    let charList, inputPreSnippet, output;
     beforeEach(() => {
       charList = [
         {displayName: 'Harry Potter', aliases: ['Harry', 'Mr. Potter']},
         {displayName: 'Albus Dumbledore', aliases: ['Albus', 'Professor Dumbledore']}
       ];
       inputPreSnippet = new PreSnippet(null, 'narration', 13); // null to be set later
+      output = {text: null, type: 'narration', id: 13};
     });
 
     it(`single sentence VSS PC`, function () {
       inputPreSnippet.text = 'asked Harry.';
-      let output = 'VERB_SYNONYM_TO_SPOKE PERSON_CONFIRMED';
+      output.text = inputPreSnippet.text;
+      output.classification = 'NAR(VERB_SYNONYM_TO_SPOKE PERSON_CONFIRMED)';
+      output.predictedCharacterName = 'Harry';
       expect(
         preSnippetClassify(inputPreSnippet, buildCustomLexicon(charList, ['asked']))
       ).to.deep.equal(output);
