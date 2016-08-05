@@ -42,7 +42,7 @@ describe('nameSuggest', () => {
 
 
 
-  it(`dry run nameSuggest`, function () {
+  it(`simple to right`, function () {
     const preSnippetIdSpeechSelected = 2;
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
     nlp.lexicon(
@@ -53,6 +53,19 @@ describe('nameSuggest', () => {
       nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj)
     ).to.deep.equal('gared')
   });
+
+  it(`simple to left`, function () {
+    const preSnippetIdSpeechSelected = 6;
+    let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
+    nlp.lexicon(
+      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
+    );
+    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
+    expect(
+      nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj)
+    ).to.deep.equal('gared')
+  });
+
 
 
 

@@ -14,11 +14,11 @@ const classifyPreSnippetArrangement = (extendedPreSnippetsObj, nlp) => {
     _.map(extendedPreSnippetsObj.nonWhiteSpaceOnly[0], s => preSnippetClassify(s, nlp)),
     _.map(extendedPreSnippetsObj.nonWhiteSpaceOnly[1], s => preSnippetClassify(s, nlp)),
   ];
-  let leftSideNWS = grabClassificationsAsJoinedStrings(nonWhiteSpaceOnly[0]);
+  let leftSideNWS = grabClassificationsAsJoinedStrings(nonWhiteSpaceOnly[0].reverse());
   let rightSideNWS = grabClassificationsAsJoinedStrings(nonWhiteSpaceOnly[1]);
   output.nonWhiteSpaceArrangement = leftSideNWS + '|' + rightSideNWS;
 
-  let leftSideAC = grabClassificationsAsJoinedStrings(classifiedSnippets[0]);
+  let leftSideAC = grabClassificationsAsJoinedStrings(classifiedSnippets[0].reverse());
   let rightSideAC = grabClassificationsAsJoinedStrings(classifiedSnippets[1]);
   output.arrangementComplete = leftSideAC + '|' + rightSideAC;
 

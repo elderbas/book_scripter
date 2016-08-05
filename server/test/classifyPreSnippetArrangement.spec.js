@@ -12,8 +12,7 @@ describe('classifyPreSnippetArrangement', () => {
   it('exists as a function', function () {
     expect(typeof classifyPreSnippetArrangement).to.equal('function');
   });
-  let nlp;
-  let count, preSnippetList;
+  let count, preSnippetList, nlp;
   const QUANTITY_TO_GRAB_EACH_SIDE = 6;
   beforeEach(() => {
     nlp = require('nlp_compromise');
@@ -50,7 +49,7 @@ describe('classifyPreSnippetArrangement', () => {
     );
     const OUTPUT = {
       nonWhiteSpaceArrangement: `NAR()|NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.SPEECH},${ltt.SPEECH}`,
-      arrangementComplete: `${ltt.WS_MULTI_NEWLINE},NAR()|${ltt.WS_SINGLE_SPACE},NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH},${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH}`
+      arrangementComplete: `NAR(),${ltt.WS_MULTI_NEWLINE}|${ltt.WS_SINGLE_SPACE},NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH},${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH}`
     };
 
     expect(
