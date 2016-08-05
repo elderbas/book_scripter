@@ -6,6 +6,7 @@ const _ = require('lodash');
 const narrationType = (preSnip, nlpInstance) => {
     let classifyingPieces = [];
     let nlpTextOutput = nlpInstance.text(preSnip.text);
+    // TODO - add ability for He, She etc
     nlpTextOutput.sentences.forEach((sentence) => {
       sentence.terms.forEach((term) => {
         // since we added custom lexicon types based on this hash, if the current term's tag type matches
@@ -69,6 +70,7 @@ const preSnippetClassify = (preSnip, customLexicon) => {
     return whitespaceType(preSnip);
   }
   else if (preSnip.type === 'speech') {
+    preSnip.classification = lexiconTagTypes.SPEECH;
     return preSnip;
   }
 };

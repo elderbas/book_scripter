@@ -11,9 +11,7 @@ class PreSnippet {
     if (type === 'narration') {
       this.predictedCharacterNameNormalized = null;
     }
-    if (type !== 'speech') {
-      this.classification = null;
-    }
+    this.classification = null;
   }
 }
 

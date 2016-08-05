@@ -1,65 +1,62 @@
-"use strict";
-let expect = require('chai').expect;
-let predictedNamesByParse = require('../src/predictedNamesByParse.js');
-let nameSuggest = require('../src/nameSuggest.js');
-let nlp = require('nlp_compromise');
-let PreSnippet = require('../src/classes/PreSnippet');
-let NameSuggestion = require('../src/classes/NameSuggestion');
+'use strict';
+const expect = require('chai').expect;
+const classifyPreSnippetArrangement = require('../src/classifyPreSnippetArrangement');
+const buildCustomLexicon = require('../src/buildCustomLexicon');
+const PreSnippet = require('../src/classes/PreSnippet');
+const CharacterProfile = require('../src/classes/CharacterProfile');
+const grabExtendingPreSnippets = require('../src/grabExtendingPreSnippets');
+const nameSuggest = require('../src/nameSuggest');
 
-/*
-*
-* shorthands
-* SP - Speech type PreSnippet,
-* WS - Whitespace type PreSnippet
-* () after WS - S - single space,
-* NAR - Narration type PreSnippet
-* () after NAr - VSS - VerbSaidSynonym,
-*                P - PersonConfirmed
-* */
-
+const quoteify = (str) => `“${str}”`;
 describe('nameSuggest', () => {
-  let customLexicon;
-  beforeEach(() => {
-    customLexicon = nlp.lexicon();
-  });
-
   it('exists as a function', function () {
     expect(typeof nameSuggest).to.equal('function');
   });
-
-
-
-  it(`SP WS(S) NAR(VSS PC)`, function () {
-    // let characterList = [
-    //   {displayName: 'Harry Potter', aliases: ['Harry']},
-    //   {displayName: 'Albus Dumbledore', aliases: ['Dumbledore']}
-    // ];
-    // let indexSpeechSelected = 0;
-    // customLexicon['dumbledore'] = 'PersonConfirmed';
-    // customLexicon['said'] = 'VerbSaidSynonym';
-    // let preSnippets = [
-    //   new PreSnippet(`“What did you say?”`, 'speech', 0),
-    //   new PreSnippet(` `, 'whitespace', 1),
-    //   new PreSnippet(`asked Dumbledore.`, 'narration', 2),
-    // ];
-
-    let extendingPreSnippetShorthandConcatenation = 'ws(NL),nar(N),ws(M_NL)|ws(S),nar(PC VSS),ws(S)';
-    let iThinkMostCommon1 = {concatenationShorthand: '|WS(S),NAR(PC VSS)'};
-    let iThinkMostCommon2 = {concatenationShorthand: '|WS(S),NAR(VSS PC)'};
-
-    let noWsMostCommon1 = {concatenationShorthand_noWs: '|NAR(VSS PC),SP'};
-    let noWsMostCommon2 = {concatenationShorthand_noWs: '|NAR(PC VSS),SP'};
-    let whatItIs = 'SP,NAR(VSS PC)|SP,NAR(PC VSS)';
-
-    // expect(nameSuggest(preSnippets, characterList, indexSpeechSelected, customLexicon))
-    //       .to.deep.equal(new NameSuggestion({displayName: 'Albus Dumbledore', aliases: ['Dumbledore']}, ['SP WS(S) NAR(VSS PC)']));
+  let nlp;
+  let count, preSnippetList;
+  const QUANTITY_TO_GRAB_EACH_SIDE = 6;
+  beforeEach(() => {
+    nlp = require('nlp_compromise');
+    count = 0;
+    preSnippetList = [
+      new PreSnippet(`PROLOGUE`, 'narration', ++count),
+      new PreSnippet(`\n\n\n`, 'whitespace', ++count),
+      new PreSnippet(quoteify(`We should start back,`), 'speech', ++count),
+      new PreSnippet(' ', 'whitespace', ++count),
+      new PreSnippet(`Gared urged as the woods began to grow dark around them.`, 'narration', ++count),
+      new PreSnippet(`\n\n`, 'whitespace', ++count),
+      new PreSnippet(quoteify(`The wildlings are dead.`), 'speech', ++count),
+      new PreSnippet(`\n\n`, 'whitespace', ++count),
+      new PreSnippet(quoteify(`Do the dead frighten you?`), 'speech', ++count),
+      new PreSnippet(' ', 'whitespace', ++count),
+      new PreSnippet(`Ser Waymar Royce asked with just the hint of a smile.`, 'narration', ++count),
+      new PreSnippet(`\n\n`, 'whitespace', ++count),
+      new PreSnippet(`Gared did not rise to the bait. He was an old man, past fifty, and he had seen the lordlings come and go.`, 'narration', ++count),
+      new PreSnippet(' ', 'whitespace', ++count),
+      new PreSnippet(quoteify(`Dead is dead,`), 'speech', ++count),
+      new PreSnippet(`he said.`, 'narration', ++count),
+      new PreSnippet(' ', 'whitespace', ++count),
+      new PreSnippet(quoteify(`We have no business with the dead.`), 'speech', ++count),
+    ];
   });
 
-});//end describe('bookStorageFormat'
+
+
+  it(`dry run nameSuggest`, function () {
+    const preSnippetIdSpeechSelected = 2;
+    let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
+    nlp.lexicon(
+      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
+    );
+    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
+    expect(
+      nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj)
+    ).to.deep.equal('gared')
+  });
 
 
 
-
+});//end describe('classifyPreSnippetArrangement'
 
 
 
