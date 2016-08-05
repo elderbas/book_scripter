@@ -8,10 +8,14 @@ class PreSnippet {
     this.text = text;
     this.type = type;
     this.id = (id === undefined) ? null : id;
+    this.classification = null;
+
     if (type === 'narration') {
       this.predictedCharacterNameNormalized = null;
     }
-    this.classification = null;
+    if (type === 'speech') {
+      this.personConfirmedNormalized = null;
+    }
   }
 }
 

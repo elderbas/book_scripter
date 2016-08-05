@@ -16,6 +16,9 @@ describe('classifyPreSnippetArrangement', () => {
   const QUANTITY_TO_GRAB_EACH_SIDE = 6;
   beforeEach(() => {
     nlp = require('nlp_compromise');
+    nlp.lexicon(
+      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
+    );
     count = 0;
     preSnippetList = [
       new PreSnippet(`PROLOGUE`, 'narration', ++count),
@@ -44,9 +47,6 @@ describe('classifyPreSnippetArrangement', () => {
   it(`WSMNL WSsingle, nar blank, nar PSS VSS, speech`, function () {
     const preSnippetIdSpeechSelected = 2;
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
-    nlp.lexicon(
-      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
-    );
     const OUTPUT = {
       nonWhiteSpaceArrangement: `NAR()|NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.SPEECH},${ltt.SPEECH}`,
       arrangementComplete: `NAR(),${ltt.WS_MULTI_NEWLINE}|${ltt.WS_SINGLE_SPACE},NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH},${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH}`
