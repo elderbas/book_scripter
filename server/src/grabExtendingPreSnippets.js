@@ -15,11 +15,18 @@ const grabExtendingPreSnippets = (preSnippetList, indexSelected, quantityToGrabO
   // reverse at the end here because it's easier to deal with the items in terms of how "far" away they are from
   // the selected speech at time to analyze arrangements
   let allExtended = [leftPreSnips.reverse(), rightPreSnips];
-  const nonWhiteSpaceOnly = [
+
+  const nonWhiteSpace = [
     _.reject(allExtended[0], s => s.type === 'whitespace'),
     _.reject(allExtended[1], s => s.type === 'whitespace'),
   ];
-  return { allExtended, nonWhiteSpaceOnly };
+
+  const nonSingleSpace = [
+    _.filter(allExtended[0], s => (s.type === 'whitespace' && s.text !== ' ') || s.type !== 'whitespace'),
+    _.filter(allExtended[1], s => (s.type === 'whitespace' && s.text !== ' ') || s.type !== 'whitespace')
+  ];
+
+  return { allExtended, nonWhiteSpace, nonSingleSpace };
 };
 
 

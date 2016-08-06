@@ -6,8 +6,8 @@ const PreSnippet = require('../src/classes/PreSnippet');
 const CharacterProfile = require('../src/classes/CharacterProfile');
 const grabExtendingPreSnippets = require('../src/grabExtendingPreSnippets');
 const ltt = require('../constants/lexiconTagTypes');
-
 const quoteify = (str) => `“${str}”`;
+
 describe('classifyPreSnippetArrangement', () => {
   it('exists as a function', function () {
     expect(typeof classifyPreSnippetArrangement).to.equal('function');
@@ -49,7 +49,8 @@ describe('classifyPreSnippetArrangement', () => {
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
     const OUTPUT = {
       nonWhiteSpaceArrangement: `NAR()|NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.SPEECH},${ltt.SPEECH}`,
-      arrangementComplete: `NAR(),${ltt.WS_MULTI_NEWLINE}|${ltt.WS_SINGLE_SPACE},NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH},${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH}`
+      arrangementComplete: `NAR(),${ltt.WS_MULTI_NEWLINE}|${ltt.WS_SINGLE_SPACE},NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH},${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH}`,
+      nonSingleSpaceArrangement: `NAR(),WS_MULTI_NEWLINE|NAR(PERSON_CONFIRMED VERB_SYNONYM_TO_SPOKE),WS_MULTI_NEWLINE,SPEECH,WS_MULTI_NEWLINE,SPEECH`
     };
 
     expect(

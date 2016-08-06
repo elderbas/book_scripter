@@ -1,6 +1,6 @@
 "use strict";
 const expect = require('chai').expect;
-const CharacterProfile = require('../src/classes/CharacterProfile');
+const CharacterProfile = require('../../src/classes/CharacterProfile');
 
 
 describe('CharacterProfile', () => {

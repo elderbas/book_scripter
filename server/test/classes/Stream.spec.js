@@ -1,6 +1,6 @@
 'use strict';
 let expect = require('chai').expect;
-let Stream = require('../src/classes/Stream.js');
+let Stream = require('../../src/classes/Stream.js');
 
 describe('Stream', () => {
   let stream;
