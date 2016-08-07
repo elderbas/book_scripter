@@ -1,5 +1,3 @@
-install mongo (INSTRUCTIONS IN MY DASH mongo)
-
 *we're going to redo the API* with TDD
 I don't remember the order of these but they were both good and seemed supplementary
 
