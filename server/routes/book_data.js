@@ -20,9 +20,13 @@ router.get('/', function (req, res) {
   res.send(returnVal);
 });
 
+/* TextBlob and Block are synonymous */
 // input - (required) bookName to check
 // output - [] of {blockId: #, status: string} (in short - a portion of what's on all of them)
 // gets the status of all blocks for a specific book
+/*
+* good for use in checking a UI of which text blobs are finished
+* */
 router.get('/:bookName/status/', function (req, res) {
   const bookNameToGetStatuses = _.get(req, 'params.bookName');
   if (!bookNameToGetStatuses) { return res.send('hey, where\'s the bookName beef?'); }
@@ -49,7 +53,6 @@ router.get('/:bookName/:blockId', function (req, res) {
   const blockId = _.get(req, 'params.blockId');
   if (blockId === undefined) { return res.send('hey, where\'s the blockId beef?'); }
 
-
   let filePath = `${_serverDir_}/db/${bookName}.json`;
   fse.ensureFile(filePath, function (err) {
     if (err) { return res.send(err); }
@@ -61,6 +64,8 @@ router.get('/:bookName/:blockId', function (req, res) {
 });
 
 /*
+Snippets blocks are for
+
 * great for initializing the page
 * input:
 *   1) bookName - name of book without *.json

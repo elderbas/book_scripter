@@ -1,8 +1,8 @@
 "use strict";
 const _ = require('lodash');
-const Stream = require('./classes/Stream.js');
+const Stream = require('./../../classes/Stream.js');
 const sCHelper = require('./snippetTypeHighlighterHelper.js');
-const createPreSnippetsForBlob = require('./createPreSnippetsForBlob.js');
+const createPreSnippetsForBlob = require('./../../createPreSnippetsForBlob.js');
 
 // flow chart diagram
 // https://www.draw.io/#G0B-uOEq9vSrDJQVN5NVpTclJEMk0

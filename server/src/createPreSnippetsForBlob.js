@@ -2,7 +2,7 @@
 const _ = require('lodash');
 const Stream = require('./classes/Stream.js');
 const PreSnippet = require('./classes/PreSnippet.js');
-const snippetTypeHighlighter = require('./snippetTypeHighlighter.js');
+const snippetTypeHighlighter = require('./subModules/createPreSnippetsForBlob/snippetTypeHighlighter.js');
 /*
 * input: @param str - text that will have html tags injected around indices believed to be certain types
 *        @param streamArr - arr of Stream objects that will contain where to put the HTML tags around

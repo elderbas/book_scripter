@@ -1,6 +1,6 @@
 "use strict";
 let expect = require('chai').expect;
-let snippetTypeHighlighter = require('../src/snippetTypeHighlighter.js');
+let snippetTypeHighlighter = require('../src/subModules/createPreSnippetsForBlob/snippetTypeHighlighter.js');
 
 describe('snippetTypeHighlighter', () => {
   it('exists as a function', function () {

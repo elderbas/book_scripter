@@ -12,6 +12,7 @@ const M_NL = ltt.WS_MULTI_NEWLINE;
 
 let nonSsMatchers = [];
 nonSsMatchers.push({
+  // “We should start back,” Gared urged as the woods began to grow dark around them.
   arrangementTextMatcher: `${M_NL}|${NAR_PC_VSS}`,
   getNameOut: (extendedPreSnippets) => {
     return extendedPreSnippets[RIGHT][0].predictedCharacterNameNormalized;

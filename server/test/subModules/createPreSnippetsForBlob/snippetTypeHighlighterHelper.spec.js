@@ -1,6 +1,6 @@
 "use strict";
 let expect = require('chai').expect;
-let sCHelper = require('../src/snippetTypeHighlighterHelper.js');
+let sCHelper = require('../../../src/subModules/createPreSnippetsForBlob/snippetTypeHighlighterHelper.js');
 
 describe('snippetTypeHighlighterHelper', () => {
   let isSpeechFriendlyChar = sCHelper.isSpeechFriendlyChar(`“`, `”`);

@@ -1,8 +1,8 @@
 "use strict";
 let expect = require('chai').expect;
-const snippetTypeHighlighter = require('../src/snippetTypeHighlighter.js');
-const Stream = require('../src/classes/Stream.js');
-const gotDataset = require('./dataSets/got.js');
+const snippetTypeHighlighter = require('../../../src/subModules/createPreSnippetsForBlob/snippetTypeHighlighter.js');
+const Stream = require('../../../src/classes/Stream.js');
+const gotDataset = require('./../../dataSets/got.js');
 
 describe('snippetTypeHighlighter', () => {
   it('exists as a function', function () {

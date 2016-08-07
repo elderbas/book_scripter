@@ -42,31 +42,31 @@ describe('nameSuggest', () => {
     ];
   });
 
-  // it(`simple to right`, function () {
-  //   const preSnippetIdSpeechSelected = 2;
-  //   let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
-  //   nlp.lexicon(
-  //     buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
-  //   );
-  //   let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
-  //   let output = {suggestedName:'gared'};
-  //   expect(
-  //     nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj).suggestedName
-  //   ).to.deep.equal(output.suggestedName)
-  // });
-  //
-  // it(`simple to left`, function () {
-  //   const preSnippetIdSpeechSelected = 6
-  //   let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
-  //   nlp.lexicon(
-  //     buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
-  //   );
-  //   let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
-  //   let output = {suggestedName:'gared'};
-  //   expect(
-  //     nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj).suggestedName
-  //   ).to.deep.equal(output.suggestedName)
-  // });
+  it(`simple to right`, function () {
+    const preSnippetIdSpeechSelected = 2;
+    let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
+    nlp.lexicon(
+      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
+    );
+    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
+    let output = {suggestedName:'gared'};
+    expect(
+      nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj).suggestedName
+    ).to.deep.equal(output.suggestedName)
+  });
+
+  it(`simple to left`, function () {
+    const preSnippetIdSpeechSelected = 6;
+    let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
+    nlp.lexicon(
+      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
+    );
+    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
+    let output = {suggestedName:'gared'};
+    expect(
+      nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj).suggestedName
+    ).to.deep.equal(output.suggestedName)
+  });
 
   // “Dead is dead,” he said. “We have no business with the dead.”
   it(`pronoun wrapped end grabs from just previous speech person confirmed`, function () {
