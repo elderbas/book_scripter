@@ -27,11 +27,11 @@ const nameSuggest = (preSnippetClassifiedArrangementObj, preSnippetExtendedObj) 
   );
 
   if (nonSsArrangementNameMatch) {
-    console.log('nonSsArrangementNameMatch');
+    // console.log('nonSsArrangementNameMatch');
     return nonSsArrangementNameMatch;
   }
   else if (nonWsNameMatch) {
-    console.log('no whitey');
+    // console.log('no whitey');
     return nonWsNameMatch;
   }
   else {

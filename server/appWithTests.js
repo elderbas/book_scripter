@@ -11,7 +11,7 @@ let config = require('./config.js');
 app.use(bodyParser.json());
 
 // routes
-app.use('/books', routes.books);
+app.use('/api/books', routes.books);
 
 
 
