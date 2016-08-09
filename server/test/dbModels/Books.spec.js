@@ -6,16 +6,9 @@ let PreSnippet = Classes.PreSnippet;
 let CharacterProfile = Classes.CharacterProfile;
 let Snippet = Classes.Snippet;
 
-// arrays returned from mongoose inputs have extra keys on it so it ends up being a NON deep equal
-function deepCheckStringArrayMongoose (a, b) {
-  a.forEach((v, i) => {
-    expect(a[i]).to.equal(b[i]);
-  });
-}
 mongoose.Promise = global.Promise;
 mongoose.connect(config.db.mongodb.integrationTest);
 let Books = require('../../src/dbModels/Books');
-
 
 describe('<-- Books collection-->\n', () => {
   describe(`...starting with completely FRESH collection`, () => {
@@ -33,29 +26,21 @@ describe('<-- Books collection-->\n', () => {
 
   });//end DESCRIBE ...starting with completely FRESH collection
 
+  //noinspection JSUnresolvedFunction
   describe(`... starting with a SINGLE BOOK initialized`, (() => {
     const bookNameBeingUsed = 'ASOIAF - Game of Thrones';
     beforeEach((done) => {
-      let inputTextBlobs = ['“Am I?” he asked. “Yes.”']; // only enough for one Block, however
-      let outputPreSnippetsForFirstBlock = [
-        new PreSnippet('“Am I?”', 'speech', 0),
-        new PreSnippet(' ', 'whitespace', 1),
-        new PreSnippet('he asked.', 'narration', 2),
-        new PreSnippet(' ', 'whitespace', 3),
-        new PreSnippet('“Am I?”', 'speech', 4),
+      // should result in two Blocks
+      let inputTextBlobs = [
+        '“Am I?” he asked. “Yes.”',
+        'The road was long. “Are we there yet?” John mumbled “Almost there.”'
       ];
-      let outputFirstBlock = {
-        preSnippets: outputPreSnippetsForFirstBlock,
-        status: 'untouched',
-        snippets: []
-      };
       Books.addBook(bookNameBeingUsed, inputTextBlobs).then(addedBook => done());
     });
 
     afterEach((done) => {
       Books.dropModel().then(() => done());
     });
-
     it(`getNamesOfBooksLoaded returns array of strings`, function (done) {
       Books.getNamesOfBooksLoaded().then(arrOfNames => {
         expect(arrOfNames).to.deep.equal([bookNameBeingUsed]);
@@ -64,7 +49,6 @@ describe('<-- Books collection-->\n', () => {
     });
 
     it(`retrieves empty array if no characterProfiles have been added`, function (done) {
-
       Books.getCharacterProfiles(bookNameBeingUsed).then((cPs) => {
         expect(cPs.isMongooseArray && cPs.length === 0).to.be.true;
         done();
@@ -95,20 +79,31 @@ describe('<-- Books collection-->\n', () => {
     });
 
     it(`getBlockByIndex`, function (done) {
-      Books.getBlockByIndex(bookNameBeingUsed, 0).then((blockDoc) => {
+      Books.getBlockByIndex(bookNameBeingUsed, 0).then(blockDoc => {
         expect(blockDoc).to.have.all.keys(['preSnippets', 'snippets', 'status']);
         done();
       });
     });
 
-    it(`updateBlockById`, function (done) {
+    it(`the increment count for pre snippets ids in a block start at 0 for each block`, function (done) {
+      Books.getBlockByIndex(bookNameBeingUsed, 1).then(blockDoc => {
+        expect(blockDoc.preSnippets[0].id).to.equal(0);
+        expect(blockDoc.preSnippets[0].text).to.equal('The road was long.');
+        expect(blockDoc.preSnippets[0].type).to.equal('narration');
+        done();
+      });
+    });
+
+    it(`updateBlockById gives updated value on 'blocks' key on Book if update is successful`, function (done) {
       let newBlock = {
         preSnippets: [new PreSnippet('Hi', 'narration', 0)],
         snippets: [new Snippet('Garen', 0)],
         status: 'complete',
       };
-      Books.updateBlockById(bookNameBeingUsed, newBlock, 0).then(updateWasSuccessful => {
-        expect(updateWasSuccessful).to.be.true;
+      Books.updateBlockById(bookNameBeingUsed, newBlock, 0).then(newBlocksArr => {
+        expect(newBlocksArr.isMongooseArray).to.be.true;
+        expect(newBlocksArr.length === 2).to.be.true;
+        expect(newBlocksArr[0].status === 'complete').to.be.true;
         done();
       });
     });

@@ -4,6 +4,8 @@ const _ = require('lodash');
 * use what comes out of these to help analyze the pattern arrange of PreSnippet types
 * */
 const DEFAULT_DISTANCE_TO_GRAB = 3; // i think i'll be doing 6 usually though so using the 'white space filtered out' version is more rich
+// indexSelected is the index of the array of presnippets passed in to 'grabExtendingPreSnippets'
+// and NOT the presnippet's global id
 const grabExtendingPreSnippets = (preSnippetList, indexSelected, quantityToGrabOnSides) => {
   quantityToGrabOnSides = _.isUndefined(quantityToGrabOnSides) ? DEFAULT_DISTANCE_TO_GRAB : quantityToGrabOnSides;
   let leftPreSnips = preSnippetList.slice(

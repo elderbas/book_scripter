@@ -30,19 +30,17 @@ const Books = (function () {
       });
     });
   };//end _getNamesOfBooksLoaded
-  
+
+  // creates all pre snippets for all blocks based on text blobs
   let _addBook = (bookName, textBlobs) => {
     return new Promise((fulfill, reject) => {
       // from text blobs to pre snippets
-      let count = 0;
       let blocks = _.map(textBlobs, (textBlob) => {
         let preSnippets = createPreSnippetsForBlob(textBlob);
-        preSnippets.forEach(ps => (ps.id = count++));
         return new Block(preSnippets);
       });
-      let newBook = new _model({bookName, blocks, characterProfile: []});
+      let newBook = new _model({bookName, blocks});
       newBook.save((err, book) => {
-        // console.log('book', book);
         if (err) {
           console.log('ERR in add book', err);
           return reject(err); }
@@ -94,39 +92,49 @@ const Books = (function () {
       })
     });
   };
-  
-  const _getBlockByIndex = (bookName, indexOfBlockToGet) => {
+
+  const _getBlocks = (bookName) => {
     return new Promise((fulfill, reject) => {
       _model.findOne({bookName}, (err, bookDoc) => {
         if (err) {return reject(err);}
-        fulfill(bookDoc.blocks[indexOfBlockToGet]);
+        fulfill(bookDoc.blocks);
+      });
+    });
+  };
+  
+  const _getBlockByIndex = (bookName, indexOfBlockToGet) => {
+    return _getBlocks(bookName).then((blocks) => {
+      return new Promise((fulfill, reject) => {
+        fulfill(blocks[indexOfBlockToGet]);
       });
     });
   };
 
+  // returns boolean for whether update was successful
   const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
     return new Promise((fulfill, reject) => {
       _model.findOne({bookName}, (err, bookDoc) => {
         if (err) {return reject(err);}
         bookDoc.blocks[indexToUpdateBlockAt] = newBlockSubDoc;
         bookDoc.save((err, newBookDoc) => {
-          console.log('newBookDoc', newBookDoc);
           if (err) {return reject(err);}
-          fulfill(true);
+          fulfill(newBookDoc.blocks);
         })
       });
     });
   };
 
   return {
-    schema: bookSchema,
+    // schema: bookSchema,
     getNamesOfBooksLoaded: _getNamesOfBooksLoaded,
     addBook: _addBook,
     dropModel: _dropModel,
     getCharacterProfiles: _getCharacterProfiles,
     addCharacterProfile: _addCharacterProfile,
+    getBlocks: _getBlocks,
     getBlockByIndex: _getBlockByIndex,
     updateBlockById: _updateBlockById,
+
   }
 } ());
 module.exports = Books;

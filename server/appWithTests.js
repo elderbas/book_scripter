@@ -1,4 +1,5 @@
 'use strict';
+require('./setGlobalVars.js');
 let fs = require('fs');
 let bodyParser = require('body-parser');
 
@@ -26,5 +27,3 @@ const start = () => {
 
 
 module.exports = {start, app};
-
-
