@@ -1,6 +1,10 @@
 'use strict';
 
 class CharacterProfile {
+  /*
+  * displayName - string
+  * aliases - array of strings
+  * */
   constructor (displayName, aliases) {
     if (typeof aliases === 'string') {
       aliases = [aliases];
