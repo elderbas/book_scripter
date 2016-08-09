@@ -1,8 +1,9 @@
 'use strict';
 
 class Snippet {
-  constructor () {
-
+  constructor (characterDisplayName, matchingPreSnippetId) {
+    this.characterDisplayName = characterDisplayName;
+    this.matchingPreSnippetId = matchingPreSnippetId;
   }
 }
 

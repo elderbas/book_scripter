@@ -4,6 +4,7 @@ var config = require('../../config.js');
 let Classes = require('../../src/classes/Classes');
 let PreSnippet = Classes.PreSnippet;
 let CharacterProfile = Classes.CharacterProfile;
+let Snippet = Classes.Snippet;
 
 // arrays returned from mongoose inputs have extra keys on it so it ends up being a NON deep equal
 function deepCheckStringArrayMongoose (a, b) {
@@ -48,14 +49,7 @@ describe('<-- Books collection-->\n', () => {
         status: 'untouched',
         snippets: []
       };
-      Books.addBook(bookNameBeingUsed, inputTextBlobs).then((addedBook) => {
-        // expect(addedBook.bookName).to.equal('ASOIAF - Game of Thrones');
-        // expect(addedBook.blocks[0]).to.deep.equal(outputFirstBlock);
-        // expect(addedBook.characterProfiles).to.be.empty;
-        // expect(addedBook.characterProfiles.isMongooseArray).to.be.true;
-        done();
-      });
-
+      Books.addBook(bookNameBeingUsed, inputTextBlobs).then(addedBook => done());
     });
 
     afterEach((done) => {
@@ -92,7 +86,7 @@ describe('<-- Books collection-->\n', () => {
         expect(cPsFirst.characterProfiles[0].displayName).to.equal('Garen');
         let addCharacterProfilePromise = Books.addCharacterProfile(bookNameBeingUsed, newCharProf);
         addCharacterProfilePromise
-          .then((cPsSecond) => {})
+          .then(cPsSecond => {})
           .catch((e) => {
             expect(e.message).to.equal('Please add a characterProfile that has a unique displayName');
             done();
@@ -100,12 +94,23 @@ describe('<-- Books collection-->\n', () => {
       });
     });
 
-    it(`first of something to do with preSnippets`, function () {
-
+    it(`getBlockByIndex`, function (done) {
+      Books.getBlockByIndex(bookNameBeingUsed, 0).then((blockDoc) => {
+        expect(blockDoc).to.have.all.keys(['preSnippets', 'snippets', 'status']);
+        done();
+      });
     });
 
-    it(`first of something to do with snippets`, function () {
-
+    it(`updateBlockById`, function (done) {
+      let newBlock = {
+        preSnippets: [new PreSnippet('Hi', 'narration', 0)],
+        snippets: [new Snippet('Garen', 0)],
+        status: 'complete',
+      };
+      Books.updateBlockById(bookNameBeingUsed, newBlock, 0).then(updateWasSuccessful => {
+        expect(updateWasSuccessful).to.be.true;
+        done();
+      });
     });
 
     

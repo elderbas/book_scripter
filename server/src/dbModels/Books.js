@@ -94,6 +94,29 @@ const Books = (function () {
       })
     });
   };
+  
+  const _getBlockByIndex = (bookName, indexOfBlockToGet) => {
+    return new Promise((fulfill, reject) => {
+      _model.findOne({bookName}, (err, bookDoc) => {
+        if (err) {return reject(err);}
+        fulfill(bookDoc.blocks[indexOfBlockToGet]);
+      });
+    });
+  };
+
+  const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
+    return new Promise((fulfill, reject) => {
+      _model.findOne({bookName}, (err, bookDoc) => {
+        if (err) {return reject(err);}
+        bookDoc.blocks[indexToUpdateBlockAt] = newBlockSubDoc;
+        bookDoc.save((err, newBookDoc) => {
+          console.log('newBookDoc', newBookDoc);
+          if (err) {return reject(err);}
+          fulfill(true);
+        })
+      });
+    });
+  };
 
   return {
     schema: bookSchema,
@@ -101,7 +124,9 @@ const Books = (function () {
     addBook: _addBook,
     dropModel: _dropModel,
     getCharacterProfiles: _getCharacterProfiles,
-    addCharacterProfile: _addCharacterProfile
+    addCharacterProfile: _addCharacterProfile,
+    getBlockByIndex: _getBlockByIndex,
+    updateBlockById: _updateBlockById,
   }
 } ());
 module.exports = Books;

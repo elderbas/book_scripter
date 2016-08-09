@@ -1,10 +1,10 @@
 'use strict';
 
 class Block {
-  constructor (preSnippets) {
+  constructor (preSnippets, snippets, status) {
     this.preSnippets = preSnippets;
-    this.snippets =  [];
-    this.status = 'untouched';
+    this.snippets =  snippets || [];
+    this.status = status || 'untouched';
   }
 }
 
