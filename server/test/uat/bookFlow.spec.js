@@ -5,6 +5,7 @@ let request = require('supertest-as-promised');
 let config = require('../../config.js');
 process.env.MONGO_DB = config.db.mongodb.acceptanceTests;
 let app = require('../../appWithTests').app;
+let PreSnippet = require('../../src/classes/PreSnippet');
 
 
 describe(`UAT test`, () => {
@@ -21,39 +22,40 @@ describe(`UAT test`, () => {
     });
   });
 
-  it('With no books uploaded yet, GET /api/books returns empty array', (done) => {
+  it('GET - /api/books/ - With no books uploaded yet, GET /api/books returns empty array', (done) => {
     request(app)
       .get(`/api/books`)
       .expect({bookNames: []}, done)
   });
   
-  it(`Uploaded book text file with no json key bookName uses name from the file without extension`, function (done) {
+  it(`POST - /api/books/ - Uploads book and sends back startWorkWith having used default values for splitting the book`, function (done) {
+    let defaultResponse = {
+      bookName: 'testBook', // done
+      lastBlockIndexWorkedOn: 0, // done
+      characterProfiles: [], // done
+      currentBlockWorkingOn: {
+        status: 'untouched',// done
+        snippets: [],// done
+        preSnippets: [
+          new PreSnippet('Ch1', 'narration', 0),
+          new PreSnippet('\n\n', 'whitespace', 1),
+          new PreSnippet('A.', 'narration', 2),
+          new PreSnippet(' ', 'whitespace', 3),
+          new PreSnippet('“B”', 'speech', 4),
+          new PreSnippet(' ', 'whitespace', 5),
+          new PreSnippet('C.', 'narration', 6),
+        ],
+      },
+      blockStatuses: ['untouched']
+    };
     request(app)
       .post('/api/books/')
       .attach('file', '/Users/bscherm/SideProjects/book_scripter_foundation/server/test/dataSets/testBook.txt')
       .send()
-      .expect({bookName: 'testBook'}, done)
+      .expect(defaultResponse, done)
   });
-
-  it(`Uploaded book text file with no json key bookName uses name from the file even if it has no extension or json 'bookName' key`, function (done) {
-    request(app)
-    .post('/api/books/')
-    .attach('file', '/Users/bscherm/SideProjects/book_scripter_foundation/server/test/dataSets/testBook')
-    .send()
-    .expect({bookName: 'testBook'}, done)
-  });
-
-  // it(`Uploaded book text file json key 'bookName' uses that value instead of the file name`, function (done) {
-  //   request(app)
-  //   .post('/api/books/')
-  //   .field('bookName', 'charlie')
-  //   .attach('file', '/Users/bscherm/SideProjects/book_scripter_foundation/server/test/dataSets/testBook.txt')
-  //   .send()
-  //   .expect({bookName: 'charlie'}, done)
-  // });
 
   after((done) => {
-    console.log('here');
     mongoose.connection.collections['books'].drop( function(err) {
       console.log('books collection wiped');
       mongoose.connection.close();

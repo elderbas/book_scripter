@@ -7,19 +7,19 @@ describe('bookSplitter', () => {
     expect(typeof bookSplitter).to.equal('function');
   });
 
-  it('validates for strPattern key by throwing an error', function () {
+  it('validates for strPatternToSplitOn key by throwing an error', function () {
     expect(() => {
       bookSplitter({
-        indexIntervalCount: 2,
+        splitAtThisIntervalIndex: 2,
         textToSplit: 'abc'
       });
     }).to.throw(Error);
   });
 
-  it('validates for indexIntervalCount key by throwing an error', function () {
+  it('validates for splitAtThisIntervalIndex key by throwing an error', function () {
     expect(() => {
       bookSplitter({
-        strPattern: '\n\n',
+        strPatternToSplitOn: '\n\n',
         textToSplit: 'abc'
       });
     }).to.throw(Error);
@@ -28,16 +28,16 @@ describe('bookSplitter', () => {
   it('validates for textToSplit key by throwing an error', function () {
     expect(() => {
       bookSplitter({
-        indexIntervalCount: 2,
-        strPattern: '\n\n'
+        splitAtThisIntervalIndex: 2,
+        strPatternToSplitOn: '\n\n'
       });
     }).to.throw(Error);
   });
 
   it('splits on simple', function () {
     let splitResult = bookSplitter({
-      strPattern: ' ',
-      indexIntervalCount: 0,
+      strPatternToSplitOn: ' ',
+      splitAtThisIntervalIndex: 0,
       textToSplit: 'a b c'
     });
     expect(splitResult[0]).to.equal('a ');
@@ -45,10 +45,10 @@ describe('bookSplitter', () => {
     expect(splitResult[2]).to.equal('c');
   });
 
-  it('splits on pattern match where indexIntervalCount is GREATER than index of first strPattern match', function () {
+  it('splits on pattern match where splitAtThisIntervalIndex is GREATER than index of first strPatternToSplitOn match', function () {
     let splitResult = bookSplitter({
-      strPattern: '\n\n',
-      indexIntervalCount: 10,
+      strPatternToSplitOn: '\n\n',
+      splitAtThisIntervalIndex: 10,
       textToSplit: [
         '“Hey what are you doing today sir duggins?” said Billy\n\n', // length of 56
         '“By George I don\'t know. What do you think?” responded Charles\n\n',
@@ -60,17 +60,17 @@ describe('bookSplitter', () => {
     expect(splitResult[2]).to.equal('Bye Bye');
   });
 
-  it('splits on pattern match where indexIntervalCount is LESSER than index of first strPattern match', function () {
+  it('splits on pattern match where splitAtThisIntervalIndex is LESSER than index of first strPatternToSplitOn match', function () {
     let splitResult = bookSplitter({
-      strPattern: '\n\n',
-      indexIntervalCount: 50,
+      strPatternToSplitOn: '\n\n',
+      splitAtThisIntervalIndex: 50,
       textToSplit: [
         '“You know what?” said Billy\n\n', // length of 29
         '“I am through” responded Charles\n\n',
         'Bye Bye'
       ].join('')
     });
-    // we want it to catch after first occurrences of the pattern occur based on the indexIntervalCount
+    // we want it to catch after first occurrences of the pattern occur based on the splitAtThisIntervalIndex
     expect(splitResult[0]).to.equal('“You know what?” said Billy\n\n“I am through” responded Charles\n\n');
     expect(splitResult[1]).to.equal('Bye Bye');
   });

@@ -11,11 +11,19 @@ const Books = (function () {
     displayName: String, // this needs to be unique but I'm not sure how to enforce uniqueness, except at the application level
     aliases: [String]
   });
+  /*blocks
+  *  {
+  *   snippets: [],
+  *   preSnippets: [],
+  *   status: ''
+  *  }
+  * */
 
   let bookSchema = new Schema({
     bookName: {type: String, unique: true, required: true},
     blocks: {type: Array, default: []},
-    characterProfiles: [characterProfileSchema]
+    characterProfiles: [characterProfileSchema],
+    lastBlockIndexWorkedOn: {type: Number, default: 0},
   });
 
   let modelTextName = 'Books';
@@ -44,6 +52,7 @@ const Books = (function () {
         let preSnippets = createPreSnippetsForBlob(textBlob);
         return new Block(preSnippets);
       });
+      blocks[0].status = 'in progress'; // first one will be in progress
       let newBook = new Books({bookName, blocks});
       newBook.save((err, book) => {
         if (err) {
@@ -53,6 +62,21 @@ const Books = (function () {
       });
     });
   };//end _addBook
+
+  // convenience function for providing data on start to get started
+  let _addBookAndGetStarted = (bookName, textBlobs) => {
+    return new Promise((fulfill, reject) => {
+      _addBook(bookName, textBlobs).then(bookDocJustAdded => {
+        fulfill({
+          bookName: bookDocJustAdded.bookName,
+          lastBlockIndexWorkedOn: bookDocJustAdded.lastBlockIndexWorkedOn,
+          characterProfiles: bookDocJustAdded.characterProfiles,
+          currentBlockWorkingOn: bookDocJustAdded.blocks[bookDocJustAdded.lastBlockIndexWorkedOn], // should be index 0
+          blockStatuses: _.map(bookDocJustAdded.blocks, 'status')
+        });
+      }).catch(e => reject(e))
+    });
+  };
 
   const _dropModel = () => {
     return new Promise((fulfill, reject) => {
@@ -139,7 +163,7 @@ const Books = (function () {
     getBlocks: _getBlocks,
     getBlockByIndex: _getBlockByIndex,
     updateBlockById: _updateBlockById,
-
+    addBookAndGetStarted: _addBookAndGetStarted,
   }
 } ());
 module.exports = Books;
