@@ -52,6 +52,7 @@
     "mocha": "2.5.3",
     "phantomjs-prebuilt": "2.1.6",
     "supertest": "^2.0.0",
+    "supertest-as-promised": "^3.2.0",
     "uglify-save-license": "0.4.1",
     "wiredep": "2.2.2"
   },
@@ -60,7 +61,8 @@
     "serve": "gulp serve",
     "front-serve": "gulp serve",
     "back-test": "gulp --gulpfile Gulpfile.backend.js --force",
-    "back-serve": "nodemon server/app.js",
+    "back-api-test": "mocha server/test/uat/bookFlow.spec.js",
+    "back-serve": "nodemon server/indexWithTests.js --config server/nodemon.json",
     "serve:dist": "gulp serve:dist",
     "test": "gulp test",
     "test:auto": "gulp test:auto",
@@ -94,6 +96,7 @@
     "lowdb": "0.13.1",
     "mongoose": "^4.5.8",
     "nlp_compromise": "6.5.0",
-    "request": "2.73.0"
+    "request": "2.73.0",
+    "request-promise": "^4.1.1"
   }
 }

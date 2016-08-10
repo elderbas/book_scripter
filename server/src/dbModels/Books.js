@@ -18,15 +18,20 @@ const Books = (function () {
     characterProfiles: [characterProfileSchema]
   });
 
-  let modelTextName = 'books';
-  let _model = mongoose.model(modelTextName, bookSchema);
+  let modelTextName = 'Books';
+  let Books;
+  if (mongoose.models.Books) {
+    Books = mongoose.model(modelTextName);
+  } else {
+    Books = mongoose.model(modelTextName, bookSchema);
+  }
 
   // plan to use it for just knowing which books exists, probably for a list of books they can continue working on
   let _getNamesOfBooksLoaded = () => {
     return new Promise((fulfill, reject) => {
-      _model.find({}, (e, arrOfBooks) => {
+      Books.find({}, (e, arrOfBooks) => {
         if (e) { return reject(e); }
-        fulfill(_.map(arrOfBooks, 'bookName'));
+        fulfill({bookNames: _.map(arrOfBooks, 'bookName')});
       });
     });
   };//end _getNamesOfBooksLoaded
@@ -39,7 +44,7 @@ const Books = (function () {
         let preSnippets = createPreSnippetsForBlob(textBlob);
         return new Block(preSnippets);
       });
-      let newBook = new _model({bookName, blocks});
+      let newBook = new Books({bookName, blocks});
       newBook.save((err, book) => {
         if (err) {
           console.log('ERR in add book', err);
@@ -51,7 +56,7 @@ const Books = (function () {
 
   const _dropModel = () => {
     return new Promise((fulfill, reject) => {
-      _model.remove({}, (err) => {
+      Books.remove({}, (err) => {
         if (err) {return reject(err);}
         fulfill(`${modelTextName} dropped from Mongodb`);
       });
@@ -60,7 +65,7 @@ const Books = (function () {
 
   const _getCharacterProfiles = (bookName) => {
     return new Promise((fulfill, reject) => {
-      _model.findOne({bookName}, (err, bookDoc) => {
+      Books.findOne({bookName}, (err, bookDoc) => {
         if (err) {return reject(err);}
         fulfill(bookDoc.characterProfiles);
       });
@@ -77,7 +82,7 @@ const Books = (function () {
     // let updateQuery = {$push: {characterProfiles: newCharProfile}};
     // let opts = {'new': true, runValidators: true};
     return new Promise((fulfill, reject) => {
-      _model.findOne({bookName},(err, bookDoc) => {
+      Books.findOne({bookName},(err, bookDoc) => {
         if (err) {return reject(err);}
         // if there's a duplicate by that character name, reject (validation at app level although it should probably be at Mongoose level)
         if (_.some(bookDoc.characterProfiles, (cP) => cP.displayName === newCharProfile.displayName)) {
@@ -95,7 +100,7 @@ const Books = (function () {
 
   const _getBlocks = (bookName) => {
     return new Promise((fulfill, reject) => {
-      _model.findOne({bookName}, (err, bookDoc) => {
+      Books.findOne({bookName}, (err, bookDoc) => {
         if (err) {return reject(err);}
         fulfill(bookDoc.blocks);
       });
@@ -113,7 +118,7 @@ const Books = (function () {
   // returns boolean for whether update was successful
   const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
     return new Promise((fulfill, reject) => {
-      _model.findOne({bookName}, (err, bookDoc) => {
+      Books.findOne({bookName}, (err, bookDoc) => {
         if (err) {return reject(err);}
         bookDoc.blocks[indexToUpdateBlockAt] = newBlockSubDoc;
         bookDoc.save((err, newBookDoc) => {

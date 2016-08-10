@@ -1,10 +1,17 @@
 let router = require('express').Router();
+let Books = require(`${_serverDir_}/src/dbModels/Books`);
 
 router.get('/', getBookNames);
 
-// upload
 function getBookNames (req, res) {
-  return res.send('Game of Thrones');
+  Books.getNamesOfBooksLoaded()
+  .then(arrBookNames => {
+    res.send(arrBookNames);
+  })
+  .catch((err) => {
+    console.log('err', err);
+    res.send(err);
+  });
 }
 
 module.exports = router;
