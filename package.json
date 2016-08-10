@@ -61,7 +61,7 @@
     "serve": "gulp serve",
     "front-serve": "gulp serve",
     "back-test": "gulp --gulpfile Gulpfile.backend.js --force",
-    "back-api-test": "mocha server/test/uat/bookFlow.spec.js",
+    "back-api-test": "mocha -w server/test/uat/bookFlow.spec.js",
     "back-serve": "nodemon server/indexWithTests.js --config server/nodemon.json",
     "serve:dist": "gulp serve:dist",
     "test": "gulp test",
