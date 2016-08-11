@@ -1,12 +1,10 @@
 let _ = require('lodash');
-let createPreSnippetsForBlob = require('../createPreSnippetsForBlob');
 let createPreSnippetsFromTextBlob = require('../createPreSnippetsFromTextBlob');
 let Block = require('../classes/Classes').Block;
 let Books = require('./mongooseModels').Books;
 let errorMessages = require('../../constants/erroMessages');
 // you can think of a schema as an INTERFACE. it doesn't do anything,
 // it just tells you how it should look and its requirements. like a wishlist
-
 
 
 // plan to use it for just knowing which books exists, probably for a list of books they can continue working on
