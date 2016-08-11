@@ -17,7 +17,6 @@ describe(`UAT test`, () => {
 
   beforeEach((done) => {
     mongoose.connection.collections['books'].drop(function(err) {
-      console.log('before each books collection wiped');
       done();
     });
   });
@@ -29,13 +28,13 @@ describe(`UAT test`, () => {
   });
   
   it(`POST - /api/books/ - Uploads book and sends back startWorkWith having used default values for splitting the book`, function (done) {
-    let defaultResponse = {
-      bookName: 'testBook', // done
-      lastBlockIndexWorkedOn: 0, // done
-      characterProfiles: [], // done
+    let defaultExpectedResponse = {
+      bookName: 'testBook', // this isn't a default name, but the rest are
+      lastBlockIndexWorkedOn: 0,
+      characterProfiles: [],
       currentBlockWorkingOn: {
-        status: 'in progress',// done
-        snippets: [],// done
+        status: 'in progress',
+        snippets: [],
         preSnippets: [
           new PreSnippet('Ch1', 'narration', 0),
           new PreSnippet('\n\n', 'whitespace', 1),
@@ -52,10 +51,7 @@ describe(`UAT test`, () => {
       .post('/api/books/')
       .attach('file', '/Users/bscherm/SideProjects/book_scripter_foundation/server/test/dataSets/testBook.txt')
       .send()
-      // .expect((req) => {
-      //   console.log('????????req.body?????start', req.body, '????????req.body?????end');
-      // })
-      .expect(defaultResponse, done)
+      .expect(defaultExpectedResponse, done)
   });
 
   after((done) => {

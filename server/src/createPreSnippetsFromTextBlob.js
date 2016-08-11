@@ -1,3 +1,7 @@
+/*
+* This likely stands to reduce a few lines of code by refactoring
+* */
+
 let PreSnippet = require('./classes/PreSnippet.js');
 /**
  * Parses the piece of book text (textBlob) into classified snippets of

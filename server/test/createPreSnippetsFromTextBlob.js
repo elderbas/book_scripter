@@ -278,6 +278,21 @@ describe('!--createPreSnippetsFromTextBlob--!', () => {
       expect(cpsftb(inp)).to.deep.equal(out);
     });
 
+    it(`craziness w parseErrors`, function () {
+      let inp = '\n\n\nChapter 1\n\n\nA.” “B” C.';
+      let out = [
+        new PreSnippet('\n\n\n', 'whitespace'),
+        new PreSnippet('Chapter 1', 'narration'),
+        new PreSnippet('\n\n\n', 'whitespace'),
+        new PreSnippet('A.”', 'parseError'),
+        new PreSnippet(' ', 'whitespace'),
+        new PreSnippet('“B”', 'speech'),
+        new PreSnippet(' ', 'whitespace'),
+        new PreSnippet('C.', 'narration'),
+      ];
+      expect(cpsftb(inp)).to.deep.equal(out);
+    });
+
 
   });//end misc
 

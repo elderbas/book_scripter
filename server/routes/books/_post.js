@@ -26,7 +26,6 @@ function uploadBookFile (req, res) {
   });
   BookModel.addBookAndGetStarted(bookNameToUse, textBlobs)
   .then((toGetStartedWith) => {
-    console.log('ABOUT TO SEND!!!!!!!!!!!!!!!!!!!', toGetStartedWith);
     res.json(toGetStartedWith);
   })
   .catch(() => {
