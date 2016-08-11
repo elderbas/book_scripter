@@ -24,10 +24,10 @@ function uploadBookFile (req, res) {
     splitAtThisIntervalIndex: _.get(req, 'body.splitAtThisIntervalIndex') || defaultValues.bookSplitterConfig.splitAtThisIntervalIndex,
     textToSplit: bookData,
   });
-  console.log('textBlobs', textBlobs);
-  BookModel.addBook(bookNameToUse, textBlobs)
-  .then(() => {
-
+  BookModel.addBookAndGetStarted(bookNameToUse, textBlobs)
+  .then((toGetStartedWith) => {
+    console.log('ABOUT TO SEND!!!!!!!!!!!!!!!!!!!', toGetStartedWith);
+    res.json(toGetStartedWith);
   })
   .catch(() => {
 
@@ -36,7 +36,7 @@ function uploadBookFile (req, res) {
   // get other meta data
 
 
-  res.json({bookName: bookNameToUse});
+
 }
 
 module.exports = router;

@@ -1,169 +1,147 @@
-const Books = (function () {
-  let _ = require('lodash');
-  let createPreSnippetsForBlob = require('../createPreSnippetsForBlob');
-  let Block = require('../classes/Classes').Block;
-  let mongoose = require('mongoose');
-  let Schema = mongoose.Schema;
-  let errorMessages = require('../../constants/erroMessages');
-  // you can think of a schema as an INTERFACE. it doesn't do anything,
-  // it just tells you how it should look and its requirements. like a wishlist
-  let characterProfileSchema = new Schema({
-    displayName: String, // this needs to be unique but I'm not sure how to enforce uniqueness, except at the application level
-    aliases: [String]
+let _ = require('lodash');
+let createPreSnippetsForBlob = require('../createPreSnippetsForBlob');
+let Block = require('../classes/Classes').Block;
+let Books = require('./mongooseModels').Books;
+let errorMessages = require('../../constants/erroMessages');
+// you can think of a schema as an INTERFACE. it doesn't do anything,
+// it just tells you how it should look and its requirements. like a wishlist
+
+
+
+// plan to use it for just knowing which books exists, probably for a list of books they can continue working on
+let _getNamesOfBooksLoaded = () => {
+  return new Promise((fulfill, reject) => {
+    Books.find({}, (e, arrOfBooks) => {
+      if (e) { return reject(e); }
+      fulfill({bookNames: _.map(arrOfBooks, 'bookName')});
+    });
   });
-  /*blocks
-  *  {
-  *   snippets: [],
-  *   preSnippets: [],
-  *   status: ''
-  *  }
-  * */
+};//end _getNamesOfBooksLoaded
 
-  let bookSchema = new Schema({
-    bookName: {type: String, unique: true, required: true},
-    blocks: {type: Array, default: []},
-    characterProfiles: [characterProfileSchema],
-    lastBlockIndexWorkedOn: {type: Number, default: 0},
+// creates all pre snippets for all blocks based on text blobs
+let _addBook = (bookName, textBlobs) => {
+  // setDefaultsOnInsert, upsert
+  return new Promise((fulfill, reject) => {
+    // from text blobs to pre snippets
+    let blocks = _.map(textBlobs, (textBlob) => {
+      let preSnippets = createPreSnippetsForBlob(textBlob);
+      return new Block(preSnippets);
+    });
+    blocks[0].status = 'in progress'; // first one will be in progress
+    let newBook = new Books({bookName, blocks, lastBlockIndexWorkedOn: 0});
+    // console.log('BOOK ABOUT TO SAVE', JSON.stringify(newBook));
+    newBook.save((err, book) => {
+      // console.log('book JUST SAVED@#$%^&*(', book);
+      if (err) {
+        console.log('ERR in add book', err);
+        return reject(err);
+      }
+      fulfill(book);
+    });
   });
+};//end _addBook
 
-  let modelTextName = 'Books';
-  let Books;
-  if (mongoose.models.Books) {
-    Books = mongoose.model(modelTextName);
-  } else {
-    Books = mongoose.model(modelTextName, bookSchema);
-  }
+// convenience function for providing data on start to get started
+let _addBookAndGetStarted = (bookName, textBlobs) => {
+  return new Promise((fulfill, reject) => {
+    _addBook(bookName, textBlobs).then(bookDocJustAdded => {
+      let toSend = {
+        bookName: bookDocJustAdded.bookName,
+        characterProfiles: bookDocJustAdded.characterProfiles,
+        lastBlockIndexWorkedOn: bookDocJustAdded.lastBlockIndexWorkedOn,
+        currentBlockWorkingOn: bookDocJustAdded.blocks[bookDocJustAdded.lastBlockIndexWorkedOn], // should be index 0
+        blockStatuses: _.map(bookDocJustAdded.blocks, 'status')
+      };
+      fulfill(toSend);
+    }).catch(e => reject(e))
+  });
+};
 
-  // plan to use it for just knowing which books exists, probably for a list of books they can continue working on
-  let _getNamesOfBooksLoaded = () => {
-    return new Promise((fulfill, reject) => {
-      Books.find({}, (e, arrOfBooks) => {
-        if (e) { return reject(e); }
-        fulfill({bookNames: _.map(arrOfBooks, 'bookName')});
-      });
+const _dropModel = () => {
+  return new Promise((fulfill, reject) => {
+    Books.remove({}, (err) => {
+      if (err) {return reject(err);}
+      fulfill(`books dropped from Mongodb`);
     });
-  };//end _getNamesOfBooksLoaded
+  });
+};//end _dropModel
 
-  // creates all pre snippets for all blocks based on text blobs
-  let _addBook = (bookName, textBlobs) => {
-    return new Promise((fulfill, reject) => {
-      // from text blobs to pre snippets
-      let blocks = _.map(textBlobs, (textBlob) => {
-        let preSnippets = createPreSnippetsForBlob(textBlob);
-        return new Block(preSnippets);
-      });
-      blocks[0].status = 'in progress'; // first one will be in progress
-      let newBook = new Books({bookName, blocks});
-      newBook.save((err, book) => {
-        if (err) {
-          console.log('ERR in add book', err);
-          return reject(err); }
-        fulfill(book);
-      });
+const _getCharacterProfiles = (bookName) => {
+  return new Promise((fulfill, reject) => {
+    Books.findOne({bookName}, (err, bookDoc) => {
+      if (err) {return reject(err);}
+      fulfill(bookDoc.characterProfiles);
     });
-  };//end _addBook
-
-  // convenience function for providing data on start to get started
-  let _addBookAndGetStarted = (bookName, textBlobs) => {
-    return new Promise((fulfill, reject) => {
-      _addBook(bookName, textBlobs).then(bookDocJustAdded => {
-        fulfill({
-          bookName: bookDocJustAdded.bookName,
-          lastBlockIndexWorkedOn: bookDocJustAdded.lastBlockIndexWorkedOn,
-          characterProfiles: bookDocJustAdded.characterProfiles,
-          currentBlockWorkingOn: bookDocJustAdded.blocks[bookDocJustAdded.lastBlockIndexWorkedOn], // should be index 0
-          blockStatuses: _.map(bookDocJustAdded.blocks, 'status')
-        });
-      }).catch(e => reject(e))
-    });
-  };
-
-  const _dropModel = () => {
-    return new Promise((fulfill, reject) => {
-      Books.remove({}, (err) => {
+  });
+};
+/*
+* bookName - string,
+* newCharProfile - new CharacterProfile
+*
+* output: the characterProfiles array with the new charProf added
+* throws error when: the newCharProfile has a non-unique displayName
+* */
+const _addCharacterProfile = (bookName, newCharProfile) => {
+  // let updateQuery = {$push: {characterProfiles: newCharProfile}};
+  // let opts = {'new': true, runValidators: true};
+  return new Promise((fulfill, reject) => {
+    Books.findOne({bookName},(err, bookDoc) => {
+      if (err) {return reject(err);}
+      // if there's a duplicate by that character name, reject (validation at app level although it should probably be at Mongoose level)
+      if (_.some(bookDoc.characterProfiles, (cP) => cP.displayName === newCharProfile.displayName)) {
+        return reject(new Error(errorMessages.characterProfileUnique))
+      }
+      // there's no duplicate if we get to here so we can add just fine
+      bookDoc.characterProfiles.push(newCharProfile);
+      bookDoc.save((err) => {
         if (err) {return reject(err);}
-        fulfill(`${modelTextName} dropped from Mongodb`);
+        fulfill(bookDoc);
       });
-    });
-  };//end _dropModel
+    })
+  });
+};
 
-  const _getCharacterProfiles = (bookName) => {
-    return new Promise((fulfill, reject) => {
-      Books.findOne({bookName}, (err, bookDoc) => {
-        if (err) {return reject(err);}
-        fulfill(bookDoc.characterProfiles);
-      });
+const _getBlocks = (bookName) => {
+  return new Promise((fulfill, reject) => {
+    Books.findOne({bookName}, (err, bookDoc) => {
+      if (err) {return reject(err);}
+      fulfill(bookDoc.blocks);
     });
-  };
-  /*
-  * bookName - string,
-  * newCharProfile - new CharacterProfile
-  *
-  * output: the characterProfiles array with the new charProf added
-  * throws error when: the newCharProfile has a non-unique displayName
-  * */
-  const _addCharacterProfile = (bookName, newCharProfile) => {
-    // let updateQuery = {$push: {characterProfiles: newCharProfile}};
-    // let opts = {'new': true, runValidators: true};
+  });
+};
+
+const _getBlockByIndex = (bookName, indexOfBlockToGet) => {
+  return _getBlocks(bookName).then((blocks) => {
     return new Promise((fulfill, reject) => {
-      Books.findOne({bookName},(err, bookDoc) => {
+      fulfill(blocks[indexOfBlockToGet]);
+    });
+  });
+};
+
+// returns boolean for whether update was successful
+const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
+  return new Promise((fulfill, reject) => {
+    Books.findOne({bookName}, (err, bookDoc) => {
+      if (err) {return reject(err);}
+      bookDoc.blocks[indexToUpdateBlockAt] = newBlockSubDoc;
+      bookDoc.save((err, newBookDoc) => {
         if (err) {return reject(err);}
-        // if there's a duplicate by that character name, reject (validation at app level although it should probably be at Mongoose level)
-        if (_.some(bookDoc.characterProfiles, (cP) => cP.displayName === newCharProfile.displayName)) {
-          return reject(new Error(errorMessages.characterProfileUnique))
-        }
-        // there's no duplicate if we get to here so we can add just fine
-        bookDoc.characterProfiles.push(newCharProfile);
-        bookDoc.save((err) => {
-          if (err) {return reject(err);}
-          fulfill(bookDoc);
-        });
+        fulfill(newBookDoc.blocks);
       })
     });
-  };
+  });
+};
 
-  const _getBlocks = (bookName) => {
-    return new Promise((fulfill, reject) => {
-      Books.findOne({bookName}, (err, bookDoc) => {
-        if (err) {return reject(err);}
-        fulfill(bookDoc.blocks);
-      });
-    });
-  };
-  
-  const _getBlockByIndex = (bookName, indexOfBlockToGet) => {
-    return _getBlocks(bookName).then((blocks) => {
-      return new Promise((fulfill, reject) => {
-        fulfill(blocks[indexOfBlockToGet]);
-      });
-    });
-  };
-
-  // returns boolean for whether update was successful
-  const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
-    return new Promise((fulfill, reject) => {
-      Books.findOne({bookName}, (err, bookDoc) => {
-        if (err) {return reject(err);}
-        bookDoc.blocks[indexToUpdateBlockAt] = newBlockSubDoc;
-        bookDoc.save((err, newBookDoc) => {
-          if (err) {return reject(err);}
-          fulfill(newBookDoc.blocks);
-        })
-      });
-    });
-  };
-
-  return {
-    // schema: bookSchema,
-    getNamesOfBooksLoaded: _getNamesOfBooksLoaded,
-    addBook: _addBook,
-    dropModel: _dropModel,
-    getCharacterProfiles: _getCharacterProfiles,
-    addCharacterProfile: _addCharacterProfile,
-    getBlocks: _getBlocks,
-    getBlockByIndex: _getBlockByIndex,
-    updateBlockById: _updateBlockById,
-    addBookAndGetStarted: _addBookAndGetStarted,
-  }
-} ());
-module.exports = Books;
+const booksExport = {
+  // schema: bookSchema,
+  getNamesOfBooksLoaded: _getNamesOfBooksLoaded,
+  addBook: _addBook,
+  dropModel: _dropModel,
+  getCharacterProfiles: _getCharacterProfiles,
+  addCharacterProfile: _addCharacterProfile,
+  getBlocks: _getBlocks,
+  getBlockByIndex: _getBlockByIndex,
+  updateBlockById: _updateBlockById,
+  addBookAndGetStarted: _addBookAndGetStarted,
+};
+module.exports = booksExport;

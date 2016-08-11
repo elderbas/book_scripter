@@ -14,7 +14,7 @@ class PreSnippet {
       this.predictedCharacterNameNormalized = null;
     }
     if (type === 'speech') {
-      this.personConfirmedNormalized = null;
+      this.personConfirmedNormalized = null; // to be used later for arrangement classification after user confirms somebody spoke this
     }
   }
 }

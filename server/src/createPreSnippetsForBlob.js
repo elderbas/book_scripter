@@ -40,6 +40,7 @@ function createPreSnippetsForBlob (str) {
   if (str.length-1 > lastStream.closeCharIndex) {
     preSnippetArr.push(new PreSnippet(str.slice(lastStream.closeCharIndex+1), 'whitespace'));
   }
+  // TODO - look into if this is even needed. I believe it ends up getting set anyway later
   // give ids so easier to track later
   _.forEach(preSnippetArr, function (ps, i) {
     ps.id = i;

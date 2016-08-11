@@ -1,6 +1,6 @@
 'use strict';
 let mongoose = require('mongoose');
-let host = 'http://localhost:3000'; // local development URL
+// let host = 'http://localhost:3000'; // local development URL
 let request = require('supertest-as-promised');
 let config = require('../../config.js');
 process.env.MONGO_DB = config.db.mongodb.acceptanceTests;
@@ -34,7 +34,7 @@ describe(`UAT test`, () => {
       lastBlockIndexWorkedOn: 0, // done
       characterProfiles: [], // done
       currentBlockWorkingOn: {
-        status: 'untouched',// done
+        status: 'in progress',// done
         snippets: [],// done
         preSnippets: [
           new PreSnippet('Ch1', 'narration', 0),
@@ -46,12 +46,15 @@ describe(`UAT test`, () => {
           new PreSnippet('C.', 'narration', 6),
         ],
       },
-      blockStatuses: ['untouched']
+      blockStatuses: ['in progress']
     };
     request(app)
       .post('/api/books/')
       .attach('file', '/Users/bscherm/SideProjects/book_scripter_foundation/server/test/dataSets/testBook.txt')
       .send()
+      // .expect((req) => {
+      //   console.log('????????req.body?????start', req.body, '????????req.body?????end');
+      // })
       .expect(defaultResponse, done)
   });
 

@@ -34,6 +34,23 @@ describe('createPreSnippetsForBlob', () => {
     ]);
   });
 
+  // it(`starting out with narration and stopping it with newline`, function () {
+  //   // let result = createPreSnippetsForBlob(`Ch1\n\nA. “B” C.`);
+  //   // let result = createPreSnippetsForBlob(`\nCh1\nA. “B” C.`);
+  //   let result = createPreSnippetsForBlob(`\nCh\nB`);
+  //   console.log('result', result);
+  //   expect(result).to.deep.equal([
+  //     new PreSnippet('\n', 'whitespace', 0),
+  //     new PreSnippet('Ch', 'narration', 1),
+  //     new PreSnippet('\n', 'whitespace', 2),
+  //     new PreSnippet('B', 'narration', 3),
+  //     // new PreSnippet(' ', 'whitespace', 4),
+  //     // new PreSnippet('“B”', 'speech', 5),
+  //     // new PreSnippet(' ', 'whitespace', 6),
+  //     // new PreSnippet('C.', 'narration', 7),
+  //   ])
+  // });
+
   it(`multiple streams`, function () {
     expect(createPreSnippetsForBlob('A “B,”\n\n“C. “D”')).to.deep.equal([
       new PreSnippet('A', 'narration', 0),
