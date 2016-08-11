@@ -1,5 +1,6 @@
 let _ = require('lodash');
 let createPreSnippetsForBlob = require('../createPreSnippetsForBlob');
+let createPreSnippetsFromTextBlob = require('../createPreSnippetsFromTextBlob');
 let Block = require('../classes/Classes').Block;
 let Books = require('./mongooseModels').Books;
 let errorMessages = require('../../constants/erroMessages');
@@ -24,7 +25,9 @@ let _addBook = (bookName, textBlobs) => {
   return new Promise((fulfill, reject) => {
     // from text blobs to pre snippets
     let blocks = _.map(textBlobs, (textBlob) => {
-      let preSnippets = createPreSnippetsForBlob(textBlob);
+      let preSnippets = createPreSnippetsFromTextBlob(textBlob);
+      // set all pre snippets in a block to an id (although maybe we don't need to because their index in the array will be enough)
+      preSnippets.forEach((pS, i) => pS.id = i);
       return new Block(preSnippets);
     });
     blocks[0].status = 'in progress'; // first one will be in progress
