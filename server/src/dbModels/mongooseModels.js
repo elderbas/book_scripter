@@ -31,7 +31,6 @@ let bookSchema = new Schema({
 * */
 try {
   models.Books = mongoose.model('books', bookSchema);
-  console.log(`mongoose.model('books'`);
 }
 catch (e) {
   models.Books = mongoose.model('books');
