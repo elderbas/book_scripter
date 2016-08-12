@@ -19,26 +19,33 @@ function getSuggestedName (req, res) {
   }
   // I feel like Im being redundant in getting these individual values, depending on how MongoDB
   // works there might be a more memory performant way? Maybe it would be the same memory
-  let customLex;
+  let customLex, charProfsAndVSS;
   let charProfilesAndVSSPromise = Books.getCharacterProfilesAndVerbSpokeSynonyms(bookName);
   charProfilesAndVSSPromise
-    .then((charProfsAndVSS) => {
+    .then((charProfsAndVSSResponse) => {
+      charProfsAndVSS = charProfsAndVSSResponse;
       // add character names and verbs so the NLP library can figure out patterns
-      customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, ['said', 'cheap']);
       return Books.getBlockByIndex(bookName, blockId)
     })
     .then((block) => {
-      let suggested;
+      customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, ['said', 'cheap']);
+      let profilesToSuggest;
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, 2, 6);
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
-      let nameSuggested = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
-      logger('nameSuggested', nameSuggested);
-      if (_.isNull(nameSuggested)) {
-        logger(`'hit is null'`, 'hit is null');
-        suggested = [];
+      let nameSuggestOutput = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
+      if (_.isNull(nameSuggestOutput)) {
+        profilesToSuggest = [];
       }
+      else {
+        profilesToSuggest = _.filter(charProfsAndVSS.characterProfiles, (cp) => {
+          return cp.displayName.toLowerCase() === nameSuggestOutput.suggestedName || (
+            _(cp.aliases).map(x => x.toLowerCase()).some(nameSuggestOutput.suggestedName)
+          );
+        });
+      }
+
       // res.send({characterProfilesSuggested: suggested});
-      res.send({characterProfilesSuggested: nameSuggested});
+      res.send({characterProfilesSuggested: profilesToSuggest});
     })
     .catch((err) => {
       if (err) {

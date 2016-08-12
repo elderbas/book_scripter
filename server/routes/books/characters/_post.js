@@ -16,13 +16,7 @@ function addCharacterProfile (req, res) {
   let addCharPromise = Books.addCharacterProfile(bookName, characterProfileToAdd);
   addCharPromise
     .then((updatedBookDoc) => {
-      let charProfilesWithoutId = _.map(updatedBookDoc.characterProfiles, (cP) => {
-        return {
-          displayName: cP.displayName,
-          aliases: cP.aliases
-        };
-      });
-      return res.json({upToDateCharacterProfiles: charProfilesWithoutId});
+      return res.json({upToDateCharacterProfiles: updatedBookDoc.characterProfiles});
     })
     .catch((e) => {
       return errorHandler(req, res, 500, JSON.stringify(e));

@@ -3,6 +3,7 @@ let mongoose = require('mongoose');
 let expect = require('chai').expect;
 // let host = 'http://localhost:3000'; // local development URL
 let request = require('supertest');
+// let request = require('superagent');
 let config = require('../../config.js');
 process.env.MONGO_DB = config.db.mongodb.acceptanceTests;
 let app = require('../../appWithTests').app;
@@ -136,9 +137,15 @@ function addCharacterProfile (cb) {
         aliases: []
       }
     })
-    .expect(200, {
-      upToDateCharacterProfiles: [ {displayName: 'Bob', aliases: []} ]
-    }, cb)
+    .expect(200)
+    .end((err, res) => {
+      expect(err).to.not.exist;
+      // Note this only works with one char prof in response
+      expect(res.body.upToDateCharacterProfiles[0]).to.include.keys('_id');
+      expect(res.body.upToDateCharacterProfiles[0].displayName).to.equal('Bob');
+      expect(res.body.upToDateCharacterProfiles[0].aliases.length).to.equal(0);
+      cb();
+    });
 }
 
 
@@ -152,7 +159,20 @@ function requestSuggestion(cb, characterProfilesMatched) {
       'blockId': 0,
       'speechPreSnippetIdSelected': 4
     })
-    .expect({characterProfilesSuggested: characterProfilesMatched}, cb);
+    .expect(200)
+    .end((err, res) => {
+      expect(err).to.not.exist;
+      if (characterProfilesMatched.length === 0) {
+        expect(res.body.characterProfilesSuggested).to.deep.equal([]);
+      }
+      else if (characterProfilesMatched.length > 0) {
+        let cPS = res.body.characterProfilesSuggested;
+        expect(cPS[0]).to.include.keys('_id', 'displayName', 'aliases');
+        expect(cPS[0].displayName).to.equal(characterProfilesMatched[0].displayName);
+        expect(cPS[0].aliases).to.deep.equal(characterProfilesMatched[0].aliases);
+      }
+      cb();
+    });
 }
 
 
