@@ -3,20 +3,21 @@ const _ = require('lodash');
 const preSnippetClassify = require('./preSnippetClassify');
 
 
+
 const grabClassificationsAsJoinedStrings = (arrOfPreSnips) => arrOfPreSnips.map(s => s.classification).join(',');
-const classifyPreSnippetArrangement = (extendedPreSnippetsObj, nlp) => {
+const classifyPreSnippetArrangement = (extendedPreSnippetsObj, customLexicon) => {
   let output = {};
   const classifiedSnippets = [
-    _.map(extendedPreSnippetsObj.allExtended[0], s => preSnippetClassify(s, nlp)),
-    _.map(extendedPreSnippetsObj.allExtended[1], s => preSnippetClassify(s, nlp)),
+    _.map(extendedPreSnippetsObj.allExtended[0], s => preSnippetClassify(s, customLexicon)),
+    _.map(extendedPreSnippetsObj.allExtended[1], s => preSnippetClassify(s, customLexicon)),
   ];
   const nonWhiteSpace = [
-    _.map(extendedPreSnippetsObj.nonWhiteSpace[0], s => preSnippetClassify(s, nlp)),
-    _.map(extendedPreSnippetsObj.nonWhiteSpace[1], s => preSnippetClassify(s, nlp)),
+    _.map(extendedPreSnippetsObj.nonWhiteSpace[0], s => preSnippetClassify(s, customLexicon)),
+    _.map(extendedPreSnippetsObj.nonWhiteSpace[1], s => preSnippetClassify(s, customLexicon)),
   ];
   const nonSingleSpace = [
-    _.map(extendedPreSnippetsObj.nonSingleSpace[0], s => preSnippetClassify(s, nlp)),
-    _.map(extendedPreSnippetsObj.nonSingleSpace[1], s => preSnippetClassify(s, nlp)),
+    _.map(extendedPreSnippetsObj.nonSingleSpace[0], s => preSnippetClassify(s, customLexicon)),
+    _.map(extendedPreSnippetsObj.nonSingleSpace[1], s => preSnippetClassify(s, customLexicon)),
   ];
 
   let leftSideNWS = grabClassificationsAsJoinedStrings(nonWhiteSpace[0].reverse());

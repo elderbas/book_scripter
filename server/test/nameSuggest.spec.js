@@ -7,17 +7,17 @@ const CharacterProfile = require('../src/classes/CharacterProfile');
 const grabExtendingPreSnippets = require('../src/grabExtendingPreSnippets');
 const nameSuggest = require('../src/nameSuggest');
 const _ = require('lodash');
-
+var reload = require('require-reload')(require);
+let nlp = require('nlp_compromise');
 const quoteify = (str) => `“${str}”`;
-describe('nameSuggest', () => {
+describe('!--nameSuggest--!', () => {
   it('exists as a function', function () {
     expect(typeof nameSuggest).to.equal('function');
   });
-  let nlp;
   let count, preSnippetList;
   const QUANTITY_TO_GRAB_EACH_SIDE = 6;
   beforeEach(() => {
-    nlp = require('nlp_compromise');
+
     count = 0;
     preSnippetList = [
       /*0*/new PreSnippet(`PROLOGUE`, 'narration', ++count),
@@ -42,13 +42,24 @@ describe('nameSuggest', () => {
     ];
   });
 
+  it(`null if nothing to suggest`, function () {
+    const preSnippetIdSpeechSelected = 2;
+    let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
+    let customLex = buildCustomLexicon([new CharacterProfile('Charlie')], ['urged']);
+
+    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
+    let output = null;
+    // let output = 'a';
+    expect(
+      nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj)
+    ).to.deep.equal(output)
+  });
+
   it(`simple to right`, function () {
     const preSnippetIdSpeechSelected = 2;
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
-    nlp.lexicon(
-      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
-    );
-    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
+    let customLex = buildCustomLexicon([new CharacterProfile('Gared')], ['urged']);
+    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
     let output = {suggestedName:'gared'};
     expect(
       nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj).suggestedName
@@ -58,10 +69,8 @@ describe('nameSuggest', () => {
   it(`simple to left`, function () {
     const preSnippetIdSpeechSelected = 6;
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
-    nlp.lexicon(
-      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
-    );
-    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
+    let customLex = buildCustomLexicon([new CharacterProfile('Gared')], ['urged']);
+    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
     let output = {suggestedName:'gared'};
     expect(
       nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj).suggestedName
@@ -76,8 +85,8 @@ describe('nameSuggest', () => {
     let speechPreSnippetToChangePersonConfirmed = _.find(preSnippetExtendedObj.allExtended[0], (s) => s.text === '“Dead is dead,”');
     speechPreSnippetToChangePersonConfirmed.personConfirmedNormalized = 'gared';
 
-    nlp.lexicon(buildCustomLexicon([], ['said']));
-    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, nlp);
+    let customLex = buildCustomLexicon([new CharacterProfile('Gared')], ['said']);
+    let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
     let output = {suggestedName:'gared', whichMatcher: 'pronounWrappedEndGrabsFromJustPreviousConfirmed'};
     expect(
       nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj)

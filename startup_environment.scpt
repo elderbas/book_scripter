@@ -1,4 +1,8 @@
 #!/usr/bin/osascript
+
+# Could also add
+# run mongod IF it isnt running
+# open webstorm IF it isnt running
 on run_in_new_window(cmd_to_run)
   set projPath to "/Users/bscherm/SideProjects/book_scripter_foundation"
   tell application "Terminal"

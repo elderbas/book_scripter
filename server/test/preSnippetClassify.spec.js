@@ -5,13 +5,12 @@ const PreSnippet = require('../src/classes/PreSnippet');
 const lexiconTagTypes = require('../constants/lexiconTagTypes');
 const buildCustomLexicon = require('../src/buildCustomLexicon');
 
-
-describe('preSnippetClassify', () => {
+describe('!--preSnippetClassify--!', () => {
   it('exists as a function', function () {
     expect(typeof preSnippetClassify).to.equal('function');
   });
 
-  describe('narration type', () => {
+  describe('narration type -->', () => {
     let charList, inputPreSnippet, output;
     beforeEach(() => {
       charList = [
@@ -20,6 +19,38 @@ describe('preSnippetClassify', () => {
       ];
       inputPreSnippet = new PreSnippet(null, 'narration', 13); // null to be set later
       output = {text: null, type: 'narration', id: 13};
+    });
+
+    it(`predictedCharacterNameNormalized not set if no lexicon passed in`, function () {
+      inputPreSnippet.text = 'asked Harry.';
+      output.text = inputPreSnippet.text;
+      output.classification = 'NAR()';
+      output.predictedCharacterNameNormalized = null;
+      expect(
+        preSnippetClassify(inputPreSnippet, {})
+      ).to.deep.equal(output);
+    });
+
+    it(`predictedCharacterNameNormalized not set if no names on the lexicon indicate`, function () {
+      charList = [ {displayName: 'Charlie', aliases: []} ];
+      inputPreSnippet.text = 'Harry';
+      output.text = inputPreSnippet.text;
+      output.classification = 'NAR()';
+      output.predictedCharacterNameNormalized = null;
+      expect(
+        preSnippetClassify(inputPreSnippet, buildCustomLexicon(charList, ['asked']))
+      ).to.deep.equal(output);
+    });
+
+    it(`VSS still gets picked up even if there isn't a name to go with it`, function () {
+      charList = [ {displayName: 'Charlie', aliases: []} ];
+      inputPreSnippet.text = 'asked Harry.';
+      output.text = inputPreSnippet.text;
+      output.classification = 'NAR(VERB_SYNONYM_TO_SPOKE)';
+      output.predictedCharacterNameNormalized = null;
+      expect(
+        preSnippetClassify(inputPreSnippet, buildCustomLexicon(charList, ['asked']))
+      ).to.deep.equal(output);
     });
 
     it(`single sentence VSS PC`, function () {

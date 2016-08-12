@@ -23,6 +23,7 @@ let bookSchema = new Schema({
   blocks: {type: Array, default: []},
   lastBlockIndexWorkedOn: {type: Number, default: 0},
   characterProfiles: [characterProfileSchema],
+  verbSpokeSynonyms: [String]
 });
 
 /*

@@ -75,6 +75,40 @@ const _getCharacterProfiles = (bookName) => {
     });
   });
 };
+
+const _getCharacterProfilesAndVerbSpokeSynonyms = (bookName) => {
+  return new Promise((fulfill, reject) => {
+    Books.findOne({bookName}, (err, bookDoc) => {
+      if (err) {return reject(err);}
+      fulfill({
+        characterProfiles: bookDoc.characterProfiles,
+        verbSpokeSynonyms: bookDoc.verbSpokeSynonyms,
+      });
+    });
+  });
+};
+
+// TODO NOT DONE, was just copy/pasted over mostly
+// also need unit test done
+const _addVerbSpokeSynonym = (bookName, verbSpokeSynonymStr) => {
+  return new Promise((fulfill, reject) => {
+    Books.findOne({bookName},(err, bookDoc) => {
+      if (err) {return reject(err);}
+      // if there's a duplicate by that character name, reject (validation at app level although it should probably be at Mongoose level)
+      if (_.some(bookDoc.characterProfiles, (cP) => cP.displayName === newCharProfile.displayName)) {
+        return reject(new Error(errorMessages.characterProfileUnique))
+      }
+      // there's no duplicate if we get to here so we can add just fine
+      let newArr = bookDoc.verbSpokeSynonyms.push(verbSpokeSynonymStr);
+      bookDoc.verbSpokeSynonyms = _.uniq(newArr);
+      bookDoc.save((err) => {
+        if (err) {return reject(err);}
+        fulfill(bookDoc);
+      });
+    })
+  });
+};
+
 /*
 * bookName - string,
 * newCharProfile - new CharacterProfile
@@ -135,14 +169,16 @@ const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
 
 const booksExport = {
   // schema: bookSchema,
+  getCharacterProfilesAndVerbSpokeSynonyms: _getCharacterProfilesAndVerbSpokeSynonyms,
   getNamesOfBooksLoaded: _getNamesOfBooksLoaded,
-  addBook: _addBook,
-  dropModel: _dropModel,
   getCharacterProfiles: _getCharacterProfiles,
+  addBookAndGetStarted: _addBookAndGetStarted,
   addCharacterProfile: _addCharacterProfile,
-  getBlocks: _getBlocks,
+  addVerbSpokeSynonym: _addVerbSpokeSynonym,
   getBlockByIndex: _getBlockByIndex,
   updateBlockById: _updateBlockById,
-  addBookAndGetStarted: _addBookAndGetStarted,
+  dropModel: _dropModel,
+  getBlocks: _getBlocks,
+  addBook: _addBook,
 };
 module.exports = booksExport;

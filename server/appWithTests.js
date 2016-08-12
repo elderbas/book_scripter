@@ -3,6 +3,16 @@ require('./setGlobalVars.js');
 let fs = require('fs');
 let bodyParser = require('body-parser');
 
+global.logger = (valsArr) => {
+  console.log('!!!!!!!!!!!!!!!!!!!!!!!!');
+  console.log('!!!!!!!!!!!!!');
+  console.log('!!!!!!!!');
+  Array.prototype.apply(console.log, valsArr);
+  console.log('!!!!!!!!');
+  console.log('!!!!!!!!!!!!!');
+  console.log('!!!!!!!!!!!!!!!!!!!!!!!!');
+};
+
 let express = require('express');
 let app = express();
 let routes = require('./routes/routes.js');

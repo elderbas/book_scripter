@@ -3,26 +3,26 @@ const lexiconTagTypes = require('../constants/lexiconTagTypes');
 const nlp = require('nlp_compromise');
 const _ = require('lodash');
 
-const narrationType = (preSnip, nlpInstance) => {
-    let classifyingPieces = [];
-    let nlpTextOutput = nlpInstance.text(preSnip.text);
-    // TODO - add ability for He, She etc
-    nlpTextOutput.sentences.forEach((sentence) => {
-      sentence.terms.forEach((term) => {
-        // since we added custom lexicon types based on this hash, if the current term's tag type matches
-        // one of these, then it's one we care about looking for
-        let termType = lexiconTagTypes[term.tag];
-        // wont execute for all sentences, if the first sentence contains 2 classifying pieces already
-        if (termType && classifyingPieces.length <= 1) {
-          if (termType === lexiconTagTypes.PERSON_CONFIRMED) {
-            preSnip.predictedCharacterNameNormalized = term.normal;
-          }
-          classifyingPieces.push(termType);
+const narrationType = (preSnip, customLexicon) => {
+  let classifyingPieces = [];
+  let nlpTextOutput = nlp.text(preSnip.text, {lexicon: customLexicon});
+  // TODO - add ability for He, She etc
+  nlpTextOutput.sentences.forEach((sentence) => {
+    sentence.terms.forEach((term) => {
+      // since we added custom lexicon types based on this hash, if the current term's tag type matches
+      // one of these, then it's one we care about looking for
+      let termType = lexiconTagTypes[term.tag];
+      // wont execute for all sentences, if the first sentence contains 2 classifying pieces already
+      if (termType && classifyingPieces.length <= 1) {
+        if (termType === lexiconTagTypes.PERSON_CONFIRMED) {
+          preSnip.predictedCharacterNameNormalized = term.normal;
         }
-      });
+        classifyingPieces.push(termType);
+      }
     });
-    preSnip.classification = `NAR(${classifyingPieces.join(' ')})`;
-    return preSnip;
+  });
+  preSnip.classification = `NAR(${classifyingPieces.join(' ')})`;
+  return preSnip;
 };
 
 const SPACE = ' ';
@@ -58,13 +58,13 @@ const whitespaceType = (preSnip) => {
 };
 
 /*
-* only playing attention to tag types in
-* lexiconTagTypes hash
-* */
+ * only playing attention to tag types in
+ * lexiconTagTypes hash
+ * */
 const preSnippetClassify = (preSnip, customLexicon) => {
-  nlp.lexicon(customLexicon || {});
+  customLexicon = customLexicon || {};
   if (preSnip.type === 'narration') {
-    return narrationType(preSnip, nlp);
+    return narrationType(preSnip, customLexicon);
   }
   else if (preSnip.type === 'whitespace') {
     return whitespaceType(preSnip);

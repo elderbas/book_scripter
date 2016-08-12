@@ -145,6 +145,13 @@ describe('<-- Books collection-->\n', () => {
         done();
       }).catch(done);
     });
+    
+    it(`getCharacterProfilesAndVerbSpokeSynonyms`, function (done) {
+      Books.getCharacterProfilesAndVerbSpokeSynonyms(bookNameBeingUsed).then(charPAndVSS => {
+        expect(charPAndVSS).to.have.all.keys(['characterProfiles', 'verbSpokeSynonyms']);
+        done();
+      })
+    });
 
     it(`the increment count for pre snippets ids in a block start at 0 for each block`, function (done) {
       Books.getBlockByIndex(bookNameBeingUsed, 1).then(blockDoc => {

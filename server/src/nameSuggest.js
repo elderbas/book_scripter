@@ -18,6 +18,11 @@ const checkArrangementForMatches = (preSnippetArrangement, preSnippetExtended, m
   namedSuggestedObj.whichMatcher = matched.whichMatcher;
   return namedSuggestedObj;
 };
+
+// returns a single name if one is found
+// returns null if none are found
+// classifyPreSnippetArrangement(...) produces -> preSnippetClassifiedArrangementObj
+// grabExtendingPreSnippets(...) produces -> preSnippetExtendedObj
 const nameSuggest = (preSnippetClassifiedArrangementObj, preSnippetExtendedObj) => {
   let nonSsArrangementNameMatch = checkArrangementForMatches(
     preSnippetClassifiedArrangementObj.nonSingleSpaceArrangement, preSnippetExtendedObj.nonSingleSpace, arrangementMatchers.nonSsMatchers

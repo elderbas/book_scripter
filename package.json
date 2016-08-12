@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "angular-mocks": "1.5.0-beta.2",
+    "async": "^2.0.1",
     "autoprefixer": "6.2.3",
     "babel-core": "6.2.0",
     "babel-eslint": "6.0.2",
@@ -97,6 +98,7 @@
     "mongoose": "4.5.8",
     "nlp_compromise": "6.5.0",
     "request": "2.73.0",
-    "request-promise": "4.1.1"
+    "request-promise": "4.1.1",
+    "require-reload": "^0.2.2"
   }
 }

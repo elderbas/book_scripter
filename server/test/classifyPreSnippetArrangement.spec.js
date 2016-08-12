@@ -15,10 +15,6 @@ describe('classifyPreSnippetArrangement', () => {
   let count, preSnippetList, nlp;
   const QUANTITY_TO_GRAB_EACH_SIDE = 6;
   beforeEach(() => {
-    nlp = require('nlp_compromise');
-    nlp.lexicon(
-      buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
-    );
     count = 0;
     preSnippetList = [
       new PreSnippet(`PROLOGUE`, 'narration', ++count),
@@ -54,7 +50,7 @@ describe('classifyPreSnippetArrangement', () => {
     };
 
     expect(
-      classifyPreSnippetArrangement(preSnippetExtendedObj, nlp)
+      classifyPreSnippetArrangement(preSnippetExtendedObj, buildCustomLexicon([new CharacterProfile('Gared')], ['urged']))
     ).to.deep.equal(OUTPUT)
   });
 

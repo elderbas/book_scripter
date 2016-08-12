@@ -28,8 +28,8 @@ function uploadBookFile (req, res) {
   .then((toGetStartedWith) => {
     res.json(toGetStartedWith);
   })
-  .catch(() => {
-
+  .catch((e) => {
+    res.send('Server error adding booking.');
   });
 
   // get other meta data
