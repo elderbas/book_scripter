@@ -1,6 +1,4 @@
 #!/usr/bin/osascript
-
-
 on run_in_new_window(cmd_to_run)
   set projPath to "/Users/bscherm/SideProjects/book_scripter_foundation"
   tell application "Terminal"
