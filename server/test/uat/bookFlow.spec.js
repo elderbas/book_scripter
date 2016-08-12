@@ -1,7 +1,8 @@
 'use strict';
 let mongoose = require('mongoose');
+let expect = require('chai').expect;
 // let host = 'http://localhost:3000'; // local development URL
-let request = require('supertest-as-promised');
+let request = require('supertest');
 let config = require('../../config.js');
 process.env.MONGO_DB = config.db.mongodb.acceptanceTests;
 let app = require('../../appWithTests').app;
@@ -56,58 +57,33 @@ describe(`UAT test`, () => {
       .expect(defaultExpectedResponse, done)
   });
 
+
+
   it(`POST - /api/books/characters - can add a characterProfile and get back the newly updated list`, function (done) {
-    // http://stackoverflow.com/questions/21089842/how-to-chain-http-calls-with-superagent-supertest
     async.series([
-      function(cb) { uploadBook() },
-      function(cb) { request(app).get('/new').expect(200, cb); },
-      function(cb) { request(app).post('/').send({prop1: 'new'}).expect(404, cb); },
-      function(cb) { request(app).get('/0').expect(200, cb); },
-      function(cb) { request(app).get('/0/edit').expect(404, cb); },
-      function(cb) { request(app).put('/0').send({prop1: 'new value'}).expect(404, cb); },
-      function(cb) { request(app).delete('/0').expect(404, cb); },
+      function(cb) { uploadBook(cb) },
+      function(cb) { addCharacterProfile(cb) },
     ], done);
-    let uploadedBookPromise = uploadBook();
-    uploadedBookPromise
-    .then((req) => {
-      return request(app)
-        .post('/api/books/characters')
-        .send({
-          displayName: 'Bob',
-          aliases: []
-        })
-        .expect({updatedCharacterProfiles: [ {displayName: 'Bob', aliases: []} ] })
-    })
-    .expect({a: 1}, done)
   });
 
-  //
-  // it(`POST - /api/books/suggestion returns empty array for no given suggestions`, function (done) {
-  //   let uploadedBookPromise = uploadBook();
-  //   uploadedBookPromise
-  //     .then((req) => {
-  //       request(app)
-  //         .get('/api/books/suggestion')
-  //         .query({
-  //           'bookName': 'got_piece', // this book because of the book uploadedBookPromise uses
-  //           'blockId': 0,
-  //           'speechPreSnippetIdSelected': 4
-  //         })
-  //         .expect({characterProfilesSuggested: []})
-  //         .end(function(err, res) {
-  //           if (err) throw err;
-  //           done();
-  //         });
-  //     });
-  // });
+  it(`POST - /api/books/suggestion - receive an EMPTY array when no characterProfiles match for suggestion`, function (done) {
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { requestSuggestion(cb) },
+    ], done);
+  });
 
-  // it(`POST - /api/books/suggestion returns characterProfiles of names previously confirmed and with verbs already said to be 'verb spoke synonym' types`, function (done) {
-  //   let uploadedBookPromise = uploadBook();
-  //   uploadedBookPromise
-  //   .then((req) => {
-  //     return addCharacterProfile();
-  //   });
-  // });
+  it(`POST - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match `, function (done) {
+    let characterProfilesToExpect = [
+      {displayName: 'Bob', aliases: []}
+    ];
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { addCharacterProfile(cb) },
+      function(cb) { requestSuggestion(cb, characterProfilesToExpect) },
+    ], done);
+  });
+
 
   after((done) => {
     mongoose.connection.collections['books'].drop( function(err) {
@@ -120,8 +96,8 @@ describe(`UAT test`, () => {
 });//end UAT test
 
 
-function uploadBook(cbOptions) {
-  cbOptions = cbOptions || function () {};
+function uploadBook(cb) {
+  cb = cb || function () {};
   let expectedResponse = {
     bookName: 'got_piece',
     lastBlockIndexWorkedOn: 0,
@@ -146,10 +122,29 @@ function uploadBook(cbOptions) {
     .post('/api/books/')
     .attach('file', `${testDatasets}/got_piece.txt`)
     .send()
-    .expect(expectedResponse)
+    .expect(expectedResponse, cb);
 }
 
-function requestSuggestion() {
+function addCharacterProfile (cb) {
+  cb = cb || function () {};
+  return request(app)
+    .post('/api/books/characters')
+    .send({
+      bookName: 'got_piece',
+      characterProfileToAdd: {
+        displayName: 'Bob',
+        aliases: []
+      }
+    })
+    .expect(200, {
+      upToDateCharacterProfiles: [ {displayName: 'Bob', aliases: []} ]
+    }, cb)
+}
+
+
+function requestSuggestion(cb, characterProfilesMatched) {
+  cb = cb || function () {};
+  characterProfilesMatched = characterProfilesMatched || [];
   return request(app)
     .get('/api/books/suggestion')
     .query({
@@ -157,18 +152,9 @@ function requestSuggestion() {
       'blockId': 0,
       'speechPreSnippetIdSelected': 4
     })
-    .expect({characterProfilesSuggested: []})
+    .expect({characterProfilesSuggested: characterProfilesMatched}, cb);
 }
 
-function addCharacterProfile () {
-  return request(app)
-    .post('/api/books/characters')
-    .send({
-      displayName: 'Bob',
-      aliases: []
-    })
-    .expect({updatedCharacterProfiles: [ {displayName: 'Bob', aliases: []} ] })
-}
 
 
 

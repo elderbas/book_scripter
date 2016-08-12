@@ -1,5 +1,4 @@
 let _ = require('lodash');
-let nlp = require('nlp_compromise');
 let router = require('express').Router();
 
 let Books = require(`${_serverDir_}/src/dbModels/Books`);
@@ -25,7 +24,7 @@ function getSuggestedName (req, res) {
   charProfilesAndVSSPromise
     .then((charProfsAndVSS) => {
       // add character names and verbs so the NLP library can figure out patterns
-      customLex = buildCustomLexicon([{displayName: 'Bob', aliases:[]}], charProfsAndVSS.verbSpokeSynonyms);
+      customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, ['said', 'cheap']);
       return Books.getBlockByIndex(bookName, blockId)
     })
     .then((block) => {
@@ -33,15 +32,18 @@ function getSuggestedName (req, res) {
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, 2, 6);
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
       let nameSuggested = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
-
+      logger('nameSuggested', nameSuggested);
       if (_.isNull(nameSuggested)) {
+        logger(`'hit is null'`, 'hit is null');
         suggested = [];
       }
-      res.send({characterProfilesSuggested: suggested});
+      // res.send({characterProfilesSuggested: suggested});
+      res.send({characterProfilesSuggested: nameSuggested});
     })
     .catch((err) => {
-      if (err) {res.send(`Server error @ GET /api/books/suggestion using book - '${bookName}'`);}
-      return res.send({a: 'ERROR'})
+      if (err) {
+        errorHandler(req, res, `Server error @ GET /api/books/suggestion using book - '${bookName}'`, 500);
+      }
     });
 
 

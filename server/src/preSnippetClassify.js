@@ -1,9 +1,9 @@
 'use strict';
 const lexiconTagTypes = require('../constants/lexiconTagTypes');
-const nlp = require('nlp_compromise');
+let nlp = require('nlp_compromise');
 const _ = require('lodash');
-
 const narrationType = (preSnip, customLexicon) => {
+  let show = customLexicon.cheap === 'VERB_SYNONYM_TO_SPOKE';
   let classifyingPieces = [];
   let nlpTextOutput = nlp.text(preSnip.text, {lexicon: customLexicon});
   // TODO - add ability for He, She etc
@@ -21,6 +21,7 @@ const narrationType = (preSnip, customLexicon) => {
       }
     });
   });
+
   preSnip.classification = `NAR(${classifyingPieces.join(' ')})`;
   return preSnip;
 };

@@ -3,14 +3,17 @@ require('./setGlobalVars.js');
 let fs = require('fs');
 let bodyParser = require('body-parser');
 
-global.logger = (valsArr) => {
-  console.log('!!!!!!!!!!!!!!!!!!!!!!!!');
-  console.log('!!!!!!!!!!!!!');
-  console.log('!!!!!!!!');
-  Array.prototype.apply(console.log, valsArr);
-  console.log('!!!!!!!!');
-  console.log('!!!!!!!!!!!!!');
-  console.log('!!!!!!!!!!!!!!!!!!!!!!!!');
+global.logger = (a, b) => {
+  console.log('-----------------------');
+  console.log('-------------');
+  console.log(a, b);
+  console.log('-------------');
+  console.log('-----------------------');
+};
+
+global.errorHandler = (req, res, errorMsg, statusCode) => {
+  return res.status(statusCode)
+            .json({errorMessage: errorMsg});
 };
 
 let express = require('express');
