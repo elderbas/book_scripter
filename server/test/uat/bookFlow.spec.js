@@ -1,6 +1,7 @@
 'use strict';
 let mongoose = require('mongoose');
 let expect = require('chai').expect;
+let _ = require('lodash');
 // let host = 'http://localhost:3000'; // local development URL
 let request = require('supertest');
 // let request = require('superagent');
@@ -58,7 +59,29 @@ describe(`UAT test`, () => {
       .expect(defaultExpectedResponse, done)
   });
 
+  /* the verbs might go into their own collection later*/
+  it(`POST - /api/books/verbs`, function (done) {
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { addVerbSpokeSynonym(cb, 'yodaleyeehooed') },
+    ], done);
+  });
 
+  it(`GET - /api/books/verbs - receive an empty array if none to get`, function (done) {
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { getVerbSpokeSynonyms(cb) },
+    ], done);
+  });
+  
+  it(`MIX - /api/books/verbs - receive an array of strings of the verbs if custom VSS have been added`, function (done) {
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { getVerbSpokeSynonyms(cb) }, // verify no verbs exist
+      function(cb) { addVerbSpokeSynonym(cb, 'yodaleyeehooed') }, // add this one
+      function(cb) { getVerbSpokeSynonyms(cb, 'yodaleyeehooed') }, // verify this one exists now
+    ], done);
+  });
 
   it(`POST - /api/books/characters - can add a characterProfile and get back the newly updated list`, function (done) {
     async.series([
@@ -84,6 +107,8 @@ describe(`UAT test`, () => {
       function(cb) { requestSuggestion(cb, characterProfilesToExpect) },
     ], done);
   });
+  
+
 
 
   after((done) => {
@@ -118,7 +143,6 @@ function uploadBook(cb) {
     },
     blockStatuses: ['in progress']
   };
-
   return request(app)
     .post('/api/books/')
     .attach('file', `${testDatasets}/got_piece.txt`)
@@ -175,6 +199,37 @@ function requestSuggestion(cb, characterProfilesMatched) {
     });
 }
 
+function addVerbSpokeSynonym(cb, verbToAdd) {
+  cb = cb || function () {};
+  return request(app)
+      .post('/api/books/verbs')
+      .send({
+        bookName: 'got_piece',
+        verbSpokeSynonymToAdd: verbToAdd
+      })
+      .expect(200)
+      .end((err, res) => {
+        expect(res.body.verbSpokeSynonymAddingResult).to.be.true;
+        cb();
+      });
+}
+
+function getVerbSpokeSynonyms(cb, verbToMatch) {
+  cb = cb || function () {};
+  return request(app)
+      .get('/api/books/verbs')
+      .query({bookName: 'got_piece'})
+      .expect(200)
+      .end((err, res) => {
+        if (_.isUndefined(verbToMatch)) {
+          expect(res.body.verbSpokeSynonyms).to.have.length(0);
+        }
+        else {
+          expect(res.body.verbSpokeSynonyms[0]).to.equal(verbToMatch);
+        }
+        cb();
+      });
+}
 
 
 

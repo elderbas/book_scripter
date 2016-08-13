@@ -89,21 +89,17 @@ const _getCharacterProfilesAndVerbSpokeSynonyms = (bookName) => {
 };
 
 // TODO NOT DONE, was just copy/pasted over mostly
-// also need unit test done
+// fulfill 'true' if saved correctly
 const _addVerbSpokeSynonym = (bookName, verbSpokeSynonymStr) => {
   return new Promise((fulfill, reject) => {
     Books.findOne({bookName},(err, bookDoc) => {
       if (err) {return reject(err);}
-      // if there's a duplicate by that character name, reject (validation at app level although it should probably be at Mongoose level)
-      if (_.some(bookDoc.characterProfiles, (cP) => cP.displayName === newCharProfile.displayName)) {
-        return reject(new Error(errorMessages.characterProfileUnique))
-      }
       // there's no duplicate if we get to here so we can add just fine
-      let newArr = bookDoc.verbSpokeSynonyms.push(verbSpokeSynonymStr);
-      bookDoc.verbSpokeSynonyms = _.uniq(newArr);
+      bookDoc.verbSpokeSynonyms.push(verbSpokeSynonymStr);
+      bookDoc.verbSpokeSynonyms = _.uniq(bookDoc.verbSpokeSynonyms);
       bookDoc.save((err) => {
         if (err) {return reject(err);}
-        fulfill(bookDoc);
+        fulfill(true);
       });
     })
   });

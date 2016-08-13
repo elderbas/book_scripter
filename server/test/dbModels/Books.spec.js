@@ -1,4 +1,6 @@
-let expect = require('chai').expect;
+let chai = require('chai');
+let expect = chai.expect;
+let should = chai.should;
 let mongoose = require('mongoose');
 var config = require('../../config.js');
 let Classes = require('../../src/classes/Classes');
@@ -72,6 +74,8 @@ describe('<-- Books collection-->\n', () => {
         Books.dropModel().then(() => done(e));
       });
     });
+
+    
     
 
   });//end DESCRIBE ...starting with completely FRESH collection
@@ -109,58 +113,58 @@ describe('<-- Books collection-->\n', () => {
       }).catch(done);
     });
 
-    it(`returns the whole characterProfiles after one is added`, function (done) {
-      let newCharProf = new CharacterProfile('Garen');
-      Books.addCharacterProfile(bookNameBeingUsed, newCharProf).then((cPs) => {
-        expect(cPs.characterProfiles[0].displayName).to.equal('Garen');
-        expect(cPs.characterProfiles.length).to.equal(1);
-        done();
-      }).catch(done);
-    });
+    describe(`..addCharacterProfile`, () => {
+      it(`returns the whole characterProfiles after one is added`, function (done) {
+        let newCharProf = new CharacterProfile('Garen');
+        Books.addCharacterProfile(bookNameBeingUsed, newCharProf).then((cPs) => {
+          expect(cPs.characterProfiles[0].displayName).to.equal('Garen');
+          expect(cPs.characterProfiles.length).to.equal(1);
+          done();
+        }).catch(done);
+      });
 
-    it(`throws error if trying to add a characterName already existing`, function (done) {
-      let newCharProf = new CharacterProfile('Garen');
-      Books.addCharacterProfile(bookNameBeingUsed, newCharProf).then((cPsFirst) => {
-        expect(cPsFirst.characterProfiles[0].displayName).to.equal('Garen');
-        let addCharacterProfilePromise = Books.addCharacterProfile(bookNameBeingUsed, newCharProf);
-        addCharacterProfilePromise
+      it(`throws error if trying to add a characterName already existing`, function (done) {
+        let newCharProf = new CharacterProfile('Garen');
+        Books.addCharacterProfile(bookNameBeingUsed, newCharProf).then((cPsFirst) => {
+          expect(cPsFirst.characterProfiles[0].displayName).to.equal('Garen');
+          let addCharacterProfilePromise = Books.addCharacterProfile(bookNameBeingUsed, newCharProf);
+          addCharacterProfilePromise
           .then(cPsSecond => {})
           .catch((e) => {
             expect(e.message).to.equal('Please add a characterProfile that has a unique displayName');
             done();
           });
-      }).catch(done);
-    });
+        }).catch(done);
+      });
+    });//end ..addCharacterProfile
 
-    it(`getBlockByIndex`, function (done) {
-      Books.getBlockByIndex(bookNameBeingUsed, 0).then(blockDoc => {
-        expect(blockDoc).to.have.all.keys(['preSnippets', 'snippets', 'status']);
-        done();
-      }).catch(done);
-    });
-
-    it(`makes first the first block's status 'in progress by default'`, function (done) {
-      Books.getBlockByIndex(bookNameBeingUsed, 0).then(blockDoc => {
-        expect(blockDoc.status).to.equal('in progress');
-        done();
-      }).catch(done);
-    });
     
-    it(`getCharacterProfilesAndVerbSpokeSynonyms`, function (done) {
-      Books.getCharacterProfilesAndVerbSpokeSynonyms(bookNameBeingUsed).then(charPAndVSS => {
-        expect(charPAndVSS).to.have.all.keys(['characterProfiles', 'verbSpokeSynonyms']);
-        done();
-      })
-    });
+    describe(`.getBlockByIndex`, () => {
+      it(`object with 'preSnippets', 'snippets', and 'status' key`, function (done) {
+        Books.getBlockByIndex(bookNameBeingUsed, 0).then(blockDoc => {
+          expect(blockDoc).to.have.all.keys(['preSnippets', 'snippets', 'status']);
+          done();
+        }).catch(done);
+      });
 
-    it(`the increment count for pre snippets ids in a block start at 0 for each block`, function (done) {
-      Books.getBlockByIndex(bookNameBeingUsed, 1).then(blockDoc => {
-        expect(blockDoc.preSnippets[0].id).to.equal(0);
-        expect(blockDoc.preSnippets[0].text).to.equal('The road was long.');
-        expect(blockDoc.preSnippets[0].type).to.equal('narration');
-        done();
-      }).catch(done);
-    });
+      it(`makes first the first block's status 'in progress by default'`, function (done) {
+        Books.getBlockByIndex(bookNameBeingUsed, 0).then(blockDoc => {
+          expect(blockDoc.status).to.equal('in progress');
+          done();
+        }).catch(done);
+      });
+
+      it(`the increment count for pre snippets ids in a block start at 0 for each block`, function (done) {
+        Books.getBlockByIndex(bookNameBeingUsed, 1).then(blockDoc => {
+          expect(blockDoc.preSnippets[0].id).to.equal(0);
+          expect(blockDoc.preSnippets[0].text).to.equal('The road was long.');
+          expect(blockDoc.preSnippets[0].type).to.equal('narration');
+          done();
+        }).catch(done);
+      });
+    });//end .getBlockByIndex
+
+
 
     it(`updateBlockById gives updated value on 'blocks' key on Book if update is successful`, function (done) {
       let newBlock = {
@@ -175,6 +179,33 @@ describe('<-- Books collection-->\n', () => {
         done();
       }).catch(done);
     });
+
+    it(`getCharacterProfilesAndVerbSpokeSynonyms`, function (done) {
+      Books.getCharacterProfilesAndVerbSpokeSynonyms(bookNameBeingUsed).then(charPAndVSS => {
+        expect(charPAndVSS).to.have.all.keys(['characterProfiles', 'verbSpokeSynonyms']);
+        done();
+      })
+    });
+    
+    describe(`.addVerbSpokeSynonym`, () => {
+      it(`returns 'true' if successful for single verb string passed`, function (done) {
+        Books.getCharacterProfilesAndVerbSpokeSynonyms(bookNameBeingUsed)
+          .then((cPandVSS) => {
+            expect(cPandVSS.verbSpokeSynonyms).to.have.length(0);
+            return Books.addVerbSpokeSynonym(bookNameBeingUsed, 'yodaleyeehooed');
+          })
+          .then((correctlyAdded) => {
+            expect(correctlyAdded).to.be.true;
+            return Books.getCharacterProfilesAndVerbSpokeSynonyms(bookNameBeingUsed);
+          })
+          .then((cPandVSS) => {
+            expect(cPandVSS.verbSpokeSynonyms[0]).to.equal('yodaleyeehooed');
+            expect(cPandVSS.verbSpokeSynonyms).to.have.length(1);
+            done();
+          });
+        // let prom = Books.addVerbSpokeSynonym(bookNameBeingUsed, '');
+      });
+    });//end .addVerbSpokeSynonym
 
     
 

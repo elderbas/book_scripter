@@ -1,6 +1,6 @@
 let _ = require('lodash');
 let router = require('express').Router();
-
+let fs = require('fs');
 let Books = require(`${_serverDir_}/src/dbModels/Books`);
 let grabExtendingPreSnippets = require(`${_serverDir_}/src/grabExtendingPreSnippets`);
 let buildCustomLexicon = require(`${_serverDir_}/src/buildCustomLexicon`);
@@ -28,7 +28,8 @@ function getSuggestedName (req, res) {
       return Books.getBlockByIndex(bookName, blockId)
     })
     .then((block) => {
-      customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, ['said', 'cheap']);
+      let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
+      customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, commonSpokenSynonyms.concat(charProfsAndVSS.verbSpokeSynonyms));
       let profilesToSuggest;
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, 2, 6);
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
