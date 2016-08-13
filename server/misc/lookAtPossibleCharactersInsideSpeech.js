@@ -1,6 +1,5 @@
 // scratch for just investigating what sort of charact
 'use strict';
-var reload = require('require-reload')(require);
 let nlp = require('nlp_compromise');
 let newLex = nlp.lexicon();
 newLex['pulava'] = 'PORT_WORD';

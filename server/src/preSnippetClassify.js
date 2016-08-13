@@ -3,10 +3,8 @@ const lexiconTagTypes = require('../constants/lexiconTagTypes');
 let nlp = require('nlp_compromise');
 const _ = require('lodash');
 const narrationType = (preSnip, customLexicon) => {
-  let show = customLexicon.cheap === 'VERB_SYNONYM_TO_SPOKE';
   let classifyingPieces = [];
   let nlpTextOutput = nlp.text(preSnip.text, {lexicon: customLexicon});
-  // TODO - add ability for He, She etc
   nlpTextOutput.sentences.forEach((sentence) => {
     sentence.terms.forEach((term) => {
       // since we added custom lexicon types based on this hash, if the current term's tag type matches

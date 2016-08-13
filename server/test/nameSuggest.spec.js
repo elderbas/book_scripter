@@ -7,8 +7,6 @@ const CharacterProfile = require('../src/classes/CharacterProfile');
 const grabExtendingPreSnippets = require('../src/grabExtendingPreSnippets');
 const nameSuggest = require('../src/nameSuggest');
 const _ = require('lodash');
-var reload = require('require-reload')(require);
-let nlp = require('nlp_compromise');
 const quoteify = (str) => `“${str}”`;
 describe('!--nameSuggest--!', () => {
   it('exists as a function', function () {
