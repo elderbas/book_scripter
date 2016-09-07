@@ -1,14 +1,29 @@
 .Header-component {
-  .header {
-    $navHeight: 50px;
-    background-color: dodgerblue;
-    height: $navHeight;
+  $navHeight: 50px;
+  background-color: dodgerblue;
+  height: $navHeight;
+  color: $offBlack;
+  display: inline-block;
+  width: 100%;
 
-    .logo {
-      color: $offBlack;
-      margin-left: 15px;
-      font-size: 30px;
-      line-height: $navHeight;
+
+  .logo {
+    display: inline-block;
+    margin-left: 15px;
+    font-size: 30px;
+    line-height: $navHeight;
+  }
+  ul {
+    list-style-type: none;
+    line-height: $navHeight;
+    float: right;
+    li {
+      display: inline;
+      margin-right: 20px;
     }
+  }
+
+  .btn-simple {
+    
   }
 }

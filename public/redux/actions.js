@@ -1,8 +1,7 @@
 import * as api from '../api'
 
 
-// purpose of a thunk, is to be able to perform multiple dispatches
-// within a single 'dispatch invocation'
+
 export const fetchBooks = () => (dispatch) => {
   dispatch({type: 'FETCH_BOOKS_REQUEST'})
   api.fetchBooks()

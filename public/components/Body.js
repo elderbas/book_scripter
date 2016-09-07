@@ -11,11 +11,12 @@ class Body extends React.Component {
     fetchBooks()
   }
   render() {
-    let booksToPick = range(5).map(i => `Game of Thrones ${i}`)
+    const { bookList } = this.props
+    console.log('PROPS IN RENDER!!!', this.props);
     return (
       <div className="Body-component">
         <ul>
-          {booksToPick.map((x, i) => <li key={i}>{x}</li>)}
+          {JSON.stringify(bookList)}
         </ul>
       </div>
     )
@@ -29,12 +30,16 @@ class Body extends React.Component {
 
 
 
+const getBookList = state => state.books.list
 
-
-
+const mapStateToProps = (state) => {
+  return {
+    bookList: getBookList(state).concat(['Billy Bob'])
+  }
+}
 const mapDispatchToProps = actions
 
 
 Body.propTypes = {}
-Body = connect(null, mapDispatchToProps)(Body)
+Body = connect(mapStateToProps, mapDispatchToProps)(Body)
 export default Body

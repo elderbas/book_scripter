@@ -1,5 +1,8 @@
 import { combineReducers } from 'redux'
 
+const responseToList = response => response.data.bookNames
+
+
 const areBeingFetched = (state = false, action) => {
   switch (action.type) {
     case 'FETCH_BOOKS_REQUEST':
@@ -24,12 +27,23 @@ const errorMessage = (state = null, action) => {
   }
 }
 
-
+const list = (state = [], action) => {
+  switch (action.type) {
+    case 'FETCH_BOOKS_SUCCESS':
+      return responseToList(action.response)
+    default:
+      return state
+  }
+}
 
 
 const books = combineReducers({
+  list,
   areBeingFetched,
   errorMessage
 })
 
 export default books
+
+
+
