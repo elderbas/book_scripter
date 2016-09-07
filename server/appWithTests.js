@@ -12,8 +12,7 @@ global.logger = (a, b) => {
 };
 
 global.errorHandler = (req, res, errorMsg, statusCode) => {
-  return res.status(statusCode)
-            .json({errorMessage: errorMsg});
+  return res.status(statusCode).json({errorMessage: errorMsg});
 };
 
 let express = require('express');
@@ -30,7 +29,6 @@ app.use('/api/books', routes.books);
 app.get('/', (req, res) => {
   res.send('yay')
 });
-
 
 const start = () => {
   mongoose.connect(process.env.MONGO_DB);
