@@ -1,10 +1,6 @@
-let mongoose = require('mongoose');
 let server = require('./appWithTests');
-let config = require('./config.js');
 
-// Should be only used for dev and prod
-process.env.MONGO_DB = config.db.mongodb.development;
-process.env.PORT = config.server.port;
+
 
 
 

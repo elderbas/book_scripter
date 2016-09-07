@@ -4,6 +4,7 @@ const config = {
       development: 'mongodb://127.0.0.1:27017/bookScripterDevelopment',
       integrationTest: 'mongodb://127.0.0.1:27017/bookScripterIntegrationTests',
       acceptanceTests: 'mongodb://127.0.0.1:27017/bookScripterAcceptanceTests',
+      test: 'mongodb://127.0.0.1:27017/bookScripterIntegrationTests',
     }
   },
   logger: {
@@ -11,7 +12,10 @@ const config = {
     exception: 'logs/exception.log'
   },
   server: {
-    port: 3333
+    port: {
+      development: '3000',
+      test: '3333'
+    }
   }
 };
 

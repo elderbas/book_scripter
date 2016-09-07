@@ -11,8 +11,8 @@ on run_in_new_window(cmd_to_run)
   end tell
 end run_in_new_window
 
-run_in_new_window("npm run back-api-test")
-run_in_new_window("npm run back-test")
+run_in_new_window("npm run back-api-test") # acceptance test
+run_in_new_window("npm run back-test") # backend unit test (including DB models)
 
 
 
