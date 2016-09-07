@@ -4,9 +4,11 @@ import '../scss/index.scss'
 
 const Header = ({}) => {
   return (
-    <nav className="header">
-      <div className="logo">BookScripter</div>
-    </nav>
+    <div className="Header-component">
+      <nav className="header">
+        <div className="logo">BookScripter</div>
+      </nav>
+    </div>
   )
 }
 

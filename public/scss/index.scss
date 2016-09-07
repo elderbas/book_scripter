@@ -3,8 +3,22 @@
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
+
+  font-family: "Helvetica Neue Light", Helvetica, arial;
+}
+
+// COLORS
+$offBlack: #2e2e2e;
+
+.BookScripterApp-component {
+  height: 100%;
+  min-height: 800px;
+  min-width: 1100px;
 }
 
 
+
 @import './Header';
+@import './Footer';
+
 

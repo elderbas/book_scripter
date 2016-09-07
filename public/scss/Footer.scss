@@ -1,0 +1,15 @@
+.Footer-component {
+  $footerHeight: 50px;
+
+  position: absolute;
+  bottom: 0;
+  height: $footerHeight;
+  background-color: rgba(34, 134, 255, 0.84);
+  width: 100%;
+
+  .copyright {
+    line-height: $footerHeight;
+    margin-left: 15px;
+    color: $offBlack;
+  }
+}

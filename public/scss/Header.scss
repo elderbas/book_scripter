@@ -1,14 +1,14 @@
-$navHeight: 50px;
+.Header-component {
+  .header {
+    $navHeight: 50px;
+    background-color: dodgerblue;
+    height: $navHeight;
 
-.header {
-  background-color: dodgerblue;
-  height: $navHeight;
-
-  .logo {
-    color: #2b2b2b;
-    margin-left: 15px;
-    font-family: "Helvetica Neue Light", Helvetica, arial;
-    font-size: 30px;
-    line-height: $navHeight;
+    .logo {
+      color: $offBlack;
+      margin-left: 15px;
+      font-size: 30px;
+      line-height: $navHeight;
+    }
   }
 }
