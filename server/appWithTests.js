@@ -29,11 +29,19 @@ let routes = require('./routes/routes.js');
 let mongoose = require('mongoose');
 let config = require('./config.js');
 
-// middleware
-// app.use(bodyParser.json());
-// app.use(require('express-fileupload')());
+// Should be only used for dev and prod
+const MONGO_DB_URL = process.env.MONGO_DB || config.db.mongodb[ENV];
+const PORT = process.env.PORT || config.server.port[ENV];
 
 
+// MIDDLEWARES
+app.use(bodyParser.json());
+app.use(require('express-fileupload')());
+
+
+
+app.use('/api/books', routes.books);
+console.log('!!!!!!!', ENV);
 if (ENV === 'development') {
   let webpackConfig = require('../webpack.config.js');
   let webpack = require('webpack');
@@ -46,25 +54,17 @@ if (ENV === 'development') {
   app.use('/', function (req, res) {
     res.sendFile(path.resolve('client/index.html'));
   });
+
+  console.log(`Connecting to Mongo db Url ${MONGO_DB_URL}`);
 }
 
-// Should be only used for dev and prod
-// process.env.MONGO_DB = config.db.mongodb[ENV];
-process.env.PORT = config.server.port[ENV];
-/* Webpacky stuff */
-
-
-// routes
-// app.use('/api/books', routes.books);
-
-// webpacky output
 
 
 
 const start = () => {
-  // mongoose.connect(process.env.MONGO_DB);
-  app.listen(process.env.PORT, () => {
-    console.log(`Express server listening for requests at port ${process.env.PORT}`);
+  mongoose.connect(MONGO_DB_URL);
+  app.listen(PORT, () => {
+    console.log(`Express server listening for requests at port ${PORT}`);
     console.log('\n\n')
   });
 };

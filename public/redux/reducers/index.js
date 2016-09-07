@@ -1,19 +1,11 @@
 // index.js
 import { combineReducers } from 'redux'
-
-
-const bookSelected = (state = null, action) => {
-  switch (action.type) {
-    case 'UPDATE_BOOK_SELECTED':
-        return action.name
-    default:
-      return state;
-  }
-  return state
-}
+import books from './books'
+import book from './book'
 
 
 const rootReducer = combineReducers({
-  bookSelected
+  book,
+  books
 })
 export default rootReducer

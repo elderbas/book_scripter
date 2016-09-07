@@ -1,22 +1,22 @@
 'use strict';
+let ENV = process.env.NODE_ENV
 let mongoose = require('mongoose');
 let expect = require('chai').expect;
 let _ = require('lodash');
-// let host = 'http://localhost:3000'; // local development URL
 let request = require('supertest');
-// let request = require('superagent');
 let config = require('../../config.js');
-process.env.MONGO_DB = config.db.mongodb.acceptanceTests;
 let app = require('../../appWithTests').app;
 let PreSnippet = require('../../src/classes/PreSnippet');
 let testDatasets = '/Users/bscherm/SideProjects/book_scripter_foundation/server/test/dataSets';
 let async = require('async');
+const MONGO_DB_URL = config.db.mongodb[ENV];
+console.log('GOT HERE');
 
 
 describe(`UAT test`, () => {
   before((done) => {
     console.log('Opening connection to MongoDB...');
-    mongoose.connect(process.env.MONGO_DB);
+    mongoose.connect(MONGO_DB_URL);
     done();
   });
 

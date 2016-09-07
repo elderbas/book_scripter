@@ -17,7 +17,6 @@ let BookScripterApp = (props) => {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log('!!!state', state);
   return {
     bookSelected: state.bookSelected
   }
