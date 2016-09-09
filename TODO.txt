@@ -4,3 +4,15 @@ clicking on name of book takes you to the work page
 
 UAT test for deleting book by NAME
 clicking on X near name confirms you want to delete it
+
+xxxxxxxxxxxx
+handle upload file RESPONSE...
+add to books uploaded list
+
+make the book list items have more data. just the names isn't enough?
+Or maybe I can just grab that after navigating to a different page to work on the book
+
+make book list items clickable
+
+make more reducers for Book
+

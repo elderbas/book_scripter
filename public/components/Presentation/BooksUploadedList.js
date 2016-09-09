@@ -8,12 +8,21 @@ const ulStyle = {
   marginTop: '15px',
   lineHeight: '2.5',
 }
-const BooksUploadedList = ({ bookList, areBeingFetched }) => {
+const BooksUploadedList = ({ bookList, areBeingFetched, onBookClicked }) => {
+  let list = bookList.map(b => (
+      <li key={b}>
+        <a href="#" onClick={(e) => {
+          e.preventDefault()
+          onBookClicked(b)
+        }}>{b}</a>
+      </li>
+  ))
+
   return areBeingFetched ? <Loading text='Books being fetched' /> : (
     <div style={{marginBottom: '30px'}}>
       <h2>Books Uploaded</h2>
       <ul style={ulStyle}>
-        {bookList.map(b => <li key={b}>{b}</li>)}
+        {list}
       </ul>
     </div>
   )

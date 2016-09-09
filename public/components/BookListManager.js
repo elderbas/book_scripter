@@ -15,6 +15,9 @@ class BookListManager extends React.Component {
   uploadBook (files) {
     this.props.uploadBook(files[0])
   }
+  handleBookClicked (bookName) {
+    this.props.getBookInfo(bookName)
+  }
   render() {
     const { areBeingFetched, bookList, isBeingUploaded } = this.props
 
@@ -22,7 +25,8 @@ class BookListManager extends React.Component {
       <div className="BookListManager-component">
         <BooksUploadedList
           areBeingFetched={areBeingFetched}
-          bookList={bookList} />
+          bookList={bookList}
+          onBookClicked={this.handleBookClicked.bind(this)} />
         <BookFileUpload
           onDrop={this.uploadBook.bind(this)}
           isBeingUploaded={isBeingUploaded} />

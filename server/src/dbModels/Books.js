@@ -163,6 +163,22 @@ const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
   });
 };
 
+const _getBookInfo = (bookName) => {
+  return new Promise((fulfill, reject) => {
+    Books.findOne({bookName}, (err, bookDoc) => {
+      if (err) {return reject(err);}
+      let toSend = {
+        bookName: bookDoc.bookName,
+        characterProfiles: bookDoc.characterProfiles,
+        lastBlockIndexWorkedOn: bookDoc.lastBlockIndexWorkedOn,
+        currentBlockWorkingOn: bookDoc.blocks[bookDoc.lastBlockIndexWorkedOn], // should be index 0
+        blockStatuses: _.map(bookDoc.blocks, 'status')
+      };
+      fulfill(toSend)
+    });
+  })
+}
+
 const booksExport = {
   // schema: bookSchema,
   getCharacterProfilesAndVerbSpokeSynonyms: _getCharacterProfilesAndVerbSpokeSynonyms,
@@ -176,5 +192,6 @@ const booksExport = {
   dropModel: _dropModel,
   getBlocks: _getBlocks,
   addBook: _addBook,
+  getBookInfo: _getBookInfo
 };
 module.exports = booksExport;

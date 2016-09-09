@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 
-const fetchBooksResponseToList= response => response.data.bookNames
+const fetchBooksResponseToList = response => response.body.bookNames
 const uploadBookResponseGetName = response => response.body.bookName
 
 

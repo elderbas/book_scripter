@@ -1,5 +1,7 @@
 import { combineReducers } from 'redux'
 
+const responseToCurrentBook = response => response.body.bookName
+
 const requestSuccessFailure = (mainName) => ((state = false, action) => {
   switch (action.type) {
     case `${mainName}_REQUEST`:
@@ -12,15 +14,20 @@ const requestSuccessFailure = (mainName) => ((state = false, action) => {
   }
 })
 
-// const bookInQuestion = (state = {}, action) => {
-
-// }
+const currentBook = (state = null, action) => {
+  switch (action.type) {
+    case 'FETCH_BOOK_SUCCESS':
+      return responseToCurrentBook(action.response)
+    default:
+      return state
+  }
+}
 
 
 const book = combineReducers({
   isBeingFetched: requestSuccessFailure('FETCH_BOOK'),
   isBeingUploaded: requestSuccessFailure('UPLOAD_BOOK'),
-  // bookInQuestion,
+  currentBook,
 })
 
 export default book

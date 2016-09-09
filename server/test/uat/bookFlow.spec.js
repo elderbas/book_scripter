@@ -67,6 +67,14 @@ describe(`UAT test`, () => {
     ], done);
   });
 
+  /* the verbs might go into their own collection later*/
+  it(`GET - /api/books?bookName=blah - GET all info about book by bookName`, function (done) {
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { getBookInfo(cb) },
+    ], done);
+  });
+
   it(`GET - /api/books/verbs - receive an empty array if none to get`, function (done) {
     async.series([
       function(cb) { uploadBook(cb) },
@@ -107,9 +115,6 @@ describe(`UAT test`, () => {
       function(cb) { requestSuggestion(cb, characterProfilesToExpect) },
     ], done);
   });
-  
-
-
 
   after((done) => {
     mongoose.connection.collections['books'].drop( function(err) {
@@ -121,28 +126,28 @@ describe(`UAT test`, () => {
   })
 });//end UAT test
 
-
+const expectedResultUploadedBook = {
+  bookName: 'got_piece',
+  lastBlockIndexWorkedOn: 0,
+  characterProfiles: [],
+  currentBlockWorkingOn: {
+    status: 'in progress',
+    snippets: [],
+    preSnippets: [
+      new PreSnippet('Chapter 1', 'narration', 0),
+      new PreSnippet('\n\n', 'whitespace', 1),
+      new PreSnippet('“ABC”', 'speech', 2),
+      new PreSnippet(' ', 'whitespace', 3),
+      new PreSnippet('Bob said.', 'narration', 4),
+      new PreSnippet(' ', 'whitespace', 5),
+      new PreSnippet('“DEF”', 'speech', 6),
+    ],
+  },
+  blockStatuses: ['in progress']
+};
 function uploadBook(cb) {
   cb = cb || function () {};
-  let expectedResponse = {
-    bookName: 'got_piece',
-    lastBlockIndexWorkedOn: 0,
-    characterProfiles: [],
-    currentBlockWorkingOn: {
-      status: 'in progress',
-      snippets: [],
-      preSnippets: [
-        new PreSnippet('Chapter 1', 'narration', 0),
-        new PreSnippet('\n\n', 'whitespace', 1),
-        new PreSnippet('“ABC”', 'speech', 2),
-        new PreSnippet(' ', 'whitespace', 3),
-        new PreSnippet('Bob said.', 'narration', 4),
-        new PreSnippet(' ', 'whitespace', 5),
-        new PreSnippet('“DEF”', 'speech', 6),
-      ],
-    },
-    blockStatuses: ['in progress']
-  };
+  let expectedResponse = expectedResultUploadedBook;
   return request(app)
     .post('/api/books/')
     .attach('file', `${testDatasets}/got_piece.txt`)
@@ -229,6 +234,16 @@ function getVerbSpokeSynonyms(cb, verbToMatch) {
         }
         cb();
       });
+}
+
+function getBookInfo (cb) {
+  cb = cb || function () {};
+  const expectedResult = expectedResultUploadedBook
+  return request(app)
+    .get('/api/books/info')
+    .query({bookName: 'got_piece'})
+    .expect(200)
+    .expect(expectedResult, cb)
 }
 
 
