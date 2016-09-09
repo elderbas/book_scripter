@@ -1,7 +1,6 @@
-*we're going to redo the API* with TDD
-I don't remember the order of these but they were both good and seemed supplementary
+UAT test for getting data of a book by NAME (should look like that of when it first gets sent back after uploading)
 
-Note: Let's go with a local database for integration tests, and a separate database for development, and another database for production (mongo labs or something)
+clicking on name of book takes you to the work page
 
-https://thewayofcode.wordpress.com/2013/04/21/how-to-build-and-test-rest-api-with-nodejs-express-mocha/
-http://rob.conery.io/2012/02/25/testing-your-model-with-mocha-mongo-and-nodejs/
+UAT test for deleting book by NAME
+clicking on X near name confirms you want to delete it

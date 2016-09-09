@@ -8,6 +8,7 @@ let defaultValues = require(`${_serverDir_}/constants/defaultValues`);
 router.post('/', uploadBookFile);
 
 function uploadBookFile (req, res) {
+  console.log('inside uploadBookFile');
   // get name of book
   let customBookName, fileNameWithExtension, fileNameWithoutExtension, bookData, bookNameToUse;
   customBookName = bookNameToUse = _.get(req, 'body.bookName');

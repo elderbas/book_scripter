@@ -99,6 +99,8 @@
     "lowdb": "0.13.1",
     "mongoose": "4.5.8",
     "nlp_compromise": "6.5.0",
+    "purecss": "^0.6.0",
+    "react-dropzone": "^3.6.0",
     "request": "2.73.0",
     "request-promise": "4.1.1",
     "require-reload": "^0.2.2"

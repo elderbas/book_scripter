@@ -13,7 +13,7 @@ class Root extends React.Component {
         <Router history={browserHistory}>
           <Route path="/" component={BookScripterApp}>
             <IndexRoute component={BookListManager} />
-            <Route path="/test123" component={TestComponent} />
+            <Route path="/about" component={TestComponent} />
           </Route>
         </Router>
       </Provider>

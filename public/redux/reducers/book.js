@@ -1,33 +1,27 @@
 import { combineReducers } from 'redux'
 
-const isBeingFetched = (state = false, action) => {
+const requestSuccessFailure = (mainName) => ((state = false, action) => {
   switch (action.type) {
-    case 'FETCH_BOOK_REQUEST':
+    case `${mainName}_REQUEST`:
       return true
-    case 'FETCH_BOOK_SUCCESS':
-    case 'FETCH_BOOK_FAILURE':
+    case `${mainName}_SUCCESS`:
+    case `${mainName}_FAILURE`:
       return false
     default:
       return state
   }
-}
+})
 
+// const bookInQuestion = (state = {}, action) => {
 
-
-
-
-
-
-
-
-
-
-
+// }
 
 
 const book = combineReducers({
-  isBeingFetched
+  isBeingFetched: requestSuccessFailure('FETCH_BOOK'),
+  isBeingUploaded: requestSuccessFailure('UPLOAD_BOOK'),
+  // bookInQuestion,
 })
 
-export default book// book.js
+export default book
 

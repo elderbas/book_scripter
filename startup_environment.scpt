@@ -13,6 +13,6 @@ end run_in_new_window
 
 run_in_new_window("npm run back-api-test") # acceptance test
 run_in_new_window("npm run back-test") # backend unit test (including DB models)
-
+run_in_new_window("npm run start") # webpack start
 
 

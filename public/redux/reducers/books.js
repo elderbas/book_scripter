@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
-const responseToList = response => response.data.bookNames
+const fetchBooksResponseToList= response => response.data.bookNames
+const uploadBookResponseGetName = response => response.body.bookName
 
 
 const areBeingFetched = (state = false, action) => {
@@ -30,7 +31,9 @@ const errorMessage = (state = null, action) => {
 const list = (state = [], action) => {
   switch (action.type) {
     case 'FETCH_BOOKS_SUCCESS':
-      return responseToList(action.response)
+      return fetchBooksResponseToList(action.response)
+    case 'UPLOAD_BOOK_SUCCESS':
+      return [...state, uploadBookResponseGetName(action.response)]
     default:
       return state
   }

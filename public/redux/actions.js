@@ -14,3 +14,17 @@ export const fetchBooks = () => (dispatch) => {
     }
   )
 }
+
+
+export const uploadBook = (fileToUpload) => (dispatch) => {
+  dispatch({type: 'UPLOAD_BOOK_REQUEST'})
+  api.uploadBook(fileToUpload)
+  .then(
+    (response) => {
+      dispatch({type: 'UPLOAD_BOOK_SUCCESS', response})
+    },
+    (err) => {
+      dispatch({type: 'UPLOAD_BOOK_FAILURE', message: err.message || 'Something went wrong'})
+    }
+  )
+}
