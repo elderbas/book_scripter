@@ -27,7 +27,6 @@ export const getBookInfo = (bookName) =>
     superagent.get('/api/books/info')
       .query({ bookName })
       .end(function (err, response) {
-        console.log('YAY');
         if (err) { reject(err) }
         fulfill(response)
       })
