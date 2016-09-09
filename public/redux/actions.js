@@ -31,6 +31,7 @@ export const getBookInfo = (bookName) => (dispatch) => {
   api.getBookInfo(bookName)
   .then(
     (response) => {
+      console.log('!!!', response.body);
       dispatch({type: 'FETCH_BOOK_SUCCESS', response})
     },
     (err) => {

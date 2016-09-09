@@ -1,18 +1,13 @@
-UAT test for getting data of a book by NAME (should look like that of when it first gets sent back after uploading)
+NEXT
+Clicking on name of book takes you to the work page instead of loading the data.
+Load book AFTER getting to that page
 
-clicking on name of book takes you to the work page
 
+
+LATERS
 UAT test for deleting book by NAME
 clicking on X near name confirms you want to delete it
 
-xxxxxxxxxxxx
-handle upload file RESPONSE...
-add to books uploaded list
 
-make the book list items have more data. just the names isn't enough?
-Or maybe I can just grab that after navigating to a different page to work on the book
 
-make book list items clickable
-
-make more reducers for Book
 

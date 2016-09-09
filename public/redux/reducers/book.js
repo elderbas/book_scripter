@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 
-const responseToCurrentBook = response => response.body.bookName
+const responseToCurrentBook = response => response.body
 
 const requestSuccessFailure = (mainName) => ((state = false, action) => {
   switch (action.type) {
