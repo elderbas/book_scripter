@@ -6,11 +6,8 @@ router.get('/', getBookNames);
 router.get('/info', getBookInfoByName);
 
 function getBookNames (req, res) {
-  console.log('IS HERE');
   Books.getNamesOfBooksLoaded()
-  .then(arrBookNames => {
-    res.send(arrBookNames);
-  })
+  .then(arrBookNames => res.send(arrBookNames))
   .catch((err) => {
     console.log('err', err);
     res.send(err);

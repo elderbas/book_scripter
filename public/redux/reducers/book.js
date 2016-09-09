@@ -23,7 +23,6 @@ const currentBook = (state = null, action) => {
   }
 }
 
-
 const book = combineReducers({
   isBeingFetched: requestSuccessFailure('FETCH_BOOK'),
   isBeingUploaded: requestSuccessFailure('UPLOAD_BOOK'),

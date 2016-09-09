@@ -9,16 +9,12 @@ const ulStyle = {
   marginTop: '15px',
   lineHeight: '2.5',
 }
-const BooksUploadedList = ({ bookList, areBeingFetched, onBookClicked }) => {
+const BooksUploadedList = ({ bookList, areBeingFetched }) => {
   let list = bookList.map(b => (
       <li key={b}>
-        <a href="#" onClick={(e) => {
-          e.preventDefault()
-          onBookClicked(b)
-        }}>{b}</a>
+        <Link to={`/scripter/${b}`}>{b}</Link>
       </li>
   ))
-
   return areBeingFetched ? <Loading text='Books being fetched' /> : (
     <div style={{marginBottom: '30px'}}>
       <h2>Books Uploaded</h2>
@@ -28,7 +24,6 @@ const BooksUploadedList = ({ bookList, areBeingFetched, onBookClicked }) => {
     </div>
   )
 }
-
 
 BooksUploadedList.propTypes = {
   bookList: PropTypes.array,
