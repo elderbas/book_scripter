@@ -64,9 +64,7 @@ export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId
   api.confirmNameOnPreSnippet({bookName, blockId, preSnippetId, displayName})
   .then((response) => { // should just be the snippets on response.body
     // add new Snippet to snippets list
-    let newewstSnip = response[response.length-1]
-    dispatch({type: 'ADD_SNIPPET', val: newewstSnip })
-
+    dispatch({type: 'ADD_SNIPPET', snippet: response[response.length-1] })
     // remove the presnippet from preSnippets
   })
   .catch((err) => {

@@ -25,7 +25,7 @@ const currentBook = (state = {}, action) => {
           ...state.currentBlockWorkingOn,
           snippets: [
             ...state.currentBlockWorkingOn.snippets,
-            action.val
+            action.snippet
           ]
         }
       }
