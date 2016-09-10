@@ -33,7 +33,7 @@ const ExtractionZone = ({ preSnippets, firstSpeechIndex, characterProfiles }) =>
           (No prediction found) Pick people from here
           <CharacterSelectionList
             characterProfiles={characterProfiles}
-            firstSpeechIndex={firstSpeechIndex}
+            firstSpeechPreSnippetIndex={firstSpeechIndex}
           />
         </div> :
         '' }

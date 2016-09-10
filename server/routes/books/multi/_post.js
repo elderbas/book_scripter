@@ -7,6 +7,7 @@ let Books = require(`${_serverDir_}/src/dbModels/Books`);
 router.post('/nameConfirmedOnPreSnippet', nameConfirmedOnPreSnippet);
 
 function nameConfirmedOnPreSnippet (req, res) {
+
   let bookName = _.get(req, 'body.bookName');
   let blockId = _.get(req, 'body.blockId');
   let preSnippetId = _.get(req, 'body.preSnippetId');

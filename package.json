@@ -65,7 +65,7 @@
     "wiredep": "2.2.2"
   },
   "scripts": {
-    "start": "export NODE_ENV=development && node server/indexWithTests.js",
+    "start": "export NODE_ENV=development && nodemon server/indexWithTests.js",
     "back-test": "export NODE_ENV=test && gulp --gulpfile Gulpfile.backend.js --force",
     "back-api-test": "export NODE_ENV=test && mocha -w server/test/uat/bookFlow.spec.js",
     "back-serve": "nodemon server/indexWithTests.js --config server/nodemon.json"

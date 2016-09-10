@@ -1,11 +1,19 @@
 // CharacterSelectionList
 import React, {PropTypes} from 'react'
+import { connect } from 'react-redux'
+import * as actions from '../redux/actions'
 import '../scss/index.scss'
 
 class CharacterSelectionList extends React.Component {
   onCharacterSelected (charDisplayName) {
-    console.log(`Character: ${charDisplayName} selected for index ${this.props.firstSpeechIndex}`);
-    
+    const { firstSpeechPreSnippetIndex, handleConfirmedNameOnPreSnippet, currentBook } = this.props
+    console.log(`Character: ${charDisplayName} selected for index ${firstSpeechPreSnippetIndex}`);
+    handleConfirmedNameOnPreSnippet({
+      bookName: currentBook.bookName,
+      blockId: currentBook.lastBlockIndexWorkedOn,
+      preSnippetId: firstSpeechPreSnippetIndex,
+      displayName: charDisplayName
+    })
   }
   render() {
     // {displayName: 'Bob', aliases: []}
@@ -32,6 +40,9 @@ class CharacterSelectionList extends React.Component {
   }
 }
 
-
+const mapStateToProps = (store, ownProps) => ({
+  currentBook: store.book.currentBook
+})
 CharacterSelectionList.propTypes = {}
+CharacterSelectionList = connect(mapStateToProps, actions)(CharacterSelectionList)
 export default CharacterSelectionList

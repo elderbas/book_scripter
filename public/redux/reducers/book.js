@@ -17,6 +17,21 @@ const requestSuccessFailure = (mainName) => ((state = false, action) => {
 
 const currentBook = (state = {}, action) => {
   switch (action.type) {
+    case 'ADD_SNIPPET':
+      console.log('state', state);
+      let newState =  {
+        ...state,
+        currentBlockWorkingOn: {
+          ...state.currentBlockWorkingOn,
+          snippets: [
+            ...state.currentBlockWorkingOn.snippets,
+            action.val
+          ]
+        }
+      }
+      console.log('new snippets state', state.currentBlockWorkingOn.snippets);
+      return newState
+
     case 'FETCH_BOOK_SUCCESS':
       return responseToFetchBook(action.response)
 
@@ -41,12 +56,21 @@ const currentBook = (state = {}, action) => {
   }
 }
 
+// const idLeftMostSpeech = (state = null, action) => {
+//   switch (action.type) {
+//     case 'REMOVE_':
+//
+//     default:
+//       return state
+//   }
+// }
+
 const book = combineReducers({
+  // idLeftMostSpeech,
   isBeingFetched: requestSuccessFailure('FETCH_BOOK'),
   isBeingUploaded: requestSuccessFailure('UPLOAD_BOOK'),
   isFetchingNameSuggestion: requestSuccessFailure('FETCH_NAME_SUGGESTION'),
   currentBook,
-
 })
 
 export default book

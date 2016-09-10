@@ -2,7 +2,11 @@
 import superagent from 'superagent'
 
 const genericEnd = (fulfill, reject) => (err, response) => {
-  if (err) { reject(err) }
+  if (err) {
+    // console.log(err);
+    reject(err)
+  }
+  // console.log('response', response);
   fulfill(response);
 }
 
@@ -33,6 +37,18 @@ export const getNameSuggestion = ({ bookName, blockId, speechPreSnippetIdSelecte
     superagent.get('/api/books/suggestion')
       .query({ bookName, blockId, speechPreSnippetIdSelected })
       .end(genericEnd(fulfill, reject))
+  })
+
+export const confirmNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName}) =>
+  new Promise((fulfill, reject) => {
+    console.log('inside this promise thing for confirmNameOnPreSnippet', {bookName, blockId, preSnippetId, displayName});
+    superagent.post('/api/books/multi/nameConfirmedOnPreSnippet')
+      .send({bookName, blockId, preSnippetId, displayName})
+      .end((err, res) => {
+        console.log('ERR', err);
+        console.log('RES', res.body);
+        fulfill(res.body)
+      })
   })
 
 
