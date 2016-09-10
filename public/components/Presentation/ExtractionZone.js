@@ -1,11 +1,17 @@
 // ExtractionZone
 import React, {PropTypes} from 'react'
 const spill = j => JSON.stringify(j)
-const ExtractionZone = ({preSnippets}) => {
+const ExtractionZone = ({ preSnippets }) => {
+  console.log('preSnippets', preSnippets);
+  let preSnipTags = preSnippets.map(({text, id}) => {
+    return (
+      <span key={id}>{text}</span>
+    )
+  })
   return (
-    <div>
+    <div style={{whiteSpace: 'pre-wrap'}}>
       <h2>Extraction Zone</h2>
-      {spill(preSnippets)}
+      {preSnipTags}
     </div>
   )
 }

@@ -1,7 +1,7 @@
 .Footer-component {
   $footerHeight: 50px;
 
-  position: absolute;
+  position: fixed;
   bottom: 0;
   height: $footerHeight;
   background-color: rgba(34, 134, 255, 0.84);

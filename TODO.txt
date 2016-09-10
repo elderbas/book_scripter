@@ -1,6 +1,4 @@
-NEXT
-Clicking on name of book takes you to the work page instead of loading the data.
-Load book AFTER getting to that page
+Design flow for UI of extraction zone and how it'll work
 
 
 
