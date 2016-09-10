@@ -6,7 +6,7 @@ import * as actions from '../redux/actions'
 import Loading from './Loading'
 import Snippets from './Presentation/Snippets'
 import ExtractionZone from './Presentation/ExtractionZone'
-
+import findIndex from 'lodash/findIndex'
 
 class BookScripter extends React.Component {
   componentDidMount () {
@@ -25,12 +25,18 @@ class BookScripter extends React.Component {
     if (this.props.currentBook.bookName === undefined) {
       return <Loading text="Retrieving book details" />
     }
-    const { bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
+    const { characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
+    let firstSpeechIndex = findIndex(preSnippets, ps => ps.type === 'speech')
     return (
       <div>
         <h1>{bookName}</h1>
         <Snippets snippets={snippets} />
-        <ExtractionZone preSnippets={preSnippets} onHighlightedClick={this.getNameSuggestion.bind(this)} />
+        <ExtractionZone
+          preSnippets={preSnippets}
+          firstSpeechIndex={firstSpeechIndex}
+          characterProfiles={characterProfiles}
+          predictCurrentHighlighted={this.getNameSuggestion.bind(this)}
+        />
       </div>
     )
   }
@@ -44,3 +50,15 @@ BookScripter.propTypes = {}
 const mapStateToProps = (store, ownProps) => ({ currentBook: store.book.currentBook })
 BookScripter = withRouter(connect(mapStateToProps, actions)(BookScripter))
 export default BookScripter
+
+
+
+
+
+
+
+
+
+
+
+

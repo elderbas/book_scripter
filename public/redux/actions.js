@@ -1,4 +1,5 @@
 import * as api from '../api'
+import findIndex from 'lodash/findIndex'
 
 export const fetchBooks = () => (dispatch) => {
   dispatch({type: 'FETCH_BOOKS_REQUEST'})
@@ -26,18 +27,6 @@ export const uploadBook = (fileToUpload) => (dispatch) => {
   )
 }
 
-export const getBookInfo = (bookName) => (dispatch) => {
-  dispatch({type: 'FETCH_BOOK_REQUEST'})
-  api.getBookInfo(bookName)
-  .then(
-    (response) => dispatch({type: 'FETCH_BOOK_SUCCESS', response}),
-    (err) => {
-      dispatch({type: 'FETCH_BOOK_FAILURE', message: err.message || 'Error with fetching book selected data'})
-      console.log('ERR', err);
-    }
-  )
-}
-
 export const getNameSuggestion = ({ bookName, blockId, speechPreSnippetIdSelected }) => (dispatch) => {
   dispatch({type: 'FETCH_NAME_SUGGESTION_REQUEST'})
   api.getNameSuggestion({ bookName, blockId, speechPreSnippetIdSelected })
@@ -51,6 +40,25 @@ export const getNameSuggestion = ({ bookName, blockId, speechPreSnippetIdSelecte
     }
   )
 }
+export const getBookInfo = (bookName) => (dispatch) => {
+  dispatch({type: 'FETCH_BOOK_REQUEST'})
+  api.getBookInfo(bookName)
+  .then(
+    (response) => {
+      dispatch({type: 'FETCH_BOOK_SUCCESS', response})
+      let { bookName, lastBlockIndexWorkedOn } = response.body
+      let preSnips = response.body.currentBlockWorkingOn.preSnippets
+      let speechPreSnippetIdSelected = findIndex(preSnips, ps => ps.type === 'speech')
+      getNameSuggestion({bookName, blockId:lastBlockIndexWorkedOn, speechPreSnippetIdSelected})(dispatch)
+    },
+    (err) => {
+      dispatch({type: 'FETCH_BOOK_FAILURE', message: err.message || 'Error with fetching book selected data'})
+      console.log('ERR', err);
+    }
+  )
+}
+
+
 
 
 
