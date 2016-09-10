@@ -31,7 +31,10 @@ const ExtractionZone = ({ preSnippets, firstSpeechIndex, characterProfiles }) =>
       {showCharacterSelectionList ?
         <div className="characterList">
           (No prediction found) Pick people from here
-          <CharacterSelectionList characterProfiles={characterProfiles} />
+          <CharacterSelectionList
+            characterProfiles={characterProfiles}
+            firstSpeechIndex={firstSpeechIndex}
+          />
         </div> :
         '' }
       {nameToShowIfSuggested ? <div className="suggestionBox">{nameToShowIfSuggested}</div> : '' }

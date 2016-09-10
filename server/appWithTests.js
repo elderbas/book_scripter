@@ -41,7 +41,7 @@ app.use(require('express-fileupload')());
 
 
 app.use('/api/books', routes.books);
-console.log('!!!!!!!', ENV);
+console.log(`Running under '${ENV}' environment`);
 if (ENV === 'development') {
   let webpackConfig = require('../webpack.config.js');
   let webpack = require('webpack');

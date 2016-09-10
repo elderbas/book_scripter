@@ -20,7 +20,7 @@ function getBookInfoByName (req, res) {
 
   Books.getBookInfo(bookName)
     .then(bookInfo => {
-      res.send(bookInfo)
+      res.send(filterOutUnnecessaryDataForFrontend(bookInfo))
     })
     .catch(err => res.send(err))
 }
@@ -28,3 +28,18 @@ function getBookInfoByName (req, res) {
 
 
 module.exports = router;
+
+function filterOutUnnecessaryDataForFrontend (book) {
+  let preSnips = book.currentBlockWorkingOn.preSnippets;
+  book.currentBlockWorkingOn = {
+    preSnippets: preSnips.map(filterOutUnnecessaryDataOnPreSnippetForFrontend)
+  }
+  return book;
+}
+function filterOutUnnecessaryDataOnPreSnippetForFrontend (preSnippet) {
+  // less work to not have to check the type?
+  delete preSnippet.classification
+  delete preSnippet.personConfirmedNormalized
+  delete preSnippet.predictedCharacterNameNormalized
+  return preSnippet
+}

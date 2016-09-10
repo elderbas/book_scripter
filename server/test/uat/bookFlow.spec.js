@@ -10,7 +10,6 @@ let PreSnippet = require('../../src/classes/PreSnippet');
 let testDatasets = '/Users/bscherm/SideProjects/book_scripter_foundation/server/test/dataSets';
 let async = require('async');
 const MONGO_DB_URL = config.db.mongodb[ENV];
-console.log('GOT HERE');
 
 
 describe(`UAT test`, () => {
@@ -68,7 +67,7 @@ describe(`UAT test`, () => {
   });
 
   /* the verbs might go into their own collection later*/
-  it(`GET - /api/books?bookName=blah - GET all info about book by bookName`, function (done) {
+  it(`GET - /api/books/info - GET all info about book by bookName & filtered preSnippets`, function (done) {
     async.series([
       function(cb) { uploadBook(cb) },
       function(cb) { getBookInfo(cb) },
@@ -98,14 +97,14 @@ describe(`UAT test`, () => {
     ], done);
   });
 
-  it(`POST - /api/books/suggestion - receive an EMPTY array when no characterProfiles match for suggestion`, function (done) {
+  it(`GET - /api/books/suggestion - receive an EMPTY array when no characterProfiles match for suggestion`, function (done) {
     async.series([
       function(cb) { uploadBook(cb) },
       function(cb) { requestSuggestion(cb) },
     ], done);
   });
 
-  it(`POST - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match `, function (done) {
+  it(`GET - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match `, function (done) {
     let characterProfilesToExpect = [
       {displayName: 'Bob', aliases: []}
     ];
@@ -113,6 +112,17 @@ describe(`UAT test`, () => {
       function(cb) { uploadBook(cb) },
       function(cb) { addCharacterProfile(cb) },
       function(cb) { requestSuggestion(cb, characterProfilesToExpect) },
+    ], done);
+  });
+
+  it(`POST - /api/books/multi/nameConfirmedOnPreSnippet - receive the new snippets, after confirming a given preSnippet`, function (done) {
+    let characterProfilesToExpect = [
+      {displayName: 'Bob', aliases: []}
+    ];
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { addCharacterProfile(cb) },
+      function(cb) { nameConfirmedOnPreSnippet(cb) },
     ], done);
   });
 
@@ -196,7 +206,7 @@ function requestSuggestion(cb, characterProfilesMatched) {
       }
       else if (characterProfilesMatched.length > 0) {
         let cPS = res.body.characterProfilesSuggested;
-        expect(cPS[0]).to.include.keys('_id', 'displayName', 'aliases');
+        expect(cPS[0]).to.include.keys(['_id', 'displayName', 'aliases']);
         expect(cPS[0].displayName).to.equal(characterProfilesMatched[0].displayName);
         expect(cPS[0].aliases).to.deep.equal(characterProfilesMatched[0].aliases);
       }
@@ -238,14 +248,39 @@ function getVerbSpokeSynonyms(cb, verbToMatch) {
 
 function getBookInfo (cb) {
   cb = cb || function () {};
-  const expectedResult = expectedResultUploadedBook
   return request(app)
     .get('/api/books/info')
     .query({bookName: 'got_piece'})
     .expect(200)
-    .expect(expectedResult, cb)
+    .end((err, res) => {
+      let book = res.body;
+      expect(book.bookName).to.equal('got_piece');
+      expect(book.characterProfiles.length).to.equal(0);
+      book.currentBlockWorkingOn.preSnippets.forEach(ps => {
+        expect(ps).to.have.keys(['text', 'type', 'id'])
+      })
+      cb()
+    })
 }
 
+/* returns just the new snippet list */
+function nameConfirmedOnPreSnippet (cb) {
+  cb = cb || function () {};
+  return request(app)
+    .post('/api/books/multi/nameConfirmedOnPreSnippet')
+    .send({
+      bookName: 'got_piece',
+      blockId: 0,
+      preSnippetId: 0,
+      displayName: 'Bob'
+    })
+    .expect(200)
+    .end((err, res) => {
+      let updatedSnippets = res.body
+      expect(updatedSnippets.length).to.equal(1)
+      cb()
+    })
+}
 
 
 

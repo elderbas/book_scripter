@@ -1,23 +1,29 @@
 // CharacterSelectionList
 import React, {PropTypes} from 'react'
+import '../scss/index.scss'
 
 class CharacterSelectionList extends React.Component {
+  onCharacterSelected (charDisplayName) {
+    console.log(`Character: ${charDisplayName} selected for index ${this.props.firstSpeechIndex}`);
+    
+  }
   render() {
     // {displayName: 'Bob', aliases: []}
     let { characterProfiles } = this.props
-    characterProfiles = [{displayName: 'Bob', aliases: []}]
+    characterProfiles = [
+      {displayName: 'Bob Harding', aliases: ['Mr Harding', 'Bob']},
+      {displayName: 'Moses', aliases: ['Mr Prophet', 'Red Sea Splitter']}
+    ]
     let characterItems = characterProfiles.map(({displayName, aliases}) => {
       return (
-        <li>
+        <li key={displayName} onClick={() => this.onCharacterSelected(displayName)}>
           <span className="displayName">{displayName}</span>
-          <span className="aliases">{aliases.map((name, i) => {
-            return <span>{i !== 0 ? ', ' : ''}{name}</span>
-          })}</span>
         </li>
       )
     })
+
     return (
-      <div>
+      <div className="CharacterSelectionList-component">
         <ul>
           {characterItems}
         </ul>

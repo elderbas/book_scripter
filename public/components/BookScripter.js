@@ -25,7 +25,10 @@ class BookScripter extends React.Component {
     if (this.props.currentBook.bookName === undefined) {
       return <Loading text="Retrieving book details" />
     }
-    const { characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
+    const {
+      characterProfiles, bookName,
+      currentBlockWorkingOn: {snippets, preSnippets}
+    } = this.props.currentBook;
     let firstSpeechIndex = findIndex(preSnippets, ps => ps.type === 'speech')
     return (
       <div>

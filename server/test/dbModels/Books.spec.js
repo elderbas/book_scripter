@@ -83,20 +83,38 @@ describe('<-- Books collection-->\n', () => {
   //noinspection JSUnresolvedFunction
   describe(`starting with a SINGLE BOOK initialized -->`, (() => {
     const bookNameBeingUsed = 'ASOIAF - Game of Thrones';
+    let addedBookInBeforeEach;
     beforeEach((done) => {
       // should result in two Blocks
       let inputTextBlobs = [
         '“Am I?” he asked. “Yes.”',
         'The road was long. “Are we there yet?” John mumbled “Almost there.”'
       ];
-      Books.addBook(bookNameBeingUsed, inputTextBlobs).then(addedBook => done());
+      Books.addBook(bookNameBeingUsed, inputTextBlobs).then(addedBook => {
+        addedBookInBeforeEach = addedBook
+        done()
+      });
     });
 
     afterEach((done) => {
       Books.dropModel().then(() => done());
     });
 
-
+    /* update the key 'personConfirmedNormalized' of the specified preSnippet (to furtherHelp predictions)
+    * push a new snippet onto the snippets for that block*/
+    it(`.nameConfirmedOnPreSnippet`, function (done) {
+      // Before preSnippet is updated, before snippet is pushed onto
+      expect(addedBookInBeforeEach.blocks[0].preSnippets[0].personConfirmedNormalized).to.be.null;
+      expect(addedBookInBeforeEach.blocks[0].snippets.length).to.equal(0)
+      let blockId = 0, preSnippetId = 0, displayNameConfirmed = 'Rocco';
+      Books.nameConfirmedOnPreSnippet(bookNameBeingUsed, blockId, preSnippetId, displayNameConfirmed)
+      .then(newBlock => {
+        expect(newBlock.preSnippets[0].personConfirmedNormalized).to.equal('Rocco');
+        expect(newBlock.snippets[0]).to.deep.equal({characterDisplayName: 'Rocco', matchingPreSnippetId: 0})
+        done()
+      })
+      .catch(done)
+    });
 
     it(`getNamesOfBooksLoaded returns array of strings`, function (done) {
       Books.getNamesOfBooksLoaded()
@@ -113,7 +131,7 @@ describe('<-- Books collection-->\n', () => {
       }).catch(done);
     });
 
-    describe(`..addCharacterProfile`, () => {
+    describe(`.addCharacterProfile`, () => {
       it(`returns the whole characterProfiles after one is added`, function (done) {
         let newCharProf = new CharacterProfile('Garen');
         Books.addCharacterProfile(bookNameBeingUsed, newCharProf).then((cPs) => {

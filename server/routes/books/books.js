@@ -14,6 +14,10 @@ router.use('/characters', require('./characters/_post.js'));
 router.use('/verbs', require('./verbs/_post.js'));
 router.use('/verbs', require('./verbs/_get'));
 
+// /api/books/multi
+router.use('/multi', require('./multi/_post'));
+
+
 
 
 

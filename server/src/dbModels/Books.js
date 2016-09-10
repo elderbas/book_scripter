@@ -1,6 +1,7 @@
 let _ = require('lodash');
 let createPreSnippetsFromTextBlob = require('../createPreSnippetsFromTextBlob');
 let Block = require('../classes/Classes').Block;
+let Snippet = require('../classes/Classes').Snippet;
 let Books = require('./mongooseModels').Books;
 let errorMessages = require('../../constants/erroMessages');
 // you can think of a schema as an INTERFACE. it doesn't do anything,
@@ -179,6 +180,27 @@ const _getBookInfo = (bookName) => {
   })
 }
 
+
+// _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
+const _nameConfirmedOnPreSnippet = (bookNameBeingUsed, blockId, preSnippetId, displayNameConfirmed) => {
+  return _getBlockByIndex(bookNameBeingUsed, blockId).then((blockToUpdate) => {
+    blockToUpdate.snippets.push(new Snippet(displayNameConfirmed, preSnippetId))
+    blockToUpdate.preSnippets = blockToUpdate.preSnippets.map(preSnippet => {
+      if (preSnippet.id === preSnippetId) {
+        preSnippet.personConfirmedNormalized = displayNameConfirmed
+      }
+      return preSnippet
+    })
+    return new Promise((fulfill, reject) => {
+      _updateBlockById(bookNameBeingUsed, blockToUpdate, blockId)
+        .then((blocks) => {
+          fulfill(blocks[blockId])
+        })
+        .catch(reject)
+    })
+  })
+}
+
 const booksExport = {
   // schema: bookSchema,
   getCharacterProfilesAndVerbSpokeSynonyms: _getCharacterProfilesAndVerbSpokeSynonyms,
@@ -192,6 +214,7 @@ const booksExport = {
   dropModel: _dropModel,
   getBlocks: _getBlocks,
   addBook: _addBook,
-  getBookInfo: _getBookInfo
+  getBookInfo: _getBookInfo,
+  nameConfirmedOnPreSnippet: _nameConfirmedOnPreSnippet,
 };
 module.exports = booksExport;
