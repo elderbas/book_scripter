@@ -1,0 +1,16 @@
+.ExtractionZone-component {
+  white-space: pre-wrap;
+
+  .highlightedPreSnippet {
+    padding: 3px;
+    border: 1px solid salmon;
+    background-color: rgba(255, 134, 134, 0.41);
+    cursor: default;
+    transition: 250ms;
+    &:hover {
+      transition: 250ms;
+      border: 1px solid #d96d6d;
+      background-color: rgba(255, 134, 134, 0.68);
+    }
+  }
+}

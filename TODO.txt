@@ -1,5 +1,4 @@
-Design flow for UI of extraction zone and how it'll work
-
+Upon selecting a 
 
 
 LATERS
@@ -7,5 +6,8 @@ UAT test for deleting book by NAME
 clicking on X near name confirms you want to delete it
 
 
+
+Reachers
+Animate the square around the current speech, to move to surround the next speech after selected
 
 

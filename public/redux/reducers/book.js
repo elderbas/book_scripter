@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
-const responseToCurrentBook = response => response.body
+const responseToFetchBook = response => response.body
+const responseToNameSuggestion = response => response.body.characterProfilesSuggested
 
 const requestSuccessFailure = (mainName) => ((state = false, action) => {
   switch (action.type) {
@@ -14,10 +15,27 @@ const requestSuccessFailure = (mainName) => ((state = false, action) => {
   }
 })
 
-const currentBook = (state = null, action) => {
+const currentBook = (state = {}, action) => {
   switch (action.type) {
     case 'FETCH_BOOK_SUCCESS':
-      return responseToCurrentBook(action.response)
+      return responseToFetchBook(action.response)
+
+    case 'FETCH_NAME_SUGGESTION_SUCCESS':
+      let namesSuggested = responseToNameSuggestion(action.response)
+      let valueToUseForName = (namesSuggested.length > 0) ? namesSuggested[0].displayName : 'none';
+      return {
+        ...state,
+        currentBlockWorkingOn: {
+          ...state.currentBlockWorkingOn,
+          preSnippets: state.currentBlockWorkingOn.preSnippets.map(preSnip => {
+            if (preSnip.id === action.speechPreSnippetIdSelected) {
+              return { ...preSnip, predictedCharacterNameNormalized: valueToUseForName }
+            }
+            return preSnip
+          })
+        }
+      }
+
     default:
       return state
   }
@@ -26,7 +44,9 @@ const currentBook = (state = null, action) => {
 const book = combineReducers({
   isBeingFetched: requestSuccessFailure('FETCH_BOOK'),
   isBeingUploaded: requestSuccessFailure('UPLOAD_BOOK'),
+  isFetchingNameSuggestion: requestSuccessFailure('FETCH_NAME_SUGGESTION'),
   currentBook,
+
 })
 
 export default book

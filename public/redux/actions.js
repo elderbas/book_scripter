@@ -30,12 +30,33 @@ export const getBookInfo = (bookName) => (dispatch) => {
   dispatch({type: 'FETCH_BOOK_REQUEST'})
   api.getBookInfo(bookName)
   .then(
-    (response) => {
-      dispatch({type: 'FETCH_BOOK_SUCCESS', response})
-    },
+    (response) => dispatch({type: 'FETCH_BOOK_SUCCESS', response}),
     (err) => {
       dispatch({type: 'FETCH_BOOK_FAILURE', message: err.message || 'Error with fetching book selected data'})
       console.log('ERR', err);
     }
   )
 }
+
+export const getNameSuggestion = ({ bookName, blockId, speechPreSnippetIdSelected }) => (dispatch) => {
+  dispatch({type: 'FETCH_NAME_SUGGESTION_REQUEST'})
+  api.getNameSuggestion({ bookName, blockId, speechPreSnippetIdSelected })
+  .then(
+    (response) => {
+      dispatch({type: 'FETCH_NAME_SUGGESTION_SUCCESS', speechPreSnippetIdSelected, response })
+    },
+    (err) => {
+      dispatch({type: 'FETCH_NAME_SUGGESTION_FAILURE', message: err.message || 'Error with fetching name suggestion'})
+      console.log('ERR', err);
+    }
+  )
+}
+
+
+
+
+
+
+
+
+

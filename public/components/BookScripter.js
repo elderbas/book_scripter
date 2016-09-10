@@ -11,11 +11,18 @@ import ExtractionZone from './Presentation/ExtractionZone'
 class BookScripter extends React.Component {
   componentDidMount () {
     const { getBookInfo, params } = this.props;
-    console.log('params', params);
     getBookInfo(params.bookName)
   }
+  getNameSuggestion (preSnippetsId) {
+    const { getNameSuggestion, params, currentBook } = this.props;
+    getNameSuggestion({
+      bookName: params.bookName,
+      blockId: currentBook.lastBlockIndexWorkedOn,
+      speechPreSnippetIdSelected: preSnippetsId
+    })
+  }
   render() {
-    if (this.props.currentBook === null) {
+    if (this.props.currentBook.bookName === undefined) {
       return <Loading text="Retrieving book details" />
     }
     const { bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
@@ -23,7 +30,7 @@ class BookScripter extends React.Component {
       <div>
         <h1>{bookName}</h1>
         <Snippets snippets={snippets} />
-        <ExtractionZone preSnippets={preSnippets} />
+        <ExtractionZone preSnippets={preSnippets} onHighlightedClick={this.getNameSuggestion.bind(this)} />
       </div>
     )
   }
@@ -34,8 +41,6 @@ class BookScripter extends React.Component {
 
 
 BookScripter.propTypes = {}
-const mapStateToProps = (store, ownProps) => ({
-  currentBook: store.book.currentBook
-})
+const mapStateToProps = (store, ownProps) => ({ currentBook: store.book.currentBook })
 BookScripter = withRouter(connect(mapStateToProps, actions)(BookScripter))
 export default BookScripter
