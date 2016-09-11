@@ -1,15 +1,16 @@
-Fix error when nearly last pre snippet is only one available
+Snippets need to show the text that they match (save the text to the snippets?)
 
 Need to have somewhere for adding more character profiles
 
 Backend is not actually adding snippets to the DB
 (Not bad for right now since it's easier to test without it doing that)
 
-Still need to calculate removing of the preSnippets properly and adding
-them to the snippets
-
 Need to automatically try for prediction when the currently highlighted pre snippet
 is a speech type
+
+Need button for marking current block as done, and pulling in next block
+
+
 
 
 

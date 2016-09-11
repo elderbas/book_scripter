@@ -1,9 +1,10 @@
 // Snippets
 import React, {PropTypes} from 'react'
-const spill = j => JSON.stringify(j)
+let jsonStringifyPretty = require('json-pretty')
+const spill = j => jsonStringifyPretty(j)
 const Snippets = ({snippets}) => {
   return (
-    <div>
+    <div style={{whiteSpace: 'pre-wrap'}}>
       <h2>Snippets</h2>
       {spill(snippets)}
     </div>
