@@ -18,13 +18,13 @@ const currentBook = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_SNIPPET':
       let { snippets, preSnippets } = state.currentBlockWorkingOn
-      let nextPreSnippetToStartAt = preSnippets.find(ps => ps.type !== 'whitespace' && ps.id !== action.snippet.matchingPreSnippetId)
+      let nextPreSnippetIndexToStartAt = preSnippets.findIndex(ps => ps.type !== 'whitespace' && ps.id !== action.snippet.matchingPreSnippetId)
       let newState =  {
         ...state,
         currentBlockWorkingOn: {
           ...state.currentBlockWorkingOn,
           snippets: [ ...snippets, action.snippet ],
-          preSnippets: preSnippets.slice(nextPreSnippetToStartAt.id)
+          preSnippets: (nextPreSnippetIndexToStartAt === -1) ? [] : preSnippets.slice(nextPreSnippetIndexToStartAt)
         }
       }
       return newState
@@ -48,7 +48,6 @@ const currentHighlightPredictedName = (state = null, action) => {
 }
 
 const book = combineReducers({
-  // idLeftMostSpeech,
   isBeingFetched: requestSuccessFailure('FETCH_BOOK'),
   isBeingUploaded: requestSuccessFailure('UPLOAD_BOOK'),
   isFetchingNameSuggestion: requestSuccessFailure('FETCH_NAME_SUGGESTION'),

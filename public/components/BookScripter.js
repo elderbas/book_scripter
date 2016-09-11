@@ -6,7 +6,6 @@ import * as actions from '../redux/actions'
 import Loading from './Loading'
 import Snippets from './Presentation/Snippets'
 import ExtractionZone from './Presentation/ExtractionZone'
-import findIndex from 'lodash/findIndex'
 
 class BookScripter extends React.Component {
   componentDidMount () {
@@ -25,19 +24,16 @@ class BookScripter extends React.Component {
     if (this.props.currentBook.bookName === undefined) {
       return <Loading text="Retrieving book details" />
     }
-    const { characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
-    const { currentHighlightPredictedName, idLastAddedSnippet } = this.props
-    let firstNonWhitespaceIndex = findIndex(preSnippets, ps => ps.type !== 'whitespace')
+    const {characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
+    const { currentHighlightPredictedName } = this.props
     return (
       <div>
         <h1>{bookName}</h1>
         <Snippets snippets={snippets} />
         <ExtractionZone
           preSnippets={preSnippets}
-          firstNonWhitespaceIndex={firstNonWhitespaceIndex}
           currentHighlightPredictedName={currentHighlightPredictedName}
           characterProfiles={characterProfiles}
-          idLastAddedSnippet={idLastAddedSnippet}
           predictCurrentHighlighted={this.getNameSuggestion.bind(this)}
         />
       </div>

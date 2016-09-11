@@ -6,24 +6,27 @@ import '../scss/index.scss'
 
 class CharacterSelectionList extends React.Component {
   onCharacterSelected (charDisplayName) {
-    const { firstNonWhitespacePreSnippetId, handleConfirmedNameOnPreSnippet, currentBook } = this.props
+    const { firstNonWhitespacePreSnippetId, handleConfirmedNameOnPreSnippet,
+      currentBook: {bookName, lastBlockIndexWorkedOn, currentBlockWorkingOn} } = this.props
+    let snippetType = currentBlockWorkingOn.preSnippets.find(ps => ps.id === firstNonWhitespacePreSnippetId).type
     handleConfirmedNameOnPreSnippet({
-      bookName: currentBook.bookName,
-      blockId: currentBook.lastBlockIndexWorkedOn,
+      bookName: bookName,
+      blockId: lastBlockIndexWorkedOn,
       preSnippetId: firstNonWhitespacePreSnippetId,
       displayName: charDisplayName,
-      snippetType: currentBook.currentBlockWorkingOn.preSnippets[firstNonWhitespacePreSnippetId].type
+      snippetType,
     })
   }
   render() {
     let { characterProfiles, currentBook, firstNonWhitespacePreSnippetId } = this.props
+    let { preSnippets } = currentBook.currentBlockWorkingOn
     characterProfiles = [
       {displayName: 'Bob Harding', aliases: ['Mr Harding', 'Bob']},
       {displayName: 'Moses', aliases: ['Mr Prophet', 'Red Sea Splitter']}
     ]
     let characterItems;
-    console.log('currentBook.currentBlockWorkingOn.preSnippets', currentBook.currentBlockWorkingOn.preSnippets);
-    if (currentBook.currentBlockWorkingOn.preSnippets[firstNonWhitespacePreSnippetId].type === 'narration') {
+    let firstNonWhiteSpacePreSnippetId = preSnippets.find(ps => ps.id === firstNonWhitespacePreSnippetId)
+    if (firstNonWhiteSpacePreSnippetId.type === 'narration') {
       characterItems = [{displayName: 'Narration', aliases: []}].map(({displayName, aliases}) => {
         return (
           <li key={displayName} onClick={() => this.onCharacterSelected(displayName)}>
