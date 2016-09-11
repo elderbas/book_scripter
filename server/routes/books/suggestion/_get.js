@@ -30,10 +30,11 @@ function getSuggestedName (req, res) {
     .then((block) => {
       let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
       customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, commonSpokenSynonyms.concat(charProfsAndVSS.verbSpokeSynonyms));
-      let profilesToSuggest;
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, 2, 6);
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
       let nameSuggestOutput = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
+
+      let profilesToSuggest;
       if (_.isNull(nameSuggestOutput)) {
         profilesToSuggest = [];
       }
@@ -43,6 +44,7 @@ function getSuggestedName (req, res) {
           return displayName.toLowerCase() === suggestedName || _.some(cp.aliases, a => a.toLowerCase() === suggestedName)
         });
       }
+
       res.send({characterProfilesSuggested: profilesToSuggest});
     })
     .catch((err) => {
