@@ -26,11 +26,13 @@ class BookScripter extends React.Component {
     }
     const {characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
     const { currentHighlightPredictedName } = this.props
+
     return (
       <div>
         <h1>{bookName}</h1>
         <Snippets snippets={snippets} />
         <ExtractionZone
+          onPredictClick={this.getNameSuggestion.bind(this)}
           preSnippets={preSnippets}
           currentHighlightPredictedName={currentHighlightPredictedName}
           characterProfiles={characterProfiles}

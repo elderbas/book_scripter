@@ -39,13 +39,10 @@ function getSuggestedName (req, res) {
       }
       else {
         profilesToSuggest = _.filter(charProfsAndVSS.characterProfiles, (cp) => {
-          return cp.displayName.toLowerCase() === nameSuggestOutput.suggestedName || (
-            _(cp.aliases).map(x => x.toLowerCase()).some(nameSuggestOutput.suggestedName)
-          );
+          let displayName = cp.displayName, suggestedName = nameSuggestOutput.suggestedName
+          return displayName.toLowerCase() === suggestedName || _.some(cp.aliases, a => a.toLowerCase() === suggestedName)
         });
       }
-
-      // res.send({characterProfilesSuggested: suggested});
       res.send({characterProfilesSuggested: profilesToSuggest});
     })
     .catch((err) => {

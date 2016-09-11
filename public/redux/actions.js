@@ -46,10 +46,6 @@ export const getBookInfo = (bookName) => (dispatch) => {
   .then(
     (response) => {
       dispatch({type: 'FETCH_BOOK_SUCCESS', response})
-      let { bookName, lastBlockIndexWorkedOn } = response.body
-      let preSnips = response.body.currentBlockWorkingOn.preSnippets
-      let speechPreSnippetIdSelected = findIndex(preSnips, ps => ps.type === 'speech')
-      getNameSuggestion({bookName, blockId:lastBlockIndexWorkedOn, speechPreSnippetIdSelected})(dispatch)
     },
     (err) => {
       dispatch({type: 'FETCH_BOOK_FAILURE', message: err.message || 'Error with fetching book selected data'})
