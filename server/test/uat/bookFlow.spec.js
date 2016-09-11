@@ -277,7 +277,6 @@ function nameConfirmedOnPreSnippet (cb) {
     })
     .expect(200)
     .end((err, res) => {
-      console.log('res.body', res.body);
       let updatedSnippets = res.body
       expect(updatedSnippets.length).to.equal(1)
       cb()

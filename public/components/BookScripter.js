@@ -25,19 +25,19 @@ class BookScripter extends React.Component {
     if (this.props.currentBook.bookName === undefined) {
       return <Loading text="Retrieving book details" />
     }
-    const {
-      characterProfiles, bookName,
-      currentBlockWorkingOn: {snippets, preSnippets}
-    } = this.props.currentBook;
-    let firstSpeechIndex = findIndex(preSnippets, ps => ps.type === 'speech')
+    const { characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
+    const { currentHighlightPredictedName, idLastAddedSnippet } = this.props
+    let firstNonWhitespaceIndex = findIndex(preSnippets, ps => ps.type !== 'whitespace')
     return (
       <div>
         <h1>{bookName}</h1>
         <Snippets snippets={snippets} />
         <ExtractionZone
           preSnippets={preSnippets}
-          firstSpeechIndex={firstSpeechIndex}
+          firstNonWhitespaceIndex={firstNonWhitespaceIndex}
+          currentHighlightPredictedName={currentHighlightPredictedName}
           characterProfiles={characterProfiles}
+          idLastAddedSnippet={idLastAddedSnippet}
           predictCurrentHighlighted={this.getNameSuggestion.bind(this)}
         />
       </div>
@@ -50,7 +50,10 @@ class BookScripter extends React.Component {
 
 
 BookScripter.propTypes = {}
-const mapStateToProps = (store, ownProps) => ({ currentBook: store.book.currentBook })
+const mapStateToProps = (store, ownProps) => ({
+  currentBook: store.book.currentBook,
+  currentHighlightPredictedName: store.book.currentHighlightPredictedName,
+})
 BookScripter = withRouter(connect(mapStateToProps, actions)(BookScripter))
 export default BookScripter
 

@@ -30,10 +30,8 @@ function getBookInfoByName (req, res) {
 module.exports = router;
 
 function filterOutUnnecessaryDataForFrontend (book) {
-  logger('book', book)
   let preSnips = book.currentBlockWorkingOn.preSnippets;
   book.currentBlockWorkingOn.preSnippets = preSnips.map(filterOutUnnecessaryDataOnPreSnippetForFrontend)
-  logger('book after', book)
   return book;
 }
 function filterOutUnnecessaryDataOnPreSnippetForFrontend (preSnippet) {

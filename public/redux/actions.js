@@ -70,9 +70,6 @@ export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId
   .catch((err) => {
     console.error('ERROR in handleConfirmedNameOnPreSnippet', err);
   })
-
-
-
 }
 
 

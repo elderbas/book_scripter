@@ -6,34 +6,41 @@ import '../scss/index.scss'
 
 class CharacterSelectionList extends React.Component {
   onCharacterSelected (charDisplayName) {
-    const { firstSpeechPreSnippetIndex, handleConfirmedNameOnPreSnippet, currentBook } = this.props
-    console.log(`Character: ${charDisplayName} selected for index ${firstSpeechPreSnippetIndex}`);
-    console.log(
-      'currentBook.currentBlockWorkingOn.preSnippets[firstSpeechPreSnippetIndex].type',
-      currentBook.currentBlockWorkingOn.preSnippets[firstSpeechPreSnippetIndex].type
-    );
+    const { firstNonWhitespacePreSnippetId, handleConfirmedNameOnPreSnippet, currentBook } = this.props
     handleConfirmedNameOnPreSnippet({
       bookName: currentBook.bookName,
       blockId: currentBook.lastBlockIndexWorkedOn,
-      preSnippetId: firstSpeechPreSnippetIndex,
+      preSnippetId: firstNonWhitespacePreSnippetId,
       displayName: charDisplayName,
-      snippetType: currentBook.currentBlockWorkingOn.preSnippets[firstSpeechPreSnippetIndex].type
+      snippetType: currentBook.currentBlockWorkingOn.preSnippets[firstNonWhitespacePreSnippetId].type
     })
   }
   render() {
-    // {displayName: 'Bob', aliases: []}
-    let { characterProfiles } = this.props
+    let { characterProfiles, currentBook, firstNonWhitespacePreSnippetId } = this.props
     characterProfiles = [
       {displayName: 'Bob Harding', aliases: ['Mr Harding', 'Bob']},
       {displayName: 'Moses', aliases: ['Mr Prophet', 'Red Sea Splitter']}
     ]
-    let characterItems = characterProfiles.map(({displayName, aliases}) => {
-      return (
-        <li key={displayName} onClick={() => this.onCharacterSelected(displayName)}>
-          <span className="displayName">{displayName}</span>
-        </li>
-      )
-    })
+    let characterItems;
+    console.log('currentBook.currentBlockWorkingOn.preSnippets', currentBook.currentBlockWorkingOn.preSnippets);
+    if (currentBook.currentBlockWorkingOn.preSnippets[firstNonWhitespacePreSnippetId].type === 'narration') {
+      characterItems = [{displayName: 'Narration', aliases: []}].map(({displayName, aliases}) => {
+        return (
+          <li key={displayName} onClick={() => this.onCharacterSelected(displayName)}>
+            <span className="displayName">{displayName}</span>
+          </li>
+        )
+      })
+    }
+    else {
+      characterItems = characterProfiles.map(({displayName, aliases}) => {
+        return (
+          <li key={displayName} onClick={() => this.onCharacterSelected(displayName)}>
+            <span className="displayName">{displayName}</span>
+          </li>
+        )
+      })
+    }
 
     return (
       <div className="CharacterSelectionList-component">

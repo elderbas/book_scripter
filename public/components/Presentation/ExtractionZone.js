@@ -4,41 +4,31 @@ import CharacterSelectionList from '../CharacterSelectionList'
 
 
 
-const ExtractionZone = ({ preSnippets, firstSpeechIndex, characterProfiles }) => {
-  // console.log('ExtractionZone rendering', preSnippets[firstSpeechIndex]);
-  let showCharacterSelectionList = false;
-  let nameToShowIfSuggested = null;
-  let preSnipTags = preSnippets.map(({text, id, predictedCharacterNameNormalized}, index) => {
-    if (firstSpeechIndex === index) {
-      // console.log('personConfirmedNormalized', predictedCharacterNameNormalized);
-      if (predictedCharacterNameNormalized === 'none') {
-        // console.log('SHOULD BE TRUE');
-        showCharacterSelectionList = true;
-      }
-      else if (predictedCharacterNameNormalized !== null) {
-        nameToShowIfSuggested = predictedCharacterNameNormalized;
-      }
-      return <span className="highlightedPreSnippet" key={id}>{text}</span>
-    }
-    return <span key={id}>{text}</span>
+const ExtractionZone = ({ preSnippets, firstNonWhitespaceIndex, characterProfiles, currentHighlightPredictedName }) => {
+  let preSnipTags = preSnippets.map(({text, id}, index) => {
+    let style = (id < firstNonWhitespaceIndex) ? {display: 'none'}: {}
+    return (firstNonWhitespaceIndex === index)
+      ? <span className="highlightedPreSnippet" key={id}>{text}</span>
+      : <span style={style} key={id}>{text}</span>
   })
-  // console.log('showCharacterSelectionList', showCharacterSelectionList);
-  // console.log('nameToShowIfSuggested', nameToShowIfSuggested);
+
   return (
     <div className="ExtractionZone-component">
       <h2>Extraction Zone</h2>
       <br /><br />
-      {showCharacterSelectionList ?
-        <div className="characterList">
-          (No prediction found) Pick people from here
-          <CharacterSelectionList
-            characterProfiles={characterProfiles}
-            firstSpeechPreSnippetIndex={firstSpeechIndex}
-          />
-        </div> :
-        '' }
-      {nameToShowIfSuggested ? <div className="suggestionBox">{nameToShowIfSuggested}</div> : '' }
+      {(currentHighlightPredictedName === 'none' || currentHighlightPredictedName === null)
+        ? <div className="characterList">
+            (No prediction found) Pick people from here
+            <CharacterSelectionList
+              characterProfiles={characterProfiles}
+              firstNonWhitespacePreSnippetId={firstNonWhitespaceIndex}
+            />
+          </div>
+        : '(no characterList)' }
 
+      {currentHighlightPredictedName !== 'none' && currentHighlightPredictedName !== null
+        ? <div className="suggestionBox">{currentHighlightPredictedName}</div>
+        : '' }
       {preSnipTags}
     </div>
   )
