@@ -58,14 +58,14 @@ export const getBookInfo = (bookName) => (dispatch) => {
   )
 }
 
-export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName}) => (dispatch) => {
+export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName, snippetType}) => (dispatch) => {
   // make request to backend to confirm the character for the given index
-  console.log('IN HERE');
-  api.confirmNameOnPreSnippet({bookName, blockId, preSnippetId, displayName})
+  api.confirmNameOnPreSnippet({bookName, blockId, preSnippetId, displayName, snippetType})
   .then((response) => { // should just be the snippets on response.body
     // add new Snippet to snippets list
-    dispatch({type: 'ADD_SNIPPET', snippet: response[response.length-1] })
-    // remove the presnippet from preSnippets
+    let newSnippet = response.body[response.body.length - 1]
+    dispatch({type: 'ADD_SNIPPET', snippet: newSnippet })
+    // remove the presnippet from preSnippets or just hide
   })
   .catch((err) => {
     console.error('ERROR in handleConfirmedNameOnPreSnippet', err);

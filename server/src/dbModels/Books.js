@@ -182,9 +182,9 @@ const _getBookInfo = (bookName) => {
 
 
 // _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
-const _nameConfirmedOnPreSnippet = (bookNameBeingUsed, blockId, preSnippetId, displayNameConfirmed) => {
+const _nameConfirmedOnPreSnippet = (bookNameBeingUsed, blockId, preSnippetId, displayNameConfirmed, snippetType) => {
   return _getBlockByIndex(bookNameBeingUsed, blockId).then((blockToUpdate) => {
-    blockToUpdate.snippets.push(new Snippet(displayNameConfirmed, preSnippetId))
+    blockToUpdate.snippets.push(new Snippet(displayNameConfirmed, preSnippetId, snippetType))
     blockToUpdate.preSnippets = blockToUpdate.preSnippets.map(preSnippet => {
       if (preSnippet.id === preSnippetId) {
         preSnippet.personConfirmedNormalized = displayNameConfirmed

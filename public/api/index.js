@@ -39,16 +39,11 @@ export const getNameSuggestion = ({ bookName, blockId, speechPreSnippetIdSelecte
       .end(genericEnd(fulfill, reject))
   })
 
-export const confirmNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName}) =>
+export const confirmNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName, snippetType}) =>
   new Promise((fulfill, reject) => {
-    console.log('inside this promise thing for confirmNameOnPreSnippet', {bookName, blockId, preSnippetId, displayName});
     superagent.post('/api/books/multi/nameConfirmedOnPreSnippet')
-      .send({bookName, blockId, preSnippetId, displayName})
-      .end((err, res) => {
-        console.log('ERR', err);
-        console.log('RES', res.body);
-        fulfill(res.body)
-      })
+      .send({bookName, blockId, preSnippetId, displayName, snippetType})
+      .end(genericEnd(fulfill, reject))
   })
 
 

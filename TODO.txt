@@ -1,4 +1,7 @@
-Upon first grab of block data
+Still need to calculate removing of the preSnippets properly and adding
+them to the snippets
+
+
 
 
 LATERS

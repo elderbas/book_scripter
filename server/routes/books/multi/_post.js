@@ -12,12 +12,13 @@ function nameConfirmedOnPreSnippet (req, res) {
   let blockId = _.get(req, 'body.blockId');
   let preSnippetId = _.get(req, 'body.preSnippetId');
   let displayName = _.get(req, 'body.displayName');
+  let snippetType = _.get(req, 'body.snippetType');
 
-  if (_.some([bookName, blockId, preSnippetId, displayName], _.isUndefined)) {
+  if (_.some([bookName, blockId, preSnippetId, displayName, snippetType], _.isUndefined)) {
     return errorHandler(req, res, 'Missing parameters to /api/books/multi/nameConfirmedOnPreSnippet', 500);
   }
 
-  Books.nameConfirmedOnPreSnippet(bookName, blockId, preSnippetId, displayName)
+  Books.nameConfirmedOnPreSnippet(bookName, blockId, preSnippetId, displayName, snippetType)
   .then(newBlock => {
     res.send(newBlock.snippets)
   })

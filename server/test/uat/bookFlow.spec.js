@@ -272,10 +272,12 @@ function nameConfirmedOnPreSnippet (cb) {
       bookName: 'got_piece',
       blockId: 0,
       preSnippetId: 0,
-      displayName: 'Bob'
+      displayName: 'Bob',
+      snippetType: 'speech'
     })
     .expect(200)
     .end((err, res) => {
+      console.log('res.body', res.body);
       let updatedSnippets = res.body
       expect(updatedSnippets.length).to.equal(1)
       cb()

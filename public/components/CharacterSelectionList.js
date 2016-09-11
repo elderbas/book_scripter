@@ -8,11 +8,16 @@ class CharacterSelectionList extends React.Component {
   onCharacterSelected (charDisplayName) {
     const { firstSpeechPreSnippetIndex, handleConfirmedNameOnPreSnippet, currentBook } = this.props
     console.log(`Character: ${charDisplayName} selected for index ${firstSpeechPreSnippetIndex}`);
+    console.log(
+      'currentBook.currentBlockWorkingOn.preSnippets[firstSpeechPreSnippetIndex].type',
+      currentBook.currentBlockWorkingOn.preSnippets[firstSpeechPreSnippetIndex].type
+    );
     handleConfirmedNameOnPreSnippet({
       bookName: currentBook.bookName,
       blockId: currentBook.lastBlockIndexWorkedOn,
       preSnippetId: firstSpeechPreSnippetIndex,
-      displayName: charDisplayName
+      displayName: charDisplayName,
+      snippetType: currentBook.currentBlockWorkingOn.preSnippets[firstSpeechPreSnippetIndex].type
     })
   }
   render() {
