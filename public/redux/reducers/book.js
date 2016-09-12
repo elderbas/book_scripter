@@ -18,7 +18,9 @@ const currentBook = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_SNIPPET':
       let { snippets, preSnippets } = state.currentBlockWorkingOn
-      let nextPreSnippetIndexToStartAt = preSnippets.findIndex(ps => ps.type !== 'whitespace' && ps.id !== action.snippet.matchingPreSnippetId)
+      let nextPreSnippetIndexToStartAt = preSnippets.findIndex(ps =>
+        ps.type !== 'whitespace' && ps.id !== action.snippet.matchingPreSnippetId
+      )
       let newState =  {
         ...state,
         currentBlockWorkingOn: {
@@ -44,6 +46,9 @@ const currentHighlightPredictedName = (state = null, action) => {
       let namesSuggested = responseToNameSuggestion(action.response)
       let valueToUseForName = (namesSuggested.length > 0) ? namesSuggested[0].displayName : 'none';
       return valueToUseForName
+
+    case 'RESET_PREDICTED_NAME':
+      return null
     default:
       return state
   }

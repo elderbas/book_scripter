@@ -55,13 +55,11 @@ export const getBookInfo = (bookName) => (dispatch) => {
 }
 
 export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName, snippetType}) => (dispatch) => {
-  // make request to backend to confirm the character for the given index
   api.confirmNameOnPreSnippet({bookName, blockId, preSnippetId, displayName, snippetType})
-  .then((response) => { // should just be the snippets on response.body
-    // add new Snippet to snippets list
+  .then((response) => {
     let newSnippet = response.body[response.body.length - 1]
     dispatch({type: 'ADD_SNIPPET', snippet: newSnippet })
-    // remove the presnippet from preSnippets or just hide
+    dispatch({type: 'RESET_PREDICTED_NAME'}) // reset predicted name after last preSnippet has been removed
   })
   .catch((err) => {
     console.error('ERROR in handleConfirmedNameOnPreSnippet', err);
@@ -71,7 +69,6 @@ export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId
 export const addCharacterProfile = (displayName, aliases, bookName) => (dispatch) => {
   api.addCharacterProfile(displayName, aliases, bookName)
   .then((response) => {
-    // after added, add the character profile to the store list too
     dispatch({type: 'ADD_CHARACTER_PROFILE', characterProfile: {displayName, aliases}})
   })
   .catch((err) => {

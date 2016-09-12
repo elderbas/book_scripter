@@ -6,42 +6,44 @@ import '../scss/index.scss'
 
 class CharacterSelectionList extends React.Component {
   onCharacterSelected (charDisplayName) {
-    const { firstNonWhitespacePreSnippetId, handleConfirmedNameOnPreSnippet, currentBook: {bookName, lastBlockIndexWorkedOn, currentBlockWorkingOn} } = this.props
+    const { firstNonWhitespacePreSnippet,
+            handleConfirmedNameOnPreSnippet,
+            currentBook: {bookName, lastBlockIndexWorkedOn, currentBlockWorkingOn} } = this.props
     handleConfirmedNameOnPreSnippet({
       bookName: bookName,
       blockId: lastBlockIndexWorkedOn,
-      preSnippetId: firstNonWhitespacePreSnippetId,
+      preSnippetId: firstNonWhitespacePreSnippet.id,
       displayName: charDisplayName,
-      snippetType: currentBlockWorkingOn.preSnippets.find(ps => ps.id === firstNonWhitespacePreSnippetId).type,
+      snippetType: firstNonWhitespacePreSnippet.type,
     })
   }
   render() {
-    let { characterProfiles, currentBook, firstNonWhitespacePreSnippetId } = this.props
+    let { characterProfiles, currentBook, firstNonWhitespacePreSnippet, currentHighlightPredictedName } = this.props
     let { preSnippets } = currentBook.currentBlockWorkingOn
-    characterProfiles = [
-      ...characterProfiles,
-      {displayName: 'Moses', aliases: ['Mr Prophet', 'Red Sea Splitter']}
-    ]
-    let characterItems;
-    let firstNonWhiteSpacePreSnippetId = preSnippets.find(ps => ps.id === firstNonWhitespacePreSnippetId)
-    if (firstNonWhiteSpacePreSnippetId.type === 'narration') {
-      characterItems = [{displayName: 'Narration', aliases: []}].map(({displayName, aliases}) => {
-        return (
-          <li key={displayName} onClick={() => this.onCharacterSelected(displayName)}>
-            <span className="displayName">{displayName}</span>
-          </li>
-        )
-      })
+
+    if (currentHighlightPredictedName !== 'none' && currentHighlightPredictedName !== null) {
+      return (
+        <div className="predictedName" style={{width: '50px'}}>
+          <button onClick={() => this.onCharacterSelected(currentHighlightPredictedName)}>
+            {currentHighlightPredictedName}
+          </button>
+
+        </div>
+      )
     }
-    else {
-      characterItems = characterProfiles.map(({displayName, aliases}) => {
-        return (
-          <li key={displayName} onClick={() => this.onCharacterSelected(displayName)}>
-            <span className="displayName">{displayName}</span>
-          </li>
-        )
-      })
-    }
+
+    let characterItems, charProfilesToDisplay;
+    charProfilesToDisplay = (firstNonWhitespacePreSnippet.type === 'narration')
+      ? [{displayName: 'Narration', aliases: []}]
+      : characterProfiles
+
+    characterItems = charProfilesToDisplay.map(({displayName, aliases}) => {
+      return (
+        <li key={displayName} onClick={() => this.onCharacterSelected(displayName)}>
+          <span className="displayName">{displayName}</span>
+        </li>
+      )
+    })
 
     return (
       <div className="CharacterSelectionList-component">
@@ -50,10 +52,7 @@ class CharacterSelectionList extends React.Component {
           let aliasCsvTest = this._csvAliasesTxtBx.value;
           let aliases = !!aliasCsvTest ? aliasCsvTest.split(',').map(x => x.trim()) : []
           let charDisplayName = this._charToAddNameTxtBx.value
-          console.log('charDisplayName', charDisplayName);
-          console.log('aliases', aliases);
           this._charToAddNameTxtBx.value = this._csvAliasesTxtBx.value = '';
-          console.log('currentBook', currentBook);
           this.props.addCharacterProfile(charDisplayName, aliases, currentBook.bookName)
         }}>
           <input type="text" ref={(c) => this._charToAddNameTxtBx = c } placeholder="New primary display name"/>
@@ -71,7 +70,8 @@ class CharacterSelectionList extends React.Component {
 }
 
 const mapStateToProps = (store, ownProps) => ({
-  currentBook: store.book.currentBook
+  currentBook: store.book.currentBook,
+  currentHighlightPredictedName: store.book.currentHighlightPredictedName,
 })
 CharacterSelectionList.propTypes = {}
 CharacterSelectionList = connect(mapStateToProps, actions)(CharacterSelectionList)
