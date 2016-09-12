@@ -26,22 +26,26 @@ class BookScripter extends React.Component {
     getBookInfo(params.bookName)
   }
 
-  // i feel like this is way too much work to be doing this
+  // automatically get predicted name when the preSnippet coming up is speech type
   componentWillReceiveProps (nextProps) {
     if (get(this.props, 'currentBook.currentBlockWorkingOn')) {
       let { currentHighlightPredictedName } = nextProps
       let { currentBlockWorkingOn: {preSnippets} } = nextProps.currentBook
       let firstNonWhitespacePreSnippet = preSnippets.find(ps => ps !== 'whitespace')
+
+      // current one coming in is speech type and we havent gotten back a response yet
       if (firstNonWhitespacePreSnippet && firstNonWhitespacePreSnippet.type === 'speech' && isNull(currentHighlightPredictedName)) {
         this.getNameSuggestion(firstNonWhitespacePreSnippet.id)
       }
     }
   }
   render() {
-    if (this.props.currentBook.bookName === undefined) {
+    const {characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
+
+    if (isUndefined(bookName)) {
       return <Loading text="Retrieving book details" />
     }
-    const {characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
+
     let firstNonWhitespacePreSnippet = preSnippets.find(ps => ps.type !== 'whitespace')
 
     return (

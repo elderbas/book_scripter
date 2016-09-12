@@ -18,9 +18,7 @@ const currentBook = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_SNIPPET':
       let { snippets, preSnippets } = state.currentBlockWorkingOn
-      let nextPreSnippetIndexToStartAt = preSnippets.findIndex(ps =>
-        ps.type !== 'whitespace' && ps.id !== action.snippet.matchingPreSnippetId
-      )
+      let nextPreSnippetIndexToStartAt = preSnippets.findIndex(ps => ps.type !== 'whitespace' && ps.id !== action.snippet.matchingPreSnippetId)
       let newState =  {
         ...state,
         currentBlockWorkingOn: {

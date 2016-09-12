@@ -1,5 +1,5 @@
 // ExtractionZone
-import React, {PropTypes} from 'react'
+import React, { PropTypes } from 'react'
 import CharacterSelectionList from '../CharacterSelectionList'
 
 const ExtractionZone = ({ preSnippets, characterProfiles, firstNonWhitespacePreSnippet }) => {
@@ -23,7 +23,6 @@ const ExtractionZone = ({ preSnippets, characterProfiles, firstNonWhitespacePreS
     </div>
   )
 }
-
 
 ExtractionZone.propTypes = {}
 export default ExtractionZone

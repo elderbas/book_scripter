@@ -1,32 +1,19 @@
-create ADD_CHARACTER_PROFILE reducer for using response from API endpoint
-
-
-
-SPENCE THE INDISPENSABLE
-1) I want narration charType to automatically apply itself, hopefully without any rendering
-2) I want speech types to automatically attempt a prediction when it becomes their turn
-3) Pointers in tidying up
-
-
 Snippets need to show the text that they match (save the text to the snippets?)
 
-Need to have somewhere for adding more character profiles
+Checkbox for confirming you want narration types automatically just marked as narration
 
 Backend is not actually adding snippets to the DB
 (Not bad for right now since it's easier to test without it doing that)
 
-Need to automatically try for prediction when the currently highlighted pre snippet
-is a speech type
+Need button for confirming current block as done, and pulling in next block
 
-Need button for marking current block as done, and pulling in next block
-
+READ: http://redux.js.org/docs/introduction/Motivation.html,
+for better patterns hopefully using Redux
 
 
 LATERS
 UAT test for deleting book by NAME
 clicking on X near name confirms you want to delete it
-
-
 
 Reachers
 Animate the square around the current speech, to move to surround the next speech after selected
