@@ -9,12 +9,14 @@ class CharacterSelectionList extends React.Component {
     const { firstNonWhitespacePreSnippet,
             handleConfirmedNameOnPreSnippet,
             currentBook: {bookName, lastBlockIndexWorkedOn, currentBlockWorkingOn} } = this.props
+  let preSnippets = currentBlockWorkingOn.preSnippets
     handleConfirmedNameOnPreSnippet({
       bookName: bookName,
       blockId: lastBlockIndexWorkedOn,
       preSnippetId: firstNonWhitespacePreSnippet.id,
       displayName: charDisplayName,
       snippetType: firstNonWhitespacePreSnippet.type,
+      preSnippetText: preSnippets.find(ps => firstNonWhitespacePreSnippet.id === ps.id).text
     })
   }
   render() {

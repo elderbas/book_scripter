@@ -54,10 +54,11 @@ export const getBookInfo = (bookName) => (dispatch) => {
   )
 }
 
-export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName, snippetType}) => (dispatch) => {
+export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName, snippetType, preSnippetText}) => (dispatch) => {
   api.confirmNameOnPreSnippet({bookName, blockId, preSnippetId, displayName, snippetType})
   .then((response) => {
     let newSnippet = response.body[response.body.length - 1]
+    newSnippet.text = preSnippetText
     dispatch({type: 'ADD_SNIPPET', snippet: newSnippet })
     dispatch({type: 'RESET_PREDICTED_NAME'}) // reset predicted name after last preSnippet has been removed
   })

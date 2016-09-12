@@ -40,12 +40,10 @@ class BookScripter extends React.Component {
     }
   }
   render() {
-    const {characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
-
-    if (isUndefined(bookName)) {
+    if (isUndefined(this.props.currentBook.bookName)) {
       return <Loading text="Retrieving book details" />
     }
-
+    const {characterProfiles, bookName, currentBlockWorkingOn: {snippets, preSnippets} } = this.props.currentBook;
     let firstNonWhitespacePreSnippet = preSnippets.find(ps => ps.type !== 'whitespace')
 
     return (

@@ -1,3 +1,6 @@
+Refactor components to be more careful about which state they each use
+(to minimize re-renders)
+
 Snippets need to show the text that they match (save the text to the snippets?)
 
 Checkbox for confirming you want narration types automatically just marked as narration
