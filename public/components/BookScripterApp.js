@@ -1,5 +1,5 @@
 // BookScripterApp
-import React, {PropTypes} from 'react'
+import React from 'react'
 import Header from './Header'
 import Footer from './Footer'
 
@@ -17,5 +17,4 @@ class BookScripterApp extends React.Component {
 }
 
 
-BookScripterApp.propTypes = {}
 export default BookScripterApp

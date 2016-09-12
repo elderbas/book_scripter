@@ -1,5 +1,5 @@
 // Snippets
-import React, {PropTypes} from 'react'
+import React, { PropTypes } from 'react'
 let jsonStringifyPretty = require('json-pretty')
 const spill = j => jsonStringifyPretty(j)
 const Snippets = ({snippets}) => {
@@ -12,5 +12,7 @@ const Snippets = ({snippets}) => {
 }
 
 
-Snippets.propTypes = {}
+Snippets.propTypes = {
+  snippets: PropTypes.array.isRequired
+}
 export default Snippets

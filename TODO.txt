@@ -1,6 +1,8 @@
 Refactor components to be more careful about which state they each use
 (to minimize re-renders)
 
+factor out currentBlockWorkingOn. it's not necessary for the frontend
+
 Snippets need to show the text that they match (save the text to the snippets?)
 
 Checkbox for confirming you want narration types automatically just marked as narration
@@ -13,6 +15,8 @@ Need button for confirming current block as done, and pulling in next block
 READ: http://redux.js.org/docs/introduction/Motivation.html,
 for better patterns hopefully using Redux
 
+
+Toggleable logger depending by type.
 
 LATERS
 UAT test for deleting book by NAME
