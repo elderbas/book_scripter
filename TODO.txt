@@ -1,3 +1,13 @@
+create ADD_CHARACTER_PROFILE reducer for using response from API endpoint
+
+
+
+SPENCE THE INDISPENSABLE
+1) I want narration charType to automatically apply itself, hopefully without any rendering
+2) I want speech types to automatically attempt a prediction when it becomes their turn
+3) Pointers in tidying up
+
+
 Snippets need to show the text that they match (save the text to the snippets?)
 
 Need to have somewhere for adding more character profiles
@@ -9,12 +19,6 @@ Need to automatically try for prediction when the currently highlighted pre snip
 is a speech type
 
 Need button for marking current block as done, and pulling in next block
-
-
-
-
-
-
 
 
 

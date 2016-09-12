@@ -6,22 +6,20 @@ import '../scss/index.scss'
 
 class CharacterSelectionList extends React.Component {
   onCharacterSelected (charDisplayName) {
-    const { firstNonWhitespacePreSnippetId, handleConfirmedNameOnPreSnippet,
-      currentBook: {bookName, lastBlockIndexWorkedOn, currentBlockWorkingOn} } = this.props
-    let snippetType = currentBlockWorkingOn.preSnippets.find(ps => ps.id === firstNonWhitespacePreSnippetId).type
+    const { firstNonWhitespacePreSnippetId, handleConfirmedNameOnPreSnippet, currentBook: {bookName, lastBlockIndexWorkedOn, currentBlockWorkingOn} } = this.props
     handleConfirmedNameOnPreSnippet({
       bookName: bookName,
       blockId: lastBlockIndexWorkedOn,
       preSnippetId: firstNonWhitespacePreSnippetId,
       displayName: charDisplayName,
-      snippetType,
+      snippetType: currentBlockWorkingOn.preSnippets.find(ps => ps.id === firstNonWhitespacePreSnippetId).type,
     })
   }
   render() {
     let { characterProfiles, currentBook, firstNonWhitespacePreSnippetId } = this.props
     let { preSnippets } = currentBook.currentBlockWorkingOn
     characterProfiles = [
-      {displayName: 'Bob Harding', aliases: ['Mr Harding', 'Bob']},
+      ...characterProfiles,
       {displayName: 'Moses', aliases: ['Mr Prophet', 'Red Sea Splitter']}
     ]
     let characterItems;
@@ -47,9 +45,26 @@ class CharacterSelectionList extends React.Component {
 
     return (
       <div className="CharacterSelectionList-component">
-        <ul>
-          {characterItems}
-        </ul>
+        <form action="#" onSubmit={(e) => {
+          e.preventDefault();
+          let aliasCsvTest = this._csvAliasesTxtBx.value;
+          let aliases = !!aliasCsvTest ? aliasCsvTest.split(',').map(x => x.trim()) : []
+          let charDisplayName = this._charToAddNameTxtBx.value
+          console.log('charDisplayName', charDisplayName);
+          console.log('aliases', aliases);
+          this._charToAddNameTxtBx.value = this._csvAliasesTxtBx.value = '';
+          console.log('currentBook', currentBook);
+          this.props.addCharacterProfile(charDisplayName, aliases, currentBook.bookName)
+        }}>
+          <input type="text" ref={(c) => this._charToAddNameTxtBx = c } placeholder="New primary display name"/>
+          <input type="text" ref={(c) => this._csvAliasesTxtBx = c } placeholder="comma separated list of aliases"/>
+          <button type="submit" className="button-success pure-button">Add new character name</button>
+        </form>
+        <div className="charListWrapper">
+          <ul>
+            {characterItems}
+          </ul>
+        </div>
       </div>
     )
   }

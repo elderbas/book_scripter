@@ -32,6 +32,8 @@ const currentBook = (state = {}, action) => {
     case 'FETCH_BOOK_SUCCESS':
       return responseToFetchBook(action.response)
 
+    case 'ADD_CHARACTER_PROFILE':
+      return { ...state, characterProfiles: [...state.characterProfiles, action.characterProfile] }
     default:
       return state
   }
