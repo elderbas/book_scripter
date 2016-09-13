@@ -1,6 +1,12 @@
 // PreSnippetExhibit
 import React, { PropTypes } from 'react'
 
+let highlightedStyle = {
+  border: '1px solid red',
+  backgroundColor: 'pink',
+  padding: '4px',
+  borderRadius: '2px'
+}
 const PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet}) => {
   if (preSnippets.length === 0) {
     return (
@@ -10,10 +16,9 @@ const PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet}) => {
       </div>
     )
   }
-
   let preSnipTags = preSnippets.map(({text, id}) => {
     return (id === currentHighlightedPreSnippet.id)
-      ? <span className="highlightedPreSnippet" key={id}>{text}</span>
+      ? <span style={highlightedStyle} key={id}>{text}</span>
       : <span key={id}>{text}</span>
   })
 
@@ -27,5 +32,6 @@ const PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet}) => {
 
 PreSnippetExhibit.propTypes = {
   preSnippets: PropTypes.array.isRequired,
+  currentHighlightedPreSnippet: PropTypes.object,
 }
 export default PreSnippetExhibit

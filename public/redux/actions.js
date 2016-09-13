@@ -41,6 +41,7 @@ export const getNameSuggestion = ({ bookName, blockId, speechPreSnippetIdSelecte
   )
 }
 export const getBookInfo = (bookName) => (dispatch) => {
+  console.log('getBookInfo dispatch!');
   dispatch({type: 'FETCH_BOOK_REQUEST'})
   api.getBookInfo(bookName)
   .then(
@@ -62,9 +63,9 @@ export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId
     dispatch({type: 'ADD_SNIPPET', snippet: newSnippet })
     dispatch({type: 'RESET_PREDICTED_NAME'}) // reset predicted name after last preSnippet has been removed
   })
-  .catch((err) => {
-    console.error('ERROR in handleConfirmedNameOnPreSnippet', err);
-  })
+  // .catch((err) => {
+  //   console.error('ERROR in handleConfirmedNameOnPreSnippet', err);
+  // })
 }
 
 export const addCharacterProfile = (displayName, aliases, bookName) => (dispatch) => {

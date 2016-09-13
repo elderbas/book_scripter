@@ -12,7 +12,6 @@ class Body extends React.Component {
   }
   render() {
     const { bookList } = this.props
-    console.log('PROPS IN RENDER!!!', this.props);
     return (
       <div className="Body-component">
         <ul>

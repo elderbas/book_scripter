@@ -7,37 +7,42 @@ import * as actions from '../../redux/actions'
 
 class CharacterListContainer extends React.Component {
   getNameSuggestion () {
-    const { bookName, currentBlockId, currentHighlightedPreSnippet} = this.props
-    const { getNameSuggestion, params, currentBook } = this.props;
-    getNameSuggestion({
-      bookName,
-      blockId: currentBlockId,
-      speechPreSnippetIdSelected: currentHighlightedPreSnippet.id
+    this.props.getNameSuggestion({
+      bookName: this.props.bookName,
+      blockId: this.props.currentBlockId,
+      speechPreSnippetIdSelected: this.props.currentHighlightedPreSnippet.id
     })
   }
+  // automatically get predicted name when the preSnippet coming up is speech type
+  componentWillReceiveProps (nextProps) {
+    if (this.props.currentHighlightedPreSnippet && nextProps.currentHighlightedPreSnippet) {
+      let { currentHighlightPredictedName, currentHighlightedPreSnippet } = nextProps
+      // current one coming in is speech type and we havent gotten back a response yet
+      if (currentHighlightedPreSnippet && currentHighlightedPreSnippet.type === 'speech' && currentHighlightPredictedName === null) {
+        this.getNameSuggestion(currentHighlightedPreSnippet.id)
+      }
+    }
+  }
+
   handleAddCharacterProfile (displayName, aliases) {
     this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
   }
   handleCharacterSelected (charDisplayName) {
-    const { bookName, currentBlockId, currentHighlightedPreSnippet} = this.props
     this.props.handleConfirmedNameOnPreSnippet({
-      bookName,
-      blockId: currentBlockId,
-      preSnippetId: currentHighlightedPreSnippet.id,
+      bookName: this.props.bookName,
+      blockId: this.props.currentBlockId,
+      preSnippetId: this.props.currentHighlightedPreSnippet.id,
       displayName: charDisplayName,
-      snippetType: currentHighlightedPreSnippet.type,
-      preSnippetText: props.currentHighlightedPreSnippet.text,
+      snippetType: this.props.currentHighlightedPreSnippet.type,
+      preSnippetText: this.props.currentHighlightedPreSnippet.text,
     })
   }
-
   render() {
-    const { currentHighlightedPreSnippet, preSnippets, characterProfiles, currentHighlightPredictedName } = this.props;
-
     return (
       <CharacterListPres
-        currentHighlightedPreSnippet={currentHighlightedPreSnippet}
-        characterProfiles={characterProfiles}
-        currentHighlightPredictedName={currentHighlightPredictedName}
+        currentHighlightedPreSnippet={this.props.currentHighlightedPreSnippet}
+        characterProfiles={this.props.characterProfiles}
+        currentHighlightPredictedName={this.props.currentHighlightPredictedName}
         onCharacterSelected={this.handleCharacterSelected.bind(this)}
         onAddCharacterProfile={this.handleAddCharacterProfile.bind(this)}
       />
@@ -46,8 +51,9 @@ class CharacterListContainer extends React.Component {
 }
 
 CharacterListContainer.propTypes = {
-  preSnippets: PropTypes.array.isRequired,
-  currentHighlightedPreSnippet: PropTypes.object.isRequired,
+  currentHighlightedPreSnippet: PropTypes.object, // add shape
+
+  currentBlockId: PropTypes.number.isRequired,
   characterProfiles: PropTypes.array.isRequired,
   bookName: PropTypes.string.isRequired,
   // currentHighlightPredictedName, null, none, predicted name ?not sure how to do that
@@ -59,9 +65,10 @@ const mapStateToProps = (store) => ({
   currentHighlightPredictedName: store.book.currentHighlightPredictedName,
   currentBlockId: store.book.currentBook.lastBlockIndexWorkedOn
 })
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = {
   addCharacterProfile: actions.addCharacterProfile,
   handleConfirmedNameOnPreSnippet: actions.handleConfirmedNameOnPreSnippet,
-})
+  getNameSuggestion: actions.getNameSuggestion,
+}
 CharacterListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(CharacterListContainer))
 export default CharacterListContainer
