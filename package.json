@@ -1,4 +1,25 @@
 {
+  "scripts": {
+    "start": "export NODE_ENV=development && node server/indexWithTests.js",
+    "back-test": "export NODE_ENV=test && gulp --gulpfile Gulpfile.backend.js --force",
+    "back-api-test": "export NODE_ENV=test && mocha -w server/test/uat/bookFlow.spec.js",
+    "back-serve": "nodemon server/indexWithTests.js --config server/nodemon.json"
+  },
+  "eslintConfig": {
+    "globals": {
+      "expect": true,
+      "describe": true,
+      "it": true
+    },
+    "root": true,
+    "env": {
+      "browser": true,
+      "jasmine": true
+    },
+    "extends": [
+      "xo-space/esnext"
+    ]
+  },
   "devDependencies": {
     "async": "^2.0.1",
     "autoprefixer": "6.2.3",
@@ -65,26 +86,6 @@
     "webpack-hot-middleware": "^2.12.2",
     "winston": "^2.2.0",
     "wiredep": "2.2.2"
-  },
-  "scripts": {
-    "start": "export NODE_ENV=development && node server/indexWithTests.js",
-    "back-test": "export NODE_ENV=test && gulp --gulpfile Gulpfile.backend.js --force",
-    "back-api-test": "export NODE_ENV=test && mocha -w server/test/uat/bookFlow.spec.js",
-    "back-serve": "nodemon server/indexWithTests.js --config server/nodemon.json"
-  },
-  "eslintConfig": {
-    "globals": {
-      "expect": true,
-      "angular": true
-    },
-    "root": true,
-    "env": {
-      "browser": true,
-      "jasmine": true
-    },
-    "extends": [
-      "xo-space/esnext"
-    ]
   },
   "dependencies": {
     "axios": "^0.14.0",

@@ -4,6 +4,5 @@ dist/
 .idea/
 node_modules/
 jspm_packages/
-bower_components/
 misc_ignored/
 */db/*
