@@ -1,5 +1,6 @@
 // CharacterListPres
 import React, {PropTypes} from 'react'
+import trim from 'lodash/trim'
 
 const CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet,
 characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
@@ -40,10 +41,9 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
     <div className="CharacterSelectionList-component">
       <form action="#" onSubmit={(e) => {
         e.preventDefault();
-        let aliasCsvTest = _csvAliasesTxtBxRef.value;
-        let aliases = !!aliasCsvTest ? aliasCsvTest.split(',').map(x => x.trim()) : []
-        let charDisplayName = _charToAddNameTxtBxRef.value
-        this._charToAddNameTxtBx.value = _csvAliasesTxtBxRef.value = '';
+        const aliases = !!_csvAliasesTxtBxRef.value ? _csvAliasesTxtBxRef.value.split(',').map(trim) : []
+        const charDisplayName = _charToAddNameTxtBxRef.value
+        _charToAddNameTxtBxRef.value = _csvAliasesTxtBxRef.value = '';
         onAddCharacterProfile(charDisplayName, aliases)
       }}>
         <input type="text" ref={(c) => _csvAliasesTxtBxRef = c } placeholder="New primary display name"/>

@@ -5,6 +5,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
 
+
+/* this is handling
+ * NEW CHARACTERS being added
+ * CURRENT character being selected
+ * PREDICTED CHARACTER displaying and able to be selected*/
 class CharacterListContainer extends React.Component {
   getNameSuggestion () {
     this.props.getNameSuggestion({
