@@ -23,7 +23,7 @@ const PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet}) => {
   })
 
   return (
-    <div>
+    <div style={{whiteSpace: 'pre-wrap'}}>
       {preSnipTags}
     </div>
   )
