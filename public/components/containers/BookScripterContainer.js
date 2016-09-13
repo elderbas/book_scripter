@@ -1,6 +1,6 @@
 // BookScripterContainer
 import React, {PropTypes} from 'react'
-import BookScripterPres from './BookScripterPres'
+import BookScripterPres from '../presentation/BookScripterPres'
 import Loading from '../Loading'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'

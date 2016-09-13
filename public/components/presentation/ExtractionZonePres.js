@@ -1,7 +1,7 @@
 // ExtractionZonePres
 import React, {PropTypes} from 'react'
-import CharacterListContainer from './CharacterListContainer'
-import PreSnippetExhibit from './PreSnippetExhibit'
+import CharacterListContainer from '../containers/CharacterListContainer'
+import PreSnippetExhibit from '../containers/PreSnippetExhibit'
 
 const ExtractionZonePres = ({preSnippets, currentHighlightedPreSnippet}) => {
   const props = { preSnippets, currentHighlightedPreSnippet }

@@ -4,7 +4,7 @@ import trim from 'lodash/trim'
 
 const CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet,
 characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
-
+    // debugger;
     if (currentHighlightedPreSnippet === undefined) {
       return (
         <div>
@@ -14,7 +14,7 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
     }
     if (currentHighlightPredictedName !== 'none' && currentHighlightPredictedName !== null) {
     return (
-      <div className="predictedName" style={{width: '50px'}}>
+      <div style={{width: '50px'}}>
         <button onClick={() => onCharacterSelected(currentHighlightPredictedName)}>
           {currentHighlightPredictedName}
         </button>
@@ -31,23 +31,24 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
   characterItems = charProfilesToDisplay.map(({displayName, aliases}) => {
     return (
       <li key={displayName} onClick={() => onCharacterSelected(displayName)}>
-        <span className="displayName">{displayName}</span>
+        <span className="displayName">{`${displayName} - ${aliases.join(',')}`}</span>
       </li>
     )
   })
 
-  let _csvAliasesTxtBxRef, _charToAddNameTxtBxRef;
+  let _charToAddNameTxtBxRef, _csvAliasesTxtBxRef
   return (
     <div className="CharacterSelectionList-component">
       <form action="#" onSubmit={(e) => {
         e.preventDefault();
         const aliases = !!_csvAliasesTxtBxRef.value ? _csvAliasesTxtBxRef.value.split(',').map(trim) : []
         const charDisplayName = _charToAddNameTxtBxRef.value
-        _charToAddNameTxtBxRef.value = _csvAliasesTxtBxRef.value = '';
+        _charToAddNameTxtBxRef.value = ''
+        _csvAliasesTxtBxRef.value = ''
         onAddCharacterProfile(charDisplayName, aliases)
       }}>
-        <input type="text" ref={(c) => _csvAliasesTxtBxRef = c } placeholder="New primary display name"/>
-        <input type="text" ref={(c) => _charToAddNameTxtBxRef = c } placeholder="comma separated list of aliases"/>
+        <input type="text" ref={(c) => _charToAddNameTxtBxRef = c } placeholder="New primary display name"/>
+        <input type="text" ref={(c) => _csvAliasesTxtBxRef = c } placeholder="comma separated list of aliases"/>
         <button type="submit" className="button-success pure-button">Add new character name</button>
       </form>
       <div className="charListWrapper">

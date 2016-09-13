@@ -1,6 +1,6 @@
 // CharacterListContainer
 import React, {PropTypes} from 'react'
-import CharacterListPres from './CharacterListPres'
+import CharacterListPres from '../presentation/CharacterListPres'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
@@ -11,12 +11,16 @@ import * as actions from '../../redux/actions'
  * CURRENT character being selected
  * PREDICTED CHARACTER displaying and able to be selected*/
 class CharacterListContainer extends React.Component {
-  getNameSuggestion () {
-    this.props.getNameSuggestion({
-      bookName: this.props.bookName,
-      blockId: this.props.currentBlockId,
-      speechPreSnippetIdSelected: this.props.currentHighlightedPreSnippet.id
-    })
+  getNameSuggestion (newHighlightedPreSnippet) {
+    // debugger;
+    if (newHighlightedPreSnippet.type === 'speech') {
+      this.props.getNameSuggestion({
+        bookName: this.props.bookName,
+        blockId: this.props.currentBlockId,
+        speechPreSnippetIdSelected: newHighlightedPreSnippet.id
+      })
+    }
+
   }
   // automatically get predicted name when the preSnippet coming up is speech type
   componentWillReceiveProps (nextProps) {
@@ -24,12 +28,16 @@ class CharacterListContainer extends React.Component {
       let { currentHighlightPredictedName, currentHighlightedPreSnippet } = nextProps
       // current one coming in is speech type and we havent gotten back a response yet
       if (currentHighlightedPreSnippet && currentHighlightedPreSnippet.type === 'speech' && currentHighlightPredictedName === null) {
-        this.getNameSuggestion(currentHighlightedPreSnippet.id)
+        // debugger;
+        this.getNameSuggestion(nextProps.currentHighlightedPreSnippet)
       }
     }
   }
 
   handleAddCharacterProfile (displayName, aliases) {
+    if (displayName.trim('') === '') {
+      return alert('Need a valid displayName')
+    }
     this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
   }
   handleCharacterSelected (charDisplayName) {
