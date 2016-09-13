@@ -4,7 +4,8 @@ let get = require('lodash/get')
 let fs = require('fs');
 let bodyParser = require('body-parser');
 let path = require('path');
-
+let winston = require('winston');
+let expressWinston = require('express-winston');
 
 let ENV = process.env.NODE_ENV
 if (ENV === undefined) {
@@ -38,8 +39,18 @@ const PORT = process.env.PORT || config.server.port[ENV];
 app.use(bodyParser.json());
 app.use(require('express-fileupload')());
 
-
-
+// app.use(expressWinston.logger({
+//   transports: [
+//     new winston.transports.Console({
+//       json: true,
+//       colorize: true
+//     })
+//   ],
+//   // meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+//   msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+//   expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+//   colorize: true
+// }))
 app.use('/api/books', routes.books);
 console.log(`Running under '${ENV}' environment`);
 if (ENV === 'development') {

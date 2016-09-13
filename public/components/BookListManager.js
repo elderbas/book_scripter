@@ -1,25 +1,24 @@
 // BookListManager
-import React, {PropTypes} from 'react'
+import React, { PropTypes } from 'react'
 import '../scss/index.scss'
 import { connect } from 'react-redux'
 import * as actions from '../redux/actions'
 
-import BookFileUpload from './Presentation/BookFileUpload'
-import BooksUploadedList from './Presentation/BooksUploadedList'
+import BookFileUpload from './presentation/BookFileUpload'
+import BooksUploadedList from './presentation/BooksUploadedList'
 
-
+const style = {
+  marginLeft: '70px',
+  marginTop: '50px'
+}
 class BookListManager extends React.Component {
-  componentDidMount () {
-    this.props.fetchBooks()
-  }
-  uploadBook (files) {
-    this.props.uploadBook(files[0])
-  }
+  componentDidMount () { this.props.fetchBooks() }
+  uploadBook (files) { this.props.uploadBook(files[0]) }
   render() {
     const { areBeingFetched, bookList, isBeingUploaded } = this.props
 
     return (
-      <div className="BookListManager-component">
+      <div style={style}>
         <BooksUploadedList
           areBeingFetched={areBeingFetched}
           bookList={bookList}
@@ -39,7 +38,11 @@ const mapStateToProps = (state) => ({
   isBeingUploaded: state.book.isBeingUploaded,
   bookList: state.books.list,
 })
-BookListManager = connect(mapStateToProps, actions)(BookListManager)
+const mapDispatchToProps = {
+  fetchBooks: actions.fetchBooks,
+  uploadBook: actions.uploadBook,
+}
+BookListManager = connect(mapStateToProps, mapDispatchToProps)(BookListManager)
 export default BookListManager
 
 

@@ -8,6 +8,15 @@ utilityFunks.extractFileName = (fileNameStr) => {
   return fileNameWithoutExtension;
 };
 
+utilityFunks.validateType = (varName, val, funcValidator, funNameWhichInside) => {
+  if (!funcValidator(val) && arguments.length === 4) {
+    throw new Error(`${varName} failed type validation as ${val} in ${funNameWhichInside}`)
+  }
+  if (!funcValidator(val) && arguments.length === 3) {
+    return false
+  }
+}
+
 
 
 module.exports = utilityFunks;

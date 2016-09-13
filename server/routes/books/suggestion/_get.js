@@ -5,16 +5,29 @@ let Books = require(`${_serverDir_}/src/dbModels/Books`);
 let grabExtendingPreSnippets = require(`${_serverDir_}/src/grabExtendingPreSnippets`);
 let buildCustomLexicon = require(`${_serverDir_}/src/buildCustomLexicon`);
 let classifyPreSnippetArrangement = require(`${_serverDir_}/src/classifyPreSnippetArrangement`);
+let validateType = require('../../../utilityFunks').validateType
 
 // /api/books/suggestion
 router.get('/', getSuggestedName);
-
 let nameSuggest = require(`${_serverDir_}/src/nameSuggest`);
 function getSuggestedName (req, res) {
-  let bookName = _.get(req, 'query.bookName');
-  let blockId = _.get(req, 'query.blockId');
-  let speechPreSnippetIdSelected = _.get(req, 'query.speechPreSnippetIdSelected');
-  if (_.some([bookName, blockId, speechPreSnippetIdSelected], _.isUndefined)) {
+  const longStars = '************************************************************************************'
+  const longStars2 = [longStars,longStars].join('')
+  console.log(longStars2, longStars2, longStars2);
+  const bookName = _.get(req, 'query.bookName');
+  const tempBlockId = _.get(req, 'query.blockId');
+  const tempSpeechPreSnippetIdSelected = _.get(req, 'query.speechPreSnippetIdSelected');
+  if (_.some([bookName, tempBlockId, tempSpeechPreSnippetIdSelected], _.isUndefined)) {
+    return res.send('Missing query param to /api/books/suggestion');
+  }
+  const blockId = parseInt(tempBlockId)
+  const speechPreSnippetIdSelected = parseInt(tempSpeechPreSnippetIdSelected)
+
+  if (_.some([
+      validateType('bookName', bookName, _.isString),
+      validateType('blockId', blockId, _.isNumber),
+      validateType('speechPreSnippetIdSelected', speechPreSnippetIdSelected, _.isNumber),
+    ], (x) => x === false)) {
     return res.send('Missing query param to /api/books/suggestion');
   }
   // I feel like Im being redundant in getting these individual values, depending on how MongoDB
@@ -28,12 +41,17 @@ function getSuggestedName (req, res) {
       return Books.getBlockByIndex(bookName, blockId)
     })
     .then((block) => {
+      let prettyJson = (x) => JSON.stringify(x, null, 4)
+      // console.log(`block -`, prettyJson(block));
+      console.log('specific pre snippet', prettyJson(block.preSnippets[speechPreSnippetIdSelected]));
       let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
+      console.log('existing CHAR PROFILES', prettyJson(charProfsAndVSS.characterProfiles));
       customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, commonSpokenSynonyms.concat(charProfsAndVSS.verbSpokeSynonyms));
-      let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, 2, 6);
+      let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, speechPreSnippetIdSelected, 6);
+      console.log('preSnippetExtendedObj', prettyJson(preSnippetExtendedObj.nonSingleSpace));
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
+      console.log('preSnippetArrangementObj', prettyJson(preSnippetArrangementObj));
       let nameSuggestOutput = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
-
       let profilesToSuggest;
       if (_.isNull(nameSuggestOutput)) {
         profilesToSuggest = [];
@@ -43,12 +61,15 @@ function getSuggestedName (req, res) {
           let displayName = cp.displayName, suggestedName = nameSuggestOutput.suggestedName
           return displayName.toLowerCase() === suggestedName || _.some(cp.aliases, a => a.toLowerCase() === suggestedName)
         });
-      }
 
+      }
+      logger('profilesToSuggest', prettyJson(profilesToSuggest))
+      logger('nameSuggestOutput', prettyJson(nameSuggestOutput))
       res.send({characterProfilesSuggested: profilesToSuggest});
     })
     .catch((err) => {
       if (err) {
+        console.log('ERR in _get suggestion', err, err.message);
         errorHandler(req, res, `Server error @ GET /api/books/suggestion using book - '${bookName}'`, 500);
       }
     });

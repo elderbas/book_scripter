@@ -2,11 +2,9 @@
 'use strict';
 let nlp = require('nlp_compromise');
 let newLex = nlp.lexicon();
-newLex['pulava'] = 'PORT_WORD';
-console.log(nlp.sentence('He pulava a lot', {lexicon: newLex}));
+newLex['ser waymar royce'] = 'TARGETED_GUY';
+console.log(nlp.sentence('Ser Waymar Royce asked cooly.', {lexicon: newLex}).terms);
 
-nlp = reload('nlp_compromise');
-console.log(nlp.sentence('He pulava a lot'));
 
 
 
