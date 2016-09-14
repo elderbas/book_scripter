@@ -7,7 +7,7 @@ let request = require('supertest');
 let config = require('../../config.js');
 let app = require('../../appWithTests').app;
 let PreSnippet = require('../../src/classes/PreSnippet');
-let testDatasets = '/Users/bscherm/SideProjects/book_scripter_foundation/server/test/dataSets';
+let testDatasets = '/Users/bscherm/SideProjects/book_scripter/server/test/dataSets';
 let async = require('async');
 const MONGO_DB_URL = config.db.mongodb[ENV];
 

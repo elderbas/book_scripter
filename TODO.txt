@@ -1,4 +1,4 @@
-Pay attention to notification on Github for problem with Ser Waymar Royce being split up
+!!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
 
 
 Refactor components to be more careful about which state they each use
@@ -15,8 +15,20 @@ Backend is not actually adding snippets to the DB
 
 Need button for confirming current block as done, and pulling in next block
 
+
+% based suggestions (we're X% sure this is right)
+
+Turn on auto narration application
+
+
 READ: http://redux.js.org/docs/introduction/Motivation.html,
 for better patterns hopefully using Redux
+
+TRAINING MODEL
+Pre scan all verbs for past tense, ask if they look like synonyms to indicate
+somebody having uttered something
+
+
 
 
 Toggleable logger depending by type.
