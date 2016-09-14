@@ -1,7 +1,7 @@
-// SnippetsRah
+// Snippets
 import React, {PropTypes} from 'react'
 let jsonStringifyPretty = require('json-pretty')
-class SnippetsRah extends React.Component {
+class Snippets extends React.Component {
   componentDidUpdate () {
     this.refs.snipscroll.scrollTop = this.refs.snipscroll.scrollHeight
   }
@@ -18,6 +18,6 @@ class SnippetsRah extends React.Component {
 }
 
 
-SnippetsRah.propTypes = {}
-export default SnippetsRah
+Snippets.propTypes = {}
+export default Snippets
 
