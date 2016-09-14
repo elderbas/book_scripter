@@ -103,18 +103,19 @@ describe('<-- Books collection-->\n', () => {
     /* update the key 'personConfirmedNormalized' of the specified preSnippet (to furtherHelp predictions)
     * push a new snippet onto the snippets for that block*/
     it(`.nameConfirmedOnPreSnippet`, function (done) {
+      let expectedSnippet =  {characterDisplayName: 'Rocco', matchingPreSnippetId: 0, snippetType: 'speech'}
+      let blockId = 0, preSnippetId = 0, displayNameConfirmed = 'Rocco', snippetType = 'speech';
       // Before preSnippet is updated, before snippet is pushed onto
       expect(addedBookInBeforeEach.blocks[0].preSnippets[0].personConfirmedNormalized).to.be.null;
       expect(addedBookInBeforeEach.blocks[0].snippets.length).to.equal(0)
-      let blockId = 0, preSnippetId = 0, displayNameConfirmed = 'Rocco', snippetType = 'speech';
+
       Books.nameConfirmedOnPreSnippet(bookNameBeingUsed, blockId, preSnippetId, displayNameConfirmed, snippetType)
-      .then(newBlock => {
-        expect(newBlock.preSnippets[0].personConfirmedNormalized).to.equal('Rocco');
-        expect(newBlock.snippets[0]).to.deep.equal(
-          {characterDisplayName: 'Rocco', matchingPreSnippetId: 0, snippetType: 'speech'})
-        done()
-      })
-      .catch(done)
+        .then(newBlock => {
+          expect(newBlock.preSnippets[0].personConfirmedNormalized).to.equal('Rocco');
+          expect(newBlock.snippets[0]).to.deep.equal(expectedSnippet)
+          done()
+        })
+        .catch(done)
     });
 
     it(`getNamesOfBooksLoaded returns array of strings`, function (done) {

@@ -7,9 +7,7 @@ import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
 import isUndefined from 'lodash/isUndefined'
 
-
 class BookScripterContainer extends React.Component {
-
   componentDidMount () {
     this.props.getBookInfo(this.props.params.bookName)
   }
@@ -24,7 +22,6 @@ class BookScripterContainer extends React.Component {
     )
   }
 }
-
 
 BookScripterContainer.propTypes = {}
 const mapStateToProps = (store) => ({

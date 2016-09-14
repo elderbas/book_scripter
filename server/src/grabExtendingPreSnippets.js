@@ -11,20 +11,12 @@ const grabExtendingPreSnippets = (preSnippetList, indexSelected, quantityToGrabO
   validateType('preSnippetList', preSnippetList, _.isArray, 'grabExtendingPreSnippets')
   validateType('indexSelected', indexSelected, _.isNumber, 'grabExtendingPreSnippets')
   validateType('quantityToGrabOnSides', quantityToGrabOnSides, _.isNumber, 'grabExtendingPreSnippets')
-  console.log('arguments to grabExtendingPreSnippets', JSON.stringify({
-    preSnippetList, indexSelected, quantityToGrabOnSides
-  }, null, 4));
   quantityToGrabOnSides = _.isUndefined(quantityToGrabOnSides) ? DEFAULT_DISTANCE_TO_GRAB : quantityToGrabOnSides;
   let leftPreSnips = preSnippetList.slice(
     (indexSelected - quantityToGrabOnSides) >= 0 ? (indexSelected - quantityToGrabOnSides) : 0,
     indexSelected
   );
-  console.log('right before creating right pre snips', JSON.stringify({
-    indexSelected: indexSelected+1,
-    quantityToGrabOnSides: indexSelected+1+quantityToGrabOnSides
-  }, null, 4));
   let rightPreSnips = preSnippetList.slice(indexSelected+1, indexSelected+1+quantityToGrabOnSides);
-  console.log('INSIDE grabExtendingPreSnippets - rightPreSnips snips', JSON.stringify(rightPreSnips, null, 4));
   // reverse at the end here because it's easier to deal with the items in terms of how "far" away they are from
   // the selected speech at time to analyze arrangements
   let allExtended = [leftPreSnips.reverse(), rightPreSnips];

@@ -11,9 +11,9 @@ let validateType = require('../../../utilityFunks').validateType
 router.get('/', getSuggestedName);
 let nameSuggest = require(`${_serverDir_}/src/nameSuggest`);
 function getSuggestedName (req, res) {
-  const longStars = '************************************************************************************'
-  const longStars2 = [longStars,longStars].join('')
-  console.log(longStars2, longStars2, longStars2);
+  // const longStars = '************************************************************************************'
+  // const longStars2 = [longStars,longStars].join('')
+  // console.log(longStars2, longStars2, longStars2);
   const bookName = _.get(req, 'query.bookName');
   const tempBlockId = _.get(req, 'query.blockId');
   const tempSpeechPreSnippetIdSelected = _.get(req, 'query.speechPreSnippetIdSelected');
@@ -41,16 +41,16 @@ function getSuggestedName (req, res) {
       return Books.getBlockByIndex(bookName, blockId)
     })
     .then((block) => {
-      let prettyJson = (x) => JSON.stringify(x, null, 4)
+      // let prettyJson = (x) => JSON.stringify(x, null, 4)
       // console.log(`block -`, prettyJson(block));
-      console.log('specific pre snippet', prettyJson(block.preSnippets[speechPreSnippetIdSelected]));
+      // console.log('specific pre snippet', prettyJson(block.preSnippets[speechPreSnippetIdSelected]));
       let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
-      console.log('existing CHAR PROFILES', prettyJson(charProfsAndVSS.characterProfiles));
+      // console.log('existing CHAR PROFILES', prettyJson(charProfsAndVSS.characterProfiles));
       customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, commonSpokenSynonyms.concat(charProfsAndVSS.verbSpokeSynonyms));
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, speechPreSnippetIdSelected, 6);
-      console.log('preSnippetExtendedObj', prettyJson(preSnippetExtendedObj.nonSingleSpace));
+      // console.log('preSnippetExtendedObj', prettyJson(preSnippetExtendedObj.nonSingleSpace));
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
-      console.log('preSnippetArrangementObj', prettyJson(preSnippetArrangementObj));
+      // console.log('preSnippetArrangementObj', prettyJson(preSnippetArrangementObj));
       let nameSuggestOutput = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
       let profilesToSuggest;
       if (_.isNull(nameSuggestOutput)) {
@@ -63,8 +63,8 @@ function getSuggestedName (req, res) {
         });
 
       }
-      logger('profilesToSuggest', prettyJson(profilesToSuggest))
-      logger('nameSuggestOutput', prettyJson(nameSuggestOutput))
+      // logger('profilesToSuggest', prettyJson(profilesToSuggest))
+      // logger('nameSuggestOutput', prettyJson(nameSuggestOutput))
       res.send({characterProfilesSuggested: profilesToSuggest});
     })
     .catch((err) => {

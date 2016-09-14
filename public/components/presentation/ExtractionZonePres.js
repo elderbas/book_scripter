@@ -3,11 +3,10 @@ import React, {PropTypes} from 'react'
 import CharacterListContainer from '../containers/CharacterListContainer'
 import PreSnippetExhibit from '../containers/PreSnippetExhibit'
 
-const ExtractionZonePres = ({preSnippets, currentHighlightedPreSnippet}) => {
-  const props = { preSnippets, currentHighlightedPreSnippet }
+const ExtractionZonePres = (props) => {
   return (
     <div>
-      <CharacterListContainer {...props} />
+      <CharacterListContainer currentHighlightedPreSnippet={props.currentHighlightedPreSnippet} />
       <PreSnippetExhibit {...props} />
     </div>
   )

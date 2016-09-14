@@ -17,20 +17,42 @@ const requestSuccessFailure = (mainName) => ((state = false, action) => {
 const currentBook = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_SNIPPET':
-      let { snippets, preSnippets } = state.currentBlockWorkingOn
-      let nextPreSnippetIndexToStartAt = preSnippets.findIndex(ps => ps.type !== 'whitespace' && ps.id !== action.snippet.matchingPreSnippetId)
+      console.log('action.snippet.matchingPreSnippetId', action.snippet.matchingPreSnippetId);
       let newState =  {
         ...state,
+        idOfPreviousPreSnippetHighlighted: action.snippet.matchingPreSnippetId,
         currentBlockWorkingOn: {
           ...state.currentBlockWorkingOn,
-          snippets: [ ...snippets, action.snippet ],
-          preSnippets: (nextPreSnippetIndexToStartAt === -1) ? [] : preSnippets.slice(nextPreSnippetIndexToStartAt)
+          snippets: [ ...state.currentBlockWorkingOn.snippets, action.snippet ]
         }
       }
       return newState
 
     case 'FETCH_BOOK_SUCCESS':
-      return responseToFetchBook(action.response)
+      // kinda messy but the idea is to normalize the text from the preSnippets since the snippets
+      // arent storing any text on the backend. then we need to initialize
+      // also initializing 'idOfPreviousPreSnippetHighlighted' since it's based on which pre snippets
+      // we last
+      // althought we could just just the snippets array passed down to the preSnippetsExhibit
+      // and look at the last id there and use logic from that.
+      let fetchedBook = responseToFetchBook(action.response)
+      let { snippets, preSnippets } = fetchedBook.currentBlockWorkingOn
+      // get data from pre snippets
+      // kinda sloppy, but just set to last id set
+      let idOfPreviousPreSnippetHighlighted = -1;
+      let newSnippets = snippets.map((snippet) => {
+        idOfPreviousPreSnippetHighlighted = snippet.matchingPreSnippetId
+        return {
+          ...snippet,
+          text: preSnippets[snippet.matchingPreSnippetId].text
+        }
+        return snippets
+      })
+      fetchedBook.currentBlockWorkingOn.snippets = newSnippets
+      return {
+        ...fetchedBook,
+        idOfPreviousPreSnippetHighlighted
+      }
 
     case 'ADD_CHARACTER_PROFILE':
       return { ...state, characterProfiles: [...state.characterProfiles, action.characterProfile] }
@@ -51,6 +73,8 @@ const currentHighlightPredictedName = (state = null, action) => {
       return state
   }
 }
+
+
 
 const book = combineReducers({
   isBeingFetched: requestSuccessFailure('FETCH_BOOK'),

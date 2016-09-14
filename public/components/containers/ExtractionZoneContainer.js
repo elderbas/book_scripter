@@ -1,17 +1,15 @@
 // ExtractionZoneContainer
-import React, {PropTypes} from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import ExtractionZonePres from '../presentation/ExtractionZonePres'
 
 
 const mapStateToProps = (store) => {
-  let { preSnippets } = store.book.currentBook.currentBlockWorkingOn
-  let currentHighlightedPreSnippet = preSnippets.find(ps => ps.type !== 'whitespace')
-  // debugger;
-  return {
-    preSnippets,
-    currentHighlightedPreSnippet
-  }
+  let { currentBook:{currentBlockWorkingOn:{ preSnippets }, idOfPreviousPreSnippetHighlighted } } = store.book
+  let currentHighlightedPreSnippet = preSnippets.find(ps => {
+    return (ps.type !== 'whitespace') && ps.id > idOfPreviousPreSnippetHighlighted
+  })
+  return { preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted }
 }
 const ExtractionZoneContainer = connect(mapStateToProps)(ExtractionZonePres)
 export default ExtractionZoneContainer

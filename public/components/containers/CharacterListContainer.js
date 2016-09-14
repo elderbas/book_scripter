@@ -65,7 +65,6 @@ class CharacterListContainer extends React.Component {
 
 CharacterListContainer.propTypes = {
   currentHighlightedPreSnippet: PropTypes.object, // add shape
-
   currentBlockId: PropTypes.number.isRequired,
   characterProfiles: PropTypes.array.isRequired,
   bookName: PropTypes.string.isRequired,
