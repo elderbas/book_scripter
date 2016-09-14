@@ -2,6 +2,10 @@
 import React, {PropTypes} from 'react'
 import trim from 'lodash/trim'
 
+const predictedNameBtnStyle = {
+  padding: '5px'
+}
+
 const CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet,
 characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
     // debugger;
@@ -15,7 +19,7 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
     if (currentHighlightPredictedName !== 'none' && currentHighlightPredictedName !== null) {
     return (
       <div style={{width: '50px'}}>
-        <button onClick={() => onCharacterSelected(currentHighlightPredictedName)}>
+        <button style={predictedNameBtnStyle} onClick={() => onCharacterSelected(currentHighlightPredictedName)}>
           {currentHighlightPredictedName}
         </button>
       </div>

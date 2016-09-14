@@ -184,20 +184,20 @@ const _getBookInfo = (bookName) => {
 // _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
 const _nameConfirmedOnPreSnippet = (bookNameBeingUsed, blockId, preSnippetId, displayNameConfirmed, snippetType) => {
   return _getBlockByIndex(bookNameBeingUsed, blockId).then((blockToUpdate) => {
-    blockToUpdate.snippets.push(new Snippet(displayNameConfirmed, preSnippetId, snippetType))
-    blockToUpdate.preSnippets = blockToUpdate.preSnippets.map(preSnippet => {
-      if (preSnippet.id === preSnippetId) {
-        preSnippet.personConfirmedNormalized = displayNameConfirmed
-      }
-      return preSnippet
-    })
+    let setObj = {};
+    if (snippetType === 'speech') {
+      setObj[`blocks.${blockId}.preSnippets.${preSnippetId}.personConfirmedNormalized`] = displayNameConfirmed
+    }
+    setObj[`blocks.${blockId}.snippets`] = blockToUpdate.snippets.concat([
+      new Snippet(displayNameConfirmed, preSnippetId, snippetType)
+    ])
     return new Promise((fulfill, reject) => {
-      _updateBlockById(bookNameBeingUsed, blockToUpdate, blockId)
-        .then((blocks) => {
-          fulfill(blocks[blockId])
-        })
-        .catch(reject)
-    })
+      Books.findOneAndUpdate({bookName:bookNameBeingUsed}, {"$set": setObj}, {new: true}, (err, bookDoc) => {
+        if (err) {return reject(err);}
+        console.log('bookDoc', JSON.stringify(bookDoc.blocks[blockId], null, 4));
+        fulfill(bookDoc.blocks[blockId]);
+      });
+    });
   })
 }
 

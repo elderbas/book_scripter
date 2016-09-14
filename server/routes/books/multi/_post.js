@@ -7,16 +7,23 @@ let Books = require(`${_serverDir_}/src/dbModels/Books`);
 router.post('/nameConfirmedOnPreSnippet', nameConfirmedOnPreSnippet);
 
 function nameConfirmedOnPreSnippet (req, res) {
-
   let bookName = _.get(req, 'body.bookName');
-  let blockId = _.get(req, 'body.blockId');
-  let preSnippetId = _.get(req, 'body.preSnippetId');
+  let tempBlockId = _.get(req, 'body.blockId');
+  let tempPreSnippetId = _.get(req, 'body.preSnippetId');
   let displayName = _.get(req, 'body.displayName');
   let snippetType = _.get(req, 'body.snippetType');
 
-  if (_.some([bookName, blockId, preSnippetId, displayName, snippetType], _.isUndefined)) {
+  if (_.some([bookName, tempBlockId, tempPreSnippetId, displayName, snippetType], _.isUndefined)) {
     return errorHandler(req, res, 'Missing parameters to /api/books/multi/nameConfirmedOnPreSnippet', 500);
   }
+
+  let blockId = parseInt(tempBlockId)
+  let preSnippetId = parseInt(tempPreSnippetId)
+  
+  if (_.some([blockId, preSnippetId], (x) => !_.isNumber(x))) {
+    return errorHandler(req, res, 'Invalid parameter types to /api/books/multi/nameConfirmedOnPreSnippet', 500);
+  }
+  
 
   Books.nameConfirmedOnPreSnippet(bookName, blockId, preSnippetId, displayName, snippetType)
   .then(newBlock => {

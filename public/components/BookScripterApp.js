@@ -6,7 +6,7 @@ import Footer from './Footer'
 let style = {
   height: '100%',
   minHeight: '800px',
-  minWidth: '1100px'
+  minWidth: '719px'
 }
 class BookScripterApp extends React.Component {
   render() {
