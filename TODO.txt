@@ -1,29 +1,22 @@
 !!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
 
-
-Refactor components to be more careful about which state they each use
-(to minimize re-renders)
-
-factor out currentBlockWorkingOn. it's not necessary for the frontend
-
-Snippets need to show the text that they match (save the text to the snippets?)
-
-Checkbox for confirming you want narration types automatically just marked as narration
-
-Backend is not actually adding snippets to the DB
-(Not bad for right now since it's easier to test without it doing that)
+Checkbox (marked true by default) for confirming you want narration types
+automatically just marked as narration
 
 Need button for confirming current block as done, and pulling in next block
 
 
 % based suggestions (we're X% sure this is right)
 
-Turn on auto narration application
+
+
+
 
 
 READ: http://redux.js.org/docs/introduction/Motivation.html,
 for better patterns hopefully using Redux
-
+Nice to have but too much work ATM:
+    factor out currentBlockWorkingOn. it's not necessary for the frontend
 TRAINING MODEL
 Pre scan all verbs for past tense, ask if they look like synonyms to indicate
 somebody having uttered something
