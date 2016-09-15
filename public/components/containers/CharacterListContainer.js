@@ -22,13 +22,21 @@ class CharacterListContainer extends React.Component {
     }
 
   }
+
   // automatically get predicted name when the preSnippet coming up is speech type
   componentWillReceiveProps (nextProps) {
     if (this.props.currentHighlightedPreSnippet && nextProps.currentHighlightedPreSnippet) {
       let { currentHighlightPredictedName, currentHighlightedPreSnippet } = nextProps
+
+      // automatically just confirm narration types
+      if (this.props.currentHighlightedPreSnippet.id !== nextProps.currentHighlightedPreSnippet.id) {
+        if (currentHighlightedPreSnippet.type === 'narration') {
+          this.handleCharacterSelected('Narration', nextProps)
+        }
+      }
+
       // current one coming in is speech type and we havent gotten back a response yet
       if (currentHighlightedPreSnippet && currentHighlightedPreSnippet.type === 'speech' && currentHighlightPredictedName === null) {
-        // debugger;
         this.getNameSuggestion(nextProps.currentHighlightedPreSnippet)
       }
     }
@@ -40,23 +48,25 @@ class CharacterListContainer extends React.Component {
     }
     this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
   }
-  handleCharacterSelected (charDisplayName) {
-    this.props.handleConfirmedNameOnPreSnippet({
-      bookName: this.props.bookName,
-      blockId: this.props.currentBlockId,
-      preSnippetId: this.props.currentHighlightedPreSnippet.id,
+  handleCharacterSelected (charDisplayName, someProps) {
+    someProps.handleConfirmedNameOnPreSnippet({
+      bookName: someProps.bookName,
+      blockId: someProps.currentBlockId,
+      preSnippetId: someProps.currentHighlightedPreSnippet.id,
       displayName: charDisplayName,
-      snippetType: this.props.currentHighlightedPreSnippet.type,
-      preSnippetText: this.props.currentHighlightedPreSnippet.text,
+      snippetType: someProps.currentHighlightedPreSnippet.type,
+      preSnippetText: someProps.currentHighlightedPreSnippet.text,
     })
   }
+
+
   render() {
     return (
       <CharacterListPres
         currentHighlightedPreSnippet={this.props.currentHighlightedPreSnippet}
         characterProfiles={this.props.characterProfiles}
         currentHighlightPredictedName={this.props.currentHighlightPredictedName}
-        onCharacterSelected={this.handleCharacterSelected.bind(this)}
+        onCharacterSelected={(x) => this.handleCharacterSelected.bind(this)(x, this.props)}
         onAddCharacterProfile={this.handleAddCharacterProfile.bind(this)}
       />
     )
@@ -81,6 +91,7 @@ const mapDispatchToProps = {
   addCharacterProfile: actions.addCharacterProfile,
   handleConfirmedNameOnPreSnippet: actions.handleConfirmedNameOnPreSnippet,
   getNameSuggestion: actions.getNameSuggestion,
+  toggleAutoConfirmNarration: actions.toggleAutoConfirmNarration,
 }
 CharacterListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(CharacterListContainer))
 export default CharacterListContainer

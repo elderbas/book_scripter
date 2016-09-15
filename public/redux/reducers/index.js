@@ -6,6 +6,6 @@ import book from './book'
 
 const rootReducer = combineReducers({
   book,
-  books
+  books,
 })
 export default rootReducer

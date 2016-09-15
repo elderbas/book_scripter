@@ -17,7 +17,6 @@ const requestSuccessFailure = (mainName) => ((state = false, action) => {
 const currentBook = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_SNIPPET':
-      console.log('action.snippet.matchingPreSnippetId', action.snippet.matchingPreSnippetId);
       let newState =  {
         ...state,
         idOfPreviousPreSnippetHighlighted: action.snippet.matchingPreSnippetId,

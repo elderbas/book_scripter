@@ -16,7 +16,7 @@ let shadowStyle = {
 }
 
 const PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted}) => {
-  console.log('{preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted}', {preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted});
+  //console.log('{preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted}', {preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted});
 
   if (currentHighlightedPreSnippet === undefined) {
     return (

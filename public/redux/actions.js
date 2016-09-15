@@ -56,7 +56,9 @@ export const addCharacterProfile = (displayName, aliases, bookName) => (dispatch
 }
 
 
-
+export const toggleAutoConfirmNarration = (shouldConfirm) => (dispatch) => {
+  dispatch({type: 'TOGGLE_CONFIRM_NARRATION_AUTO', shouldConfirm})
+}
 
 
 

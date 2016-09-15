@@ -7,7 +7,7 @@ const predictedNameBtnStyle = {
 }
 
 const CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet,
-characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
+characterProfiles, currentHighlightPredictedName, onCharacterSelected}) => {
     // debugger;
     if (currentHighlightedPreSnippet === undefined) {
       return (
@@ -43,7 +43,7 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
   let _charToAddNameTxtBxRef, _csvAliasesTxtBxRef
   return (
     <div className="CharacterSelectionList-component">
-      <form action="#" onSubmit={(e) => {
+      <form action="#" style={{display: 'inline-block'}} onSubmit={(e) => {
         e.preventDefault();
         const aliases = !!_csvAliasesTxtBxRef.value ? _csvAliasesTxtBxRef.value.split(',').map(trim) : []
         const charDisplayName = _charToAddNameTxtBxRef.value
@@ -55,6 +55,7 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected }) => {
         <input type="text" ref={(c) => _csvAliasesTxtBxRef = c } placeholder="comma separated list of aliases"/>
         <button type="submit" className="button-success pure-button">Add new character name</button>
       </form>
+      <label htmlFor="auto_confirm_narration">Auto Confirm Narration Type</label>
       <div className="charListWrapper">
         <ul>
           {characterItems}
