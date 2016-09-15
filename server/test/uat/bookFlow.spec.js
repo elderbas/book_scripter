@@ -1,4 +1,14 @@
 'use strict';
+/*
+* test cases:
+* correct input - what happens?
+* correct input but no hit on backend - what happens?
+* missing input - what happens?
+* incorrect input - what happens?
+* */
+
+
+
 let ENV = process.env.NODE_ENV
 let mongoose = require('mongoose');
 let expect = require('chai').expect;
@@ -93,14 +103,14 @@ describe(`UAT test`, () => {
   it(`POST - /api/books/characters - can add a characterProfile and get back the newly updated list`, function (done) {
     async.series([
       function(cb) { uploadBook(cb) },
-      function(cb) { addCharacterProfile(cb) },
+      function(cb) { addCharacterProfile(cb, 'Bob', []) },
     ], done);
   });
 
   it(`GET - /api/books/suggestion - receive an EMPTY array when no characterProfiles match for suggestion`, function (done) {
     async.series([
       function(cb) { uploadBook(cb) },
-      function(cb) { requestSuggestion(cb) },
+      function(cb) { requestSuggestion(cb, undefined) },
     ], done);
   });
 
@@ -110,30 +120,41 @@ describe(`UAT test`, () => {
     ];
     async.series([
       function(cb) { uploadBook(cb) },
-      function(cb) { addCharacterProfile(cb) },
-      function(cb) { requestSuggestion(cb, characterProfilesToExpect) },
+      function(cb) { addCharacterProfile(cb, 'Holliday Inn', ['Bob']) },
+      function(cb) { requestSuggestion(cb, 'Bob') },
     ], done);
   });
 
   it(`GET - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match on a 'displayName'`, function (done) {
-    let characterProfilesToExpect = [
-      {displayName: 'Bob', aliases: ['Cheese Bread']}
-    ];
     async.series([
       function(cb) { uploadBook(cb) },
-      function(cb) { addCharacterProfile(cb) },
-      function(cb) { requestSuggestion(cb, characterProfilesToExpect) },
+      function(cb) { addCharacterProfile(cb, 'Bob', ['blahblah']) },
+      function(cb) { requestSuggestion(cb, 'Bob') },
     ], done);
   });
 
   it(`POST - /api/books/multi/nameConfirmedOnPreSnippet - receive the new snippets, after confirming a given preSnippet`, function (done) {
-    let characterProfilesToExpect = [
-      {displayName: 'Bob', aliases: []}
-    ];
     async.series([
       function(cb) { uploadBook(cb) },
-      function(cb) { addCharacterProfile(cb) },
+      function(cb) { addCharacterProfile(cb, 'Bob', []) },
       function(cb) { nameConfirmedOnPreSnippet(cb) },
+    ], done);
+  });
+
+  it(`GET - /api/books/block - receive block data for an existing block`, function (done) {
+    let expectedPreSnippetLength = 7;
+    let expectedSnippetLength = 0;
+    let expectedStatus = 'in progress';
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { getBlockById(cb, 0, expectedPreSnippetLength, expectedSnippetLength, expectedStatus) },
+    ], done);
+  });
+
+  it(`GET - /api/books/block - receive block data for an existing block`, function (done) {
+    async.series([
+      function(cb) { uploadBook(cb) },
+      function(cb) { getBlockById(cb, 1, null, null, null) },
     ], done);
   });
 
@@ -176,49 +197,48 @@ function uploadBook(cb) {
     .expect(expectedResponse, cb);
 }
 
-function addCharacterProfile (cb) {
+function addCharacterProfile (cb, displayName, aliases) {
   cb = cb || function () {};
   return request(app)
     .post('/api/books/characters')
     .send({
       bookName: 'got_piece',
-      characterProfileToAdd: {
-        displayName: 'Bob',
-        aliases: []
-      }
+      characterProfileToAdd: { displayName, aliases }
     })
     .expect(200)
     .end((err, res) => {
       expect(err).to.not.exist;
       // Note this only works with one char prof in response
       expect(res.body.upToDateCharacterProfiles[0]).to.include.keys('_id');
-      expect(res.body.upToDateCharacterProfiles[0].displayName).to.equal('Bob');
-      expect(res.body.upToDateCharacterProfiles[0].aliases.length).to.equal(0);
+      expect(res.body.upToDateCharacterProfiles[0].displayName).to.equal(displayName);
+      expect(res.body.upToDateCharacterProfiles[0].aliases.length).to.equal(aliases.length);
       cb();
     });
 }
 
 
-function requestSuggestion(cb, characterProfilesMatched) {
+function requestSuggestion(cb, nameToMatch) {
   cb = cb || function () {};
-  characterProfilesMatched = characterProfilesMatched || [];
   return request(app)
     .get('/api/books/suggestion')
     .query({
       'bookName': 'got_piece', // this book because of the book uploadedBookPromise uses
       'blockId': 0,
-      'speechPreSnippetIdSelected': 4
+      'speechPreSnippetIdSelected': 2 // because 'Bob' is on that one
     })
     .expect(200)
     .end((err, res) => {
       expect(err).to.not.exist;
-      if (characterProfilesMatched.length === 0) {
-        expect(res.body.characterProfilesSuggested).to.deep.equal([]);
+      if (nameToMatch) {
+        let allCharNames = res.body.characterProfilesSuggested.reduce((allCharNames, charProf) => {
+          return allCharNames.concat([charProf.displayName]).concat(charProf.aliases)
+        }, [])
+        expect(allCharNames.includes(nameToMatch)).to.equal(true)
       }
-      else if (characterProfilesMatched.length > 0) {
-        let cPS = res.body.characterProfilesSuggested;
-        expect(cPS[0]).to.include.keys(['_id', 'displayName', 'aliases']);
+      else {
+        expect(res.body.characterProfilesSuggested.length).to.equal(0)
       }
+
       cb();
     });
 }
@@ -233,7 +253,7 @@ function addVerbSpokeSynonym(cb, verbToAdd) {
       })
       .expect(200)
       .end((err, res) => {
-        expect(res.body.verbSpokeSynonymAddingResult).to.be.true;
+        expect(!!res.body.verbSpokeSynonymAddingResult).to.equal(true);
         cb();
       });
 }
@@ -292,6 +312,30 @@ function nameConfirmedOnPreSnippet (cb) {
     })
 }
 
+/* returns just the new snippet list */
+function getBlockById (cb, blockId, expectedLengthPreSnippets, expectedLengthSnippets, expectedStatus) {
+  cb = cb || function () {};
+  return request(app)
+    .get('/api/books/block')
+    .query({ bookName: 'got_piece', blockId})
+    .expect(200)
+    .end((err, res) => {
+      let block = res.body
+      if (expectedLengthPreSnippets || expectedLengthSnippets || expectedStatus) {
+        expect(block.preSnippets.length).to.equal(expectedLengthPreSnippets)
+        expect(block.snippets.length).to.equal(expectedLengthSnippets)
+        expect(block.status).to.equal(expectedStatus)
+      }
+      else {
+        expect(block).to.deep.equal({
+          preSnippets: [],
+          snippets: [],
+          status: 'non-existent'
+        })
+      }
+      cb()
+    })
+}
 
 
 

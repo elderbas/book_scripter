@@ -137,6 +137,9 @@ const _getBlocks = (bookName) => {
   return new Promise((fulfill, reject) => {
     Books.findOne({bookName}, (err, bookDoc) => {
       if (err) {return reject(err);}
+      if (bookDoc === null) {
+        return fulfill([])
+      }
       fulfill(bookDoc.blocks);
     });
   });
@@ -194,7 +197,7 @@ const _nameConfirmedOnPreSnippet = (bookNameBeingUsed, blockId, preSnippetId, di
     return new Promise((fulfill, reject) => {
       Books.findOneAndUpdate({bookName:bookNameBeingUsed}, {"$set": setObj}, {new: true}, (err, bookDoc) => {
         if (err) {return reject(err);}
-        console.log('bookDoc', JSON.stringify(bookDoc.blocks[blockId], null, 4));
+        // console.log('bookDoc', JSON.stringify(bookDoc.blocks[blockId], null, 4));
         fulfill(bookDoc.blocks[blockId]);
       });
     });

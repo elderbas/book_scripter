@@ -57,6 +57,13 @@ export const addCharacterProfile = (displayName, aliases, bookName) =>
       .end(genericEnd(fulfill, reject))
   })
 
+export const getBlockByIndex = (blockId, bookName) => {
+  return new Promise((fulfill, reject) => {
+    superagent.get('/api/book/block')
+      .send({ blockId, bookName })
+      .end(genericEnd(fulfill, reject))
+  })
+}
 
 // export const getBookInfo = (bookName) =>
 

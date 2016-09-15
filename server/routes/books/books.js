@@ -17,6 +17,13 @@ router.use('/verbs', require('./verbs/_get'));
 // /api/books/multi
 router.use('/multi', require('./multi/_post'));
 
+// /api/books/test
+router.use('/test', require('./test/_get'));
+
+
+// /api/books/block
+router.use('/block', require('./block/_get'));
+router.use('/block', require('./block/_post'));
 
 
 

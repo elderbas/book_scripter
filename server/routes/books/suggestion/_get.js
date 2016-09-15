@@ -47,6 +47,7 @@ function getSuggestedName (req, res) {
       let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
       // console.log('existing CHAR PROFILES', prettyJson(charProfsAndVSS.characterProfiles));
       customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, commonSpokenSynonyms.concat(charProfsAndVSS.verbSpokeSynonyms));
+      // console.log('block.preSnippets', block.preSnippets);
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, speechPreSnippetIdSelected, 6);
       // console.log('preSnippetExtendedObj', prettyJson(preSnippetExtendedObj.nonSingleSpace));
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
@@ -63,6 +64,9 @@ function getSuggestedName (req, res) {
         });
 
       }
+      // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+      // console.log('charProfsAndVSS.characterProfiles', charProfsAndVSS.characterProfiles);
+      // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
       // logger('profilesToSuggest', prettyJson(profilesToSuggest))
       // logger('nameSuggestOutput', prettyJson(nameSuggestOutput))
       res.send({characterProfilesSuggested: profilesToSuggest});

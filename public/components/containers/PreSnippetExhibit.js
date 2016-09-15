@@ -1,5 +1,7 @@
 // PreSnippetExhibit
 import React, { PropTypes } from 'react'
+import { Link } from 'react-router'
+
 
 let preSnippetListWrapper = {
   whiteSpace: 'pre-wrap',
@@ -16,8 +18,6 @@ let shadowStyle = {
 }
 
 const PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted}) => {
-  //console.log('{preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted}', {preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted});
-
   if (currentHighlightedPreSnippet === undefined) {
     return (
       <div style={preSnippetListWrapper}>
@@ -35,6 +35,7 @@ const PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet, idOfPrevi
   return (
     <div style={preSnippetListWrapper}>
       {preSnipTags}
+
     </div>
   )
 }

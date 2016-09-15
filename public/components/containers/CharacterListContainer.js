@@ -24,6 +24,26 @@ class CharacterListContainer extends React.Component {
 
   }
 
+
+
+  handleAddCharacterProfile (displayName, aliases) {
+    if (displayName.trim('') === '') {
+      return alert('Need a valid displayName')
+    }
+    this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
+  }
+  handleCharacterSelected (charDisplayName, someProps) {
+    console.log('inside handleCharacterSelected');
+    someProps.handleConfirmedNameOnPreSnippet({
+      bookName: someProps.bookName,
+      blockId: someProps.currentBlockId,
+      preSnippetId: someProps.currentHighlightedPreSnippet.id,
+      displayName: charDisplayName,
+      snippetType: someProps.currentHighlightedPreSnippet.type,
+      preSnippetText: someProps.currentHighlightedPreSnippet.text,
+    })
+  }
+
   // automatically get predicted name when the preSnippet coming up is speech type
   componentWillReceiveProps (nextProps) {
     console.log('inside componentWillReceiveProps');
@@ -45,33 +65,12 @@ class CharacterListContainer extends React.Component {
   }
 
   componentDidMount() {
-    console.log('inside componentDidMount', this.props);
     if (this.props.currentHighlightedPreSnippet) {
       if (this.props.currentHighlightedPreSnippet.type === 'narration') {
         this.handleCharacterSelected('Narration', this.props)
       }
     }
   }
-
-  handleAddCharacterProfile (displayName, aliases) {
-    if (displayName.trim('') === '') {
-      return alert('Need a valid displayName')
-    }
-    this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
-  }
-  handleCharacterSelected (charDisplayName, someProps) {
-    console.log('inside handleCharacterSelected');
-    someProps.handleConfirmedNameOnPreSnippet({
-      bookName: someProps.bookName,
-      blockId: someProps.currentBlockId,
-      preSnippetId: someProps.currentHighlightedPreSnippet.id,
-      displayName: charDisplayName,
-      snippetType: someProps.currentHighlightedPreSnippet.type,
-      preSnippetText: someProps.currentHighlightedPreSnippet.text,
-    })
-  }
-
-
   render() {
     return (
       <CharacterListPres
