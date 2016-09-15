@@ -12,6 +12,7 @@ import * as actions from '../../redux/actions'
  * PREDICTED CHARACTER displaying and able to be selected*/
 class CharacterListContainer extends React.Component {
   getNameSuggestion (newHighlightedPreSnippet) {
+    console.log('inside getNameSuggestion');
     // debugger;
     if (newHighlightedPreSnippet.type === 'speech') {
       this.props.getNameSuggestion({
@@ -25,6 +26,7 @@ class CharacterListContainer extends React.Component {
 
   // automatically get predicted name when the preSnippet coming up is speech type
   componentWillReceiveProps (nextProps) {
+    console.log('inside componentWillReceiveProps');
     if (this.props.currentHighlightedPreSnippet && nextProps.currentHighlightedPreSnippet) {
       let { currentHighlightPredictedName, currentHighlightedPreSnippet } = nextProps
 
@@ -42,6 +44,15 @@ class CharacterListContainer extends React.Component {
     }
   }
 
+  componentDidMount() {
+    console.log('inside componentDidMount', this.props);
+    if (this.props.currentHighlightedPreSnippet) {
+      if (this.props.currentHighlightedPreSnippet.type === 'narration') {
+        this.handleCharacterSelected('Narration', this.props)
+      }
+    }
+  }
+
   handleAddCharacterProfile (displayName, aliases) {
     if (displayName.trim('') === '') {
       return alert('Need a valid displayName')
@@ -49,6 +60,7 @@ class CharacterListContainer extends React.Component {
     this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
   }
   handleCharacterSelected (charDisplayName, someProps) {
+    console.log('inside handleCharacterSelected');
     someProps.handleConfirmedNameOnPreSnippet({
       bookName: someProps.bookName,
       blockId: someProps.currentBlockId,
