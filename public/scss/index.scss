@@ -1,11 +1,11 @@
-// CSS RESET
-* {
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
-
-  font-family: "Helvetica Neue Light", Helvetica, arial;
-}
+//// CSS RESET
+//* {
+//  margin: 0px;
+//  padding: 0px;
+//  box-sizing: border-box;
+//
+//  font-family: "Helvetica Neue Light", Helvetica, arial;
+//}
 
 // COLORS
 $offBlack: #2e2e2e;
@@ -17,6 +17,5 @@ $offBlack: #2e2e2e;
 @import './BookScripter';
 @import './ExtractionZone';
 @import './CharacterSelectionList';
-@import '../../node_modules/purecss/build/pure-min.css';
-
+@import '../../node_modules/bulma/bulma';
 
