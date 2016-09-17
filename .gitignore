@@ -6,3 +6,5 @@ node_modules/
 jspm_packages/
 misc_ignored/
 */db/*
+server/log/*
+npm-debug.log
