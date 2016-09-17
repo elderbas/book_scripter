@@ -2,7 +2,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import ExtractionZonePres from '../presentation/ExtractionZonePres'
-
+import LogOnRender from '../hoc/LogOnRender'
 
 const mapStateToProps = (store) => {
   let { currentBook:{currentBlockWorkingOn:{ preSnippets }, idOfPreviousPreSnippetHighlighted } } = store.book
@@ -11,5 +11,5 @@ const mapStateToProps = (store) => {
   })
   return { preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted }
 }
-const ExtractionZoneContainer = connect(mapStateToProps)(ExtractionZonePres)
+const ExtractionZoneContainer = connect(mapStateToProps)(LogOnRender(ExtractionZonePres))
 export default ExtractionZoneContainer

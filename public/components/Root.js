@@ -1,10 +1,11 @@
 // Root
-import React, { PropTypes } from 'react'
+import React from 'react'
 import { Provider } from 'react-redux'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import BookScripterApp from './BookScripterApp'
 import BookListManager from './BookListManager'
 import BookScripterContainer from './containers/BookScripterContainer'
+import LogOnRender from './hoc/LogOnRender'
 
 
 class Root extends React.Component {
@@ -23,7 +24,7 @@ class Root extends React.Component {
 }
 
 
-Root.propTypes = {}
+Root = LogOnRender(Root)
 export default Root
 
 

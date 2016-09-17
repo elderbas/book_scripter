@@ -1,9 +1,10 @@
 // Header
-import React, { PropTypes } from 'react'
+import React from 'react'
 import { Link } from 'react-router'
 import '../scss/index.scss'
+import LogOnRender from './hoc/LogOnRender'
 
-const Header = () => {
+let Header = () => {
   return (
     <div className="Header-component">
       <div className="logo">BookScripter</div>
@@ -24,5 +25,5 @@ const Header = () => {
 }
 
 
-Header.propTypes = {}
+Header = LogOnRender(Header)
 export default Header

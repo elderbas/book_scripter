@@ -2,13 +2,13 @@
 import React, {PropTypes} from 'react'
 import Dropzone from 'react-dropzone'
 import Loading from '../Loading'
-
+import LogOnRender from '../hoc/LogOnRender'
 const styleFileDropText = {
   textAlign: 'center',
   marginTop: '90px',
   padding: '10px'
 }
-const BookFileUpload = ({ isBeingUploaded, onDrop }) => {
+let BookFileUpload = ({ isBeingUploaded, onDrop }) => {
   return (
     <div className="uploadNewBook">
       <h2>Upload a New book</h2>
@@ -27,4 +27,5 @@ BookFileUpload.propTypes = {
   isBeingUploaded: PropTypes.bool,
   onDrop: PropTypes.func
 }
+BookFileUpload = LogOnRender(BookFileUpload)
 export default BookFileUpload

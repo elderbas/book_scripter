@@ -1,8 +1,9 @@
 // Footer
 import React, {PropTypes} from 'react'
+import LogOnRender from './hoc/LogOnRender'
 import '../scss/index.scss'
 
-const Footer = () => {
+let Footer = () => {
   return (
     <div className="Footer-component">
       <div className="copyright">
@@ -14,4 +15,5 @@ const Footer = () => {
 
 
 Footer.propTypes = {}
+Footer = LogOnRender(Footer)
 export default Footer

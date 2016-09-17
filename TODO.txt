@@ -1,6 +1,11 @@
 !!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
 
-on fetch name suggestion it needs to also log which it made
+FIRST PRIORITY
+GET NEXT BLOCK
+GET NEXT BLOCK
+GET NEXT BLOCK
+
+
 
 Nice to have -
 Instead of going at a time, do a 'Pre script analysis'

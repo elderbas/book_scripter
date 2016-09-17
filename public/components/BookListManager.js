@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react'
 import '../scss/index.scss'
 import { connect } from 'react-redux'
 import * as actions from '../redux/actions'
-
+import LogOnRender from './hoc/LogOnRender'
 import BookFileUpload from './presentation/BookFileUpload'
 import BooksUploadedList from './presentation/BooksUploadedList'
 
@@ -42,7 +42,9 @@ const mapDispatchToProps = {
   fetchBooks: actions.fetchBooks,
   uploadBook: actions.uploadBook,
 }
-BookListManager = connect(mapStateToProps, mapDispatchToProps)(BookListManager)
+
+// BookListManager = connect(mapStateToProps, mapDispatchToProps)(BookListManager)
+BookListManager = connect(mapStateToProps, mapDispatchToProps)(LogOnRender(BookListManager))
 export default BookListManager
 
 

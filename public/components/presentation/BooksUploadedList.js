@@ -2,6 +2,7 @@
 import React, {PropTypes} from 'react'
 import Loading from '../Loading'
 import { Link } from 'react-router'
+import LogOnRender from '../hoc/LogOnRender'
 
 const ulStyle = {
   listStyleType: 'none',
@@ -9,7 +10,7 @@ const ulStyle = {
   marginTop: '15px',
   lineHeight: '2.5',
 }
-const BooksUploadedList = ({ bookList, areBeingFetched }) => {
+let BooksUploadedList = ({ bookList, areBeingFetched }) => {
   let list = bookList.map(b => (
       <li key={b}>
         <Link to={`/scripter/${b}`}>{b}</Link>
@@ -29,4 +30,5 @@ BooksUploadedList.propTypes = {
   bookList: PropTypes.array,
   areBeingFetched: PropTypes.bool,
 }
+BooksUploadedList = LogOnRender(BooksUploadedList)
 export default BooksUploadedList

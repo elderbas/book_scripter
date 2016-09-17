@@ -2,6 +2,7 @@
 import React, {PropTypes} from 'react'
 import BookScripterPres from '../presentation/BookScripterPres'
 import Loading from '../Loading'
+import LogOnRender from '../hoc/LogOnRender'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
@@ -30,5 +31,5 @@ const mapStateToProps = (store) => ({
 const mapDispatchToProps = {
   getBookInfo: actions.getBookInfo
 }
-BookScripterContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(BookScripterContainer))
+BookScripterContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(LogOnRender(BookScripterContainer)))
 export default BookScripterContainer

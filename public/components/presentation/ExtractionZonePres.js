@@ -2,8 +2,9 @@
 import React, {PropTypes} from 'react'
 import CharacterListContainer from '../containers/CharacterListContainer'
 import PreSnippetExhibit from '../containers/PreSnippetExhibit'
+import LogOnRender from '../hoc/LogOnRender'
 
-const ExtractionZonePres = (props) => {
+let ExtractionZonePres = (props) => {
   return (
     <div>
       <CharacterListContainer currentHighlightedPreSnippet={props.currentHighlightedPreSnippet} />
@@ -14,4 +15,5 @@ const ExtractionZonePres = (props) => {
 
 
 ExtractionZonePres.propTypes = {}
+ExtractionZonePres = LogOnRender(ExtractionZonePres)
 export default ExtractionZonePres

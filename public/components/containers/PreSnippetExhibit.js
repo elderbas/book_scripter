@@ -1,7 +1,7 @@
 // PreSnippetExhibit
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
-
+import LogOnRender from '../hoc/LogOnRender'
 
 let preSnippetListWrapper = {
   whiteSpace: 'pre-wrap',
@@ -17,7 +17,7 @@ let shadowStyle = {
   color: '#cacaca'
 }
 
-const PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted}) => {
+let PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted}) => {
   if (currentHighlightedPreSnippet === undefined) {
     return (
       <div style={preSnippetListWrapper}>
@@ -45,4 +45,5 @@ PreSnippetExhibit.propTypes = {
   preSnippets: PropTypes.array.isRequired,
   currentHighlightedPreSnippet: PropTypes.object,
 }
+PreSnippetExhibit = LogOnRender(PreSnippetExhibit)
 export default PreSnippetExhibit

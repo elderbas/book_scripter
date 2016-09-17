@@ -1,6 +1,7 @@
 // Snippets
 import React, {PropTypes} from 'react'
 let jsonStringifyPretty = require('json-pretty')
+import LogOnRender from '../hoc/LogOnRender'
 
 let styleByType = {
   parseError: {
@@ -48,5 +49,6 @@ class Snippets extends React.Component {
 
 
 Snippets.propTypes = {}
+Snippets = LogOnRender(Snippets)
 export default Snippets
 

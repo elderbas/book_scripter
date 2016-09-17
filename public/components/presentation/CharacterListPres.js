@@ -1,12 +1,13 @@
 // CharacterListPres
 import React, {PropTypes} from 'react'
 import trim from 'lodash/trim'
+import LogOnRender from '../hoc/LogOnRender'
 
 const predictedNameBtnStyle = {
   padding: '5px'
 }
 
-const CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet,
+let CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet,
 characterProfiles, currentHighlightPredictedName, onCharacterSelected}) => {
     // debugger;
     if (currentHighlightedPreSnippet === undefined) {
@@ -66,4 +67,5 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected}) => {
 
 
 CharacterListPres.propTypes = {}
+CharacterListPres = LogOnRender(CharacterListPres)
 export default CharacterListPres

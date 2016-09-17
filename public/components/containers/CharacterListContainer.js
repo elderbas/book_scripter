@@ -4,7 +4,7 @@ import CharacterListPres from '../presentation/CharacterListPres'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
-
+import LogOnRender from '../hoc/LogOnRender'
 
 /* this is handling
  * NEW CHARACTERS being added
@@ -111,5 +111,5 @@ const mapDispatchToProps = {
   getNameSuggestion: actions.getNameSuggestion,
   toggleAutoConfirmNarration: actions.toggleAutoConfirmNarration,
 }
-CharacterListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(CharacterListContainer))
+CharacterListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(LogOnRender(CharacterListContainer)))
 export default CharacterListContainer

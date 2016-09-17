@@ -2,6 +2,7 @@
 import React from 'react'
 import Header from './Header'
 import Footer from './Footer'
+import LogOnRender from './hoc/LogOnRender'
 
 let style = {
   height: '100%',
@@ -21,4 +22,5 @@ class BookScripterApp extends React.Component {
 }
 
 
+BookScripterApp = LogOnRender(BookScripterApp)
 export default BookScripterApp

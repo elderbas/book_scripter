@@ -2,10 +2,10 @@
 import React from 'react'
 import Snippets from '../presentation/Snippets'
 import { connect } from 'react-redux'
+import LogOnRender from '../hoc/LogOnRender'
 
-
-const mapStateToProps = (store) => ({
+let mapStateToProps = (store) => ({
   snippets: store.book.currentBook.currentBlockWorkingOn.snippets
 })
-const SnippetsContainer = connect(mapStateToProps)(Snippets)
+const SnippetsContainer = connect(mapStateToProps)(LogOnRender(Snippets))
 export default SnippetsContainer
