@@ -16,6 +16,15 @@ in the withWsMatchers -> have it check against multiple matches, so you can
     all the variations and pass it to an array for it to check against all of em
 
 
+Have a way that we can test some withWsMatchers that I'm unsure of? like it'll
+send a suggestion but
+2 classes of suggestions (sure ones, and possibilities)
+
+get rid of anything not of arrangeComplete for the preSnippetArrangement?
+it seems like the only truly useful ones are the complete ones. got a lot of incorrect
+hits for the others
+
+
 Checkbox (marked true by default) for confirming you want narration types
 automatically just marked as narration
 

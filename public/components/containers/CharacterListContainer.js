@@ -50,7 +50,14 @@ class CharacterListContainer extends React.Component {
     if (this.props.currentHighlightedPreSnippet && nextProps.currentHighlightedPreSnippet) {
       let { currentHighlightPredictedName, currentHighlightedPreSnippet } = nextProps
 
-      // automatically just confirm narration types
+      // we got a predicted value for a name back, so just automatically confirm it
+      if (currentHighlightPredictedName !== 'none' &&
+          currentHighlightPredictedName !== null &&
+          this.props.currentHighlightedPreSnippet.id === nextProps.currentHighlightedPreSnippet.id) {
+        this.handleCharacterSelected(currentHighlightPredictedName, nextProps)
+      }
+
+      // we know currently inspected preSnippet is just a narration type so let's confirm it as such
       if (this.props.currentHighlightedPreSnippet.id !== nextProps.currentHighlightedPreSnippet.id) {
         if (currentHighlightedPreSnippet.type === 'narration') {
           this.handleCharacterSelected('Narration', nextProps)

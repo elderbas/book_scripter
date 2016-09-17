@@ -6,10 +6,8 @@ const _ = require('lodash');
 const narrationType = (preSnip, customLexicon) => {
   let classifyingPieces = [];
   let nlpTextOutput = nlp.text(preSnip.text, {lexicon: customLexicon});
-
   if (process.env.NODE_ENV === 'development' && _.get(global, 'log.preSnippetClassify')) {
     let logObj = {
-      customLexicon,
       preSnipText: preSnip.text,
       sentences: nlpTextOutput.sentences
     }

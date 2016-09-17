@@ -5,7 +5,6 @@
  * parsing */
 const lexiconTagTypes = {
   /* for use with narration types*/
-
   PERSON_CONFIRMED:      'PERSON_CONFIRMED',
   VERB_SYNONYM_TO_SPOKE: 'VERB_SYNONYM_TO_SPOKE',
   PERSON_PRONOUN:        'PERSON_PRONOUN',
@@ -19,6 +18,10 @@ const lexiconTagTypes = {
   WS_NON_WS:             'WS_NON_WS',
 
   /**/
-  SPEECH: 'SPEECH'
+  SPEECH: 'SPEECH',
+
+
+  // native nlp_compromise types
+  PastTense: 'PastTense'
 };
 module.exports = lexiconTagTypes;
