@@ -158,6 +158,18 @@ describe('<-- Books collection-->\n', () => {
       });
     });//end ..addCharacterProfile
 
+    describe(`.setBlockAsCompletedAndGetNext`, () => {
+      it(`no more after this one`, function (done) {
+        let newCharProf = new CharacterProfile('Garen');
+        Books.setBlockAsCompletedAndGetNext(bookNameBeingUsed, 0).then((resp) => {
+
+          done();
+        }).catch(done);
+      });
+
+
+    });//end .setBlockAsCompletedAndGetNext
+
     
     describe(`.getBlockByIndex`, () => {
       it(`object with 'preSnippets', 'snippets', and 'status' key`, function (done) {

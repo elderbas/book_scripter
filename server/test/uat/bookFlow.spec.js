@@ -21,141 +21,16 @@ let testDatasets = '/Users/bscherm/SideProjects/book_scripter/server/test/dataSe
 let async = require('async');
 const MONGO_DB_URL = config.db.mongodb[ENV];
 
-
-describe(`UAT test`, () => {
+describe(`No uploaded book first`, () => {
   before((done) => {
     console.log('Opening connection to MongoDB...');
     mongoose.connect(MONGO_DB_URL);
     done();
   });
-
   beforeEach((done) => {
     mongoose.connection.collections['books'].drop(function(err) {
       done();
     });
-  });
-
-  it('GET - /api/books/ - With no books uploaded yet, GET /api/books returns empty array', (done) => {
-    request(app)
-      .get(`/api/books`)
-      .expect({bookNames: []}, done)
-  });
-  
-  it(`POST - /api/books/ - Uploads book and sends back startWorkWith having used default values for splitting the book`, function (done) {
-    let defaultExpectedResponse = {
-      bookName: 'testBook', // this isn't a default name, but the rest are
-      lastBlockIndexWorkedOn: 0,
-      characterProfiles: [],
-      currentBlockWorkingOn: {
-        status: 'in progress',
-        snippets: [],
-        preSnippets: [
-          new PreSnippet('Ch1', 'narration', 0),
-          new PreSnippet('\n\n', 'whitespace', 1),
-          new PreSnippet('A.', 'narration', 2),
-          new PreSnippet(' ', 'whitespace', 3),
-          new PreSnippet('“B”', 'speech', 4),
-          new PreSnippet(' ', 'whitespace', 5),
-          new PreSnippet('C.', 'narration', 6),
-        ],
-      },
-      blockStatuses: ['in progress']
-    };
-    request(app)
-      .post('/api/books/')
-      .attach('file', `${testDatasets}/testBook.txt`)
-      .send()
-      .expect(defaultExpectedResponse, done)
-  });
-
-  /* the verbs might go into their own collection later*/
-  it(`POST - /api/books/verbs`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { addVerbSpokeSynonym(cb, 'yodaleyeehooed') },
-    ], done);
-  });
-
-  /* the verbs might go into their own collection later*/
-  it(`GET - /api/books/info - GET all info about book by bookName & filtered preSnippets`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { getBookInfo(cb) },
-    ], done);
-  });
-
-  it(`GET - /api/books/verbs - receive an empty array if none to get`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { getVerbSpokeSynonyms(cb) },
-    ], done);
-  });
-  
-  it(`MIX - /api/books/verbs - receive an array of strings of the verbs if custom VSS have been added`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { getVerbSpokeSynonyms(cb) }, // verify no verbs exist
-      function(cb) { addVerbSpokeSynonym(cb, 'yodaleyeehooed') }, // add this one
-      function(cb) { getVerbSpokeSynonyms(cb, 'yodaleyeehooed') }, // verify this one exists now
-    ], done);
-  });
-
-  it(`POST - /api/books/characters - can add a characterProfile and get back the newly updated list`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { addCharacterProfile(cb, 'Bob', []) },
-    ], done);
-  });
-
-  it(`GET - /api/books/suggestion - receive an EMPTY array when no characterProfiles match for suggestion`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { requestSuggestion(cb, undefined) },
-    ], done);
-  });
-
-  it(`GET - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match on an 'alias'`, function (done) {
-    let characterProfilesToExpect = [
-      {displayName: 'Holliday Inn', aliases: ['Bob']}
-    ];
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { addCharacterProfile(cb, 'Holliday Inn', ['Bob']) },
-      function(cb) { requestSuggestion(cb, 'Bob') },
-    ], done);
-  });
-
-  it(`GET - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match on a 'displayName'`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { addCharacterProfile(cb, 'Bob', ['blahblah']) },
-      function(cb) { requestSuggestion(cb, 'Bob') },
-    ], done);
-  });
-
-  it(`POST - /api/books/multi/nameConfirmedOnPreSnippet - receive the new snippets, after confirming a given preSnippet`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { addCharacterProfile(cb, 'Bob', []) },
-      function(cb) { nameConfirmedOnPreSnippet(cb) },
-    ], done);
-  });
-
-  it(`GET - /api/books/block - receive block data for an existing block`, function (done) {
-    let expectedPreSnippetLength = 7;
-    let expectedSnippetLength = 0;
-    let expectedStatus = 'in progress';
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { getBlockById(cb, 0, expectedPreSnippetLength, expectedSnippetLength, expectedStatus) },
-    ], done);
-  });
-
-  it(`GET - /api/books/block - receive block data for an existing block`, function (done) {
-    async.series([
-      function(cb) { uploadBook(cb) },
-      function(cb) { getBlockById(cb, 1, null, null, null) },
-    ], done);
   });
 
   after((done) => {
@@ -166,7 +41,185 @@ describe(`UAT test`, () => {
       done();
     });
   })
+})
+
+describe(`Uploaded book first`, () => {
+  before((done) => {
+    console.log('Opening connection to MongoDB...');
+    mongoose.connect(MONGO_DB_URL);
+    done();
+  });
+
+  describe(`No uploaded book first`, () => {
+    beforeEach((done) => {
+      mongoose.connection.collections['books'].drop(function(err) {
+        done();
+      });
+    });
+    it('GET - /api/books/ - With no books uploaded yet, GET /api/books returns empty array', (done) => {
+      request(app)
+      .get(`/api/books`)
+      .expect({bookNames: []}, done)
+    });
+  })
+
+  describe(`Book uploaded first`, () => {
+    beforeEach((done) => {
+      mongoose.connection.collections['books'].drop(function(err) {
+        uploadBook(done)
+      });
+    });
+
+    it(`POST - /api/books/ - Uploads book and sends back startWorkWith having used default values for splitting the book`, function (done) {
+      let defaultExpectedResponse = {
+        bookName: 'testBook', // this isn't a default name, but the rest are
+        lastBlockIndexWorkedOn: 0,
+        characterProfiles: [],
+        currentBlockWorkingOn: {
+          status: 'in progress',
+          snippets: [],
+          preSnippets: [
+            new PreSnippet('Ch1', 'narration', 0),
+            new PreSnippet('\n\n', 'whitespace', 1),
+            new PreSnippet('A.', 'narration', 2),
+            new PreSnippet(' ', 'whitespace', 3),
+            new PreSnippet('“B”', 'speech', 4),
+            new PreSnippet(' ', 'whitespace', 5),
+            new PreSnippet('C.', 'narration', 6),
+          ],
+        },
+        blockStatuses: ['in progress']
+      };
+      request(app)
+      .post('/api/books/')
+      .attach('file', `${testDatasets}/testBook.txt`)
+      .send()
+      .expect(defaultExpectedResponse, done)
+    });
+
+    /* the verbs might go into their own collection later*/
+    it(`POST - /api/books/verbs`, function (done) {
+      async.series([
+        function(cb) { addVerbSpokeSynonym(cb, 'yodaleyeehooed') },
+      ], done);
+    });
+
+    /* the verbs might go into their own collection later*/
+    it(`GET - /api/books/info - GET all info about book by bookName & filtered preSnippets`, function (done) {
+      async.series([
+        function(cb) { getBookInfo(cb) },
+      ], done);
+    });
+
+    it(`GET - /api/books/verbs - receive an empty array if none to get`, function (done) {
+      async.series([
+        function(cb) { getVerbSpokeSynonyms(cb) },
+      ], done);
+    });
+
+    it(`MIX - /api/books/verbs - receive an array of strings of the verbs if custom VSS have been added`, function (done) {
+      async.series([
+        function(cb) { getVerbSpokeSynonyms(cb) }, // verify no verbs exist
+        function(cb) { addVerbSpokeSynonym(cb, 'yodaleyeehooed') }, // add this one
+        function(cb) { getVerbSpokeSynonyms(cb, 'yodaleyeehooed') }, // verify this one exists now
+      ], done);
+    });
+
+    it(`POST - /api/books/characters - can add a characterProfile and get back the newly updated list`, function (done) {
+      async.series([
+        function(cb) { addCharacterProfile(cb, 'Bob', []) },
+      ], done);
+    });
+
+    it(`GET - /api/books/suggestion - receive an EMPTY array when no characterProfiles match for suggestion`, function (done) {
+      async.series([
+        function(cb) { requestSuggestion(cb, undefined) },
+      ], done);
+    });
+
+    it(`GET - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match on an 'alias'`, function (done) {
+      let characterProfilesToExpect = [
+        {displayName: 'Holliday Inn', aliases: ['Bob']}
+      ];
+      async.series([
+        function(cb) { addCharacterProfile(cb, 'Holliday Inn', ['Bob']) },
+        function(cb) { requestSuggestion(cb, 'Bob') },
+      ], done);
+    });
+
+    it(`GET - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match on a 'displayName'`, function (done) {
+      async.series([
+        function(cb) { addCharacterProfile(cb, 'Bob', ['blahblah']) },
+        function(cb) { requestSuggestion(cb, 'Bob') },
+      ], done);
+    });
+
+    it(`POST - /api/books/multi/nameConfirmedOnPreSnippet - receive the new snippets, after confirming a given preSnippet`, function (done) {
+      async.series([
+        function(cb) { addCharacterProfile(cb, 'Bob', []) },
+        function(cb) { nameConfirmedOnPreSnippet(cb) },
+      ], done);
+    });
+
+    it(`GET - /api/books/block - receive block data for an existing block`, function (done) {
+      let expectedPreSnippetLength = 7;
+      let expectedSnippetLength = 0;
+      let expectedStatus = 'in progress';
+      async.series([
+        function(cb) { getBlockById(cb, 0, expectedPreSnippetLength, expectedSnippetLength, expectedStatus) },
+      ], done);
+    });
+
+    it(`GET - /api/books/block - receive block data for an existing block`, function (done) {
+      async.series([
+        function(cb) { getBlockById(cb, 1, null, null, null) },
+      ], done);
+    });
+
+    it(`POST - /api/books/block/next - block to be completed exists, but no more`, function (done) {
+      markBlockAsFinishedAndGetNext(done, 0, 'got_piece', (err, res) => {
+        expect(res.body.nextBlock).to.equal(null)
+        expect(res.body.statusOfBlockIdSent).to.equal('completed')
+      })
+    });
+
+    // it(`POST - /api/books/block/next - block to be completed exists, and exists next`, function (done) {
+    //   markBlockAsFinishedAndGetNext(done, 0, 'got_piece', (err, res) => {
+    //     expect(res.body.nextBlock.status).to.equal('in progress')
+    //     expect(res.body.nextBlock.preSnippets).to.be.above(0)
+    //     expect(res.body.nextBlock.snippets).to.have.lengthOf(0)
+    //     expect(res.body.statusOfBlockIdSent).to.equal('completed')
+    //   })
+    // });
+  })
+  
+
+
+  after((done) => {
+    mongoose.connection.collections['books'].drop( function(err) {
+      console.log('books collection wiped');
+      mongoose.connection.close();
+      console.log('...Connection to MongoDB closed');
+      done();
+    });
+  })
 });//end UAT test
+
+
+function markBlockAsFinishedAndGetNext(cb, blockId, bookName, expectFnSync) {
+  return request(app)
+  .post('/api/books/block/next')
+  .query({ bookName, blockId})
+  .expect(200)
+  .end((err, res) => {
+    expectFnSync(err, res)
+    cb()
+  })
+}
+
+
+
+
 
 const expectedResultUploadedBook = {
   bookName: 'got_piece',
@@ -336,6 +389,8 @@ function getBlockById (cb, blockId, expectedLengthPreSnippets, expectedLengthSni
       cb()
     })
 }
+
+
 
 
 

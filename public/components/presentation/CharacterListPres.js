@@ -55,7 +55,6 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected}) => {
         <input type="text" ref={(c) => _csvAliasesTxtBxRef = c } placeholder="comma separated list of aliases"/>
         <button type="submit" className="button-success pure-button">Add new character name</button>
       </form>
-      <label htmlFor="auto_confirm_narration">Auto Confirm Narration Type</label>
       <div className="charListWrapper">
         <ul>
           {characterItems}

@@ -1,5 +1,21 @@
 !!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
 
+on fetch name suggestion it needs to also log which it made
+
+Nice to have -
+Instead of going at a time, do a 'Pre script analysis'
+    - locate all possible verbs that might indicate speech
+    - locate all possible names (and have a little tooltip on highlight that lets you add it as a new name or
+        add as an alias)
+
+
+in the withWsMatchers -> have it check against multiple matches, so you can
+    generate dynamic stuff, for example a NAR() wouldnt match
+    if it came out for NAR(whatever here), but there could be cases where we
+    want it to match anything there, so it might be easier to have it just create
+    all the variations and pass it to an array for it to check against all of em
+
+
 Checkbox (marked true by default) for confirming you want narration types
 automatically just marked as narration
 

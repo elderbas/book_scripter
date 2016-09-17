@@ -1,12 +1,24 @@
 'use strict';
+const fs = require('fs')
 const lexiconTagTypes = require('../constants/lexiconTagTypes');
 let nlp = require('nlp_compromise');
 const _ = require('lodash');
 const narrationType = (preSnip, customLexicon) => {
   let classifyingPieces = [];
   let nlpTextOutput = nlp.text(preSnip.text, {lexicon: customLexicon});
+
+  if (process.env.NODE_ENV === 'development' && _.get(global, 'log.preSnippetClassify')) {
+    let logObj = {
+      customLexicon,
+      preSnipText: preSnip.text,
+      sentences: nlpTextOutput.sentences
+    }
+    fs.writeFileSync(`${_serverDir_}/log/preSnippetClassify.txt`, '!!!!!!\n\n' + JSON.stringify(logObj, null, 4))
+  }
+
   nlpTextOutput.sentences.forEach((sentence) => {
     sentence.terms.forEach((term) => {
+
       // since we added custom lexicon types based on this hash, if the current term's tag type matches
       // one of these, then it's one we care about looking for
       let termType = lexiconTagTypes[term.tag];
@@ -61,7 +73,7 @@ const whitespaceType = (preSnip) => {
  * lexiconTagTypes hash
  * */
 const preSnippetClassify = (preSnip, customLexicon) => {
-  customLexicon = customLexicon || {};
+  customLexicon = customLexicon || nlp.lexicon();
   if (preSnip.type === 'narration') {
     return narrationType(preSnip, customLexicon);
   }

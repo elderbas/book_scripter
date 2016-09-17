@@ -30,7 +30,13 @@ const nameSuggest = (preSnippetClassifiedArrangementObj, preSnippetExtendedObj) 
   let nonWsNameMatch = checkArrangementForMatches(
     preSnippetClassifiedArrangementObj.nonWhiteSpaceArrangement, preSnippetExtendedObj.nonWhiteSpace, arrangementMatchers.nonWsMatchers
   );
-
+  let withWsArrangementNameMatch = checkArrangementForMatches(
+    preSnippetClassifiedArrangementObj.arrangementComplete, preSnippetExtendedObj.allExtended, arrangementMatchers.withWsMatchers
+  );
+  if (withWsArrangementNameMatch) {
+    // console.log('withWsArrangementNameMatch', withWsArrangementNameMatch);
+    return withWsArrangementNameMatch
+  }
   if (nonSsArrangementNameMatch) {
     // console.log('nonSsArrangementNameMatch');
     return nonSsArrangementNameMatch;

@@ -12,7 +12,6 @@ function nameConfirmedOnPreSnippet (req, res) {
   let tempPreSnippetId = _.get(req, 'body.preSnippetId');
   let displayName = _.get(req, 'body.displayName');
   let snippetType = _.get(req, 'body.snippetType');
-
   if (_.some([bookName, tempBlockId, tempPreSnippetId, displayName, snippetType], _.isUndefined)) {
     return errorHandler(req, res, 'Missing parameters to /api/books/multi/nameConfirmedOnPreSnippet', 500);
   }
@@ -23,8 +22,6 @@ function nameConfirmedOnPreSnippet (req, res) {
   if (_.some([blockId, preSnippetId], (x) => !_.isNumber(x))) {
     return errorHandler(req, res, 'Invalid parameter types to /api/books/multi/nameConfirmedOnPreSnippet', 500);
   }
-  
-
   Books.nameConfirmedOnPreSnippet(bookName, blockId, preSnippetId, displayName, snippetType)
   .then(newBlock => {
     res.send(newBlock.snippets)

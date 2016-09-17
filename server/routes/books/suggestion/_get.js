@@ -41,9 +41,12 @@ function getSuggestedName (req, res) {
       return Books.getBlockByIndex(bookName, blockId)
     })
     .then((block) => {
+
+
       // let prettyJson = (x) => JSON.stringify(x, null, 4)
       // console.log(`block -`, prettyJson(block));
       // console.log('specific pre snippet', prettyJson(block.preSnippets[speechPreSnippetIdSelected]));
+      // TODO change to readFile instead of sync (but for now that'd make it ugly <_>)
       let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
       // console.log('existing CHAR PROFILES', prettyJson(charProfsAndVSS.characterProfiles));
       customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, commonSpokenSynonyms.concat(charProfsAndVSS.verbSpokeSynonyms));
@@ -59,16 +62,22 @@ function getSuggestedName (req, res) {
       }
       else {
         profilesToSuggest = _.filter(charProfsAndVSS.characterProfiles, (cp) => {
-          let displayName = cp.displayName, suggestedName = nameSuggestOutput.suggestedName
-          return displayName.toLowerCase() === suggestedName || _.some(cp.aliases, a => a.toLowerCase() === suggestedName)
+          let displayName = cp.displayName.toLowerCase(), suggestedName = nameSuggestOutput.suggestedName.toLowerCase()
+          return displayName === suggestedName || _.some(cp.aliases, a => a.toLowerCase() === suggestedName)
         });
 
       }
-      // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      // console.log('charProfsAndVSS.characterProfiles', charProfsAndVSS.characterProfiles);
-      // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-      // logger('profilesToSuggest', prettyJson(profilesToSuggest))
-      // logger('nameSuggestOutput', prettyJson(nameSuggestOutput))
+      if (process.env.NODE_ENV === 'development' && _.get(global, 'log.getNameSuggestion')) {
+        let suggestionLogObj = {
+          speechText: block.preSnippets[speechPreSnippetIdSelected],
+          nameSuggestOutput,
+          preSnippetArrangementObj,
+          profilesToSuggest,
+          charProfiles: charProfsAndVSS.characterProfiles
+        }
+        fs.writeFileSync(`${_serverDir_}/log/nameSuggest.txt`, JSON.stringify(suggestionLogObj, null, 4) + '\n\n')
+      }
+
       res.send({characterProfilesSuggested: profilesToSuggest});
     })
     .catch((err) => {

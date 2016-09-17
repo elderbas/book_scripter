@@ -1,14 +1,13 @@
 const lexiconTagType = require('../constants/lexiconTagTypes');
-const pronounsAlwaysAdd = [
-  'he', 'she'
-];
+const pronounsAlwaysAdd = [ 'he', 'she' ];
+const nlp = require('nlp_compromise')
 /*
 * builds a custom lexicon based on a character list,
 * verb list (said, spoke),
 * and some defaults
 * */
 const buildCustomLexicon = (characterList, verbsLikeSpoke, optionalIncludePronouns) => {
-  let lexiconAugmentation = {};
+  let lexiconAugmentation = nlp.lexicon();
   characterList = characterList || [];
   verbsLikeSpoke = verbsLikeSpoke || [];
   characterList.forEach(currChar => {

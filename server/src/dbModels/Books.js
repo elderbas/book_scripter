@@ -7,7 +7,6 @@ let errorMessages = require('../../constants/erroMessages');
 // you can think of a schema as an INTERFACE. it doesn't do anything,
 // it just tells you how it should look and its requirements. like a wishlist
 
-
 // plan to use it for just knowing which books exists, probably for a list of books they can continue working on
 let _getNamesOfBooksLoaded = () => {
   return new Promise((fulfill, reject) => {
@@ -154,15 +153,13 @@ const _getBlockByIndex = (bookName, indexOfBlockToGet) => {
 };
 
 // returns boolean for whether update was successful
-const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
+const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt, optObjToAssign) => {
   return new Promise((fulfill, reject) => {
-    Books.findOne({bookName}, (err, bookDoc) => {
+    let setObj = {};
+    setObj[`blocks.${indexToUpdateBlockAt}`] = Object.assign({}, newBlockSubDoc, (optObjToAssign || {}))
+    Books.findOneAndUpdate({bookName}, {"$set": setObj}, {new: true}, (err, bookDoc) => {
       if (err) {return reject(err);}
-      bookDoc.blocks[indexToUpdateBlockAt] = newBlockSubDoc;
-      bookDoc.save((err, newBookDoc) => {
-        if (err) {return reject(err);}
-        fulfill(newBookDoc.blocks);
-      })
+      fulfill(bookDoc.blocks);
     });
   });
 };
@@ -185,22 +182,31 @@ const _getBookInfo = (bookName) => {
 
 
 // _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
-const _nameConfirmedOnPreSnippet = (bookNameBeingUsed, blockId, preSnippetId, displayNameConfirmed, snippetType) => {
-  return _getBlockByIndex(bookNameBeingUsed, blockId).then((blockToUpdate) => {
-    let setObj = {};
-    if (snippetType === 'speech') {
-      setObj[`blocks.${blockId}.preSnippets.${preSnippetId}.personConfirmedNormalized`] = displayNameConfirmed
-    }
-    setObj[`blocks.${blockId}.snippets`] = blockToUpdate.snippets.concat([
-      new Snippet(displayNameConfirmed, preSnippetId, snippetType)
-    ])
-    return new Promise((fulfill, reject) => {
-      Books.findOneAndUpdate({bookName:bookNameBeingUsed}, {"$set": setObj}, {new: true}, (err, bookDoc) => {
-        if (err) {return reject(err);}
-        // console.log('bookDoc', JSON.stringify(bookDoc.blocks[blockId], null, 4));
-        fulfill(bookDoc.blocks[blockId]);
-      });
+const _nameConfirmedOnPreSnippet = (bookName, blockId, preSnippetId, displayNameConfirmed, snippetType) => {
+  let setObj = {}, pushObj = {};
+  setObj[`blocks.${blockId}.preSnippets.${preSnippetId}.personConfirmedNormalized`] = displayNameConfirmed
+  pushObj[`blocks.${blockId}.snippets`] = new Snippet(displayNameConfirmed, preSnippetId, snippetType)
+  let updateObj = {$set: setObj, $push: pushObj}
+  return new Promise((fulfill, reject) => {
+    Books.findOneAndUpdate({bookName}, updateObj, {new: true}, (err, bookDoc) => {
+      if (err) {return reject(err);}
+      fulfill(bookDoc.blocks[blockId]);
     });
+  });
+}
+
+const setBlockAsCompletedAndGetNext = (bookName, blockId) => {
+  let setObj = {};
+  setObj[`blocks.${blockId}.status`] = 'completed'
+  return new Promise((fulfill, reject) => {
+    Books.findOneAndUpdate({bookName}, {"$set": setObj}, {new: true}, (err, bookDoc) => {
+      if (err) { return reject(err) }
+      let nextBlock = bookDoc.blocks[blockId + 1]
+      fulfill({
+        statusOfBlockIdSent: bookDoc.blocks[blockId].status,
+        nextBlock: (nextBlock === undefined) ? null : nextBlock
+      })
+    })
   })
 }
 
@@ -219,5 +225,6 @@ const booksExport = {
   addBook: _addBook,
   getBookInfo: _getBookInfo,
   nameConfirmedOnPreSnippet: _nameConfirmedOnPreSnippet,
+  setBlockAsCompletedAndGetNext,
 };
 module.exports = booksExport;

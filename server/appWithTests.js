@@ -7,6 +7,15 @@ let path = require('path');
 let winston = require('winston');
 let expressWinston = require('express-winston');
 
+// turns on file log writing for specific blocks of code
+// do a global text search for _.get(global, 'log.<key>') to find it
+// tail -f server/log/<key>.txt
+// WARNING - using writeFileSync and some of these are really slow
+global.log = {
+  preSnippetClassify: true, // will notice a difference
+  getNameSuggestion: true // reasonably quick
+}
+
 let ENV = process.env.NODE_ENV
 if (ENV === undefined) {
   console.log('UNDEFINED ENV!!!!!!');
