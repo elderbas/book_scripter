@@ -53,12 +53,13 @@ class CharacterListContainer extends React.Component {
       // we got a predicted value for a name back, so just automatically confirm it
       if (currentHighlightPredictedName !== 'none' &&
           currentHighlightPredictedName !== null &&
-          this.props.currentHighlightedPreSnippet.id === nextProps.currentHighlightedPreSnippet.id) {
+          this.props.currentHighlightedPreSnippet.id === nextProps.currentHighlightedPreSnippet.id &&
+        nextProps.autoConfirmPredictedName === true) {
         this.handleCharacterSelected(currentHighlightPredictedName, nextProps)
       }
 
       // we know currently inspected preSnippet is just a narration type so let's confirm it as such
-      if (this.props.currentHighlightedPreSnippet.id !== nextProps.currentHighlightedPreSnippet.id) {
+      if (this.props.currentHighlightedPreSnippet.id !== nextProps.currentHighlightedPreSnippet.id && nextProps.autoConfirmNarration === true) {
         if (currentHighlightedPreSnippet.type === 'narration') {
           this.handleCharacterSelected('Narration', nextProps)
         }
@@ -81,10 +82,13 @@ class CharacterListContainer extends React.Component {
   render() {
     return (
       <CharacterListPres
+        autoConfirmNarration={this.props.autoConfirmNarration}
+        autoConfirmPredictedName={this.props.autoConfirmPredictedName}
         currentHighlightedPreSnippet={this.props.currentHighlightedPreSnippet}
         characterProfiles={this.props.characterProfiles}
         currentHighlightPredictedName={this.props.currentHighlightPredictedName}
         onCharacterSelected={(x) => this.handleCharacterSelected.bind(this)(x, this.props)}
+        onToggleConfig={(baseName) => this.props.handleToggledConfig(baseName)}
         onAddCharacterProfile={this.handleAddCharacterProfile.bind(this)}
       />
     )
@@ -103,13 +107,15 @@ const mapStateToProps = (store) => ({
   characterProfiles: store.book.currentBook.characterProfiles,
   bookName: store.book.currentBook.bookName,
   currentHighlightPredictedName: store.book.currentHighlightPredictedName,
-  currentBlockId: store.book.currentBook.lastBlockIndexWorkedOn
+  currentBlockId: store.book.currentBook.lastBlockIndexWorkedOn,
+  autoConfirmPredictedName: store.config.autoConfirmPredictedName,
+  autoConfirmNarration: store.config.autoConfirmNarration,
 })
 const mapDispatchToProps = {
   addCharacterProfile: actions.addCharacterProfile,
   handleConfirmedNameOnPreSnippet: actions.handleConfirmedNameOnPreSnippet,
   getNameSuggestion: actions.getNameSuggestion,
-  toggleAutoConfirmNarration: actions.toggleAutoConfirmNarration,
+  handleToggledConfig: actions.handleToggledConfig,
 }
 CharacterListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(LogOnRender(CharacterListContainer)))
 export default CharacterListContainer
