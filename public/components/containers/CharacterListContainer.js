@@ -6,6 +6,9 @@ import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
 import LogOnRender from '../hoc/LogOnRender'
 
+/* this component is a bit hefty */
+
+
 /* this is handling
  * NEW CHARACTERS being added
  * CURRENT character being selected
@@ -89,6 +92,9 @@ class CharacterListContainer extends React.Component {
         currentHighlightPredictedName={this.props.currentHighlightPredictedName}
         onCharacterSelected={(x) => this.handleCharacterSelected.bind(this)(x, this.props)}
         onToggleConfig={(baseName) => this.props.handleToggledConfig(baseName)}
+        currentBlockId={this.props.currentBlockId}
+        bookName={this.props.bookName}
+        markCurrentBlockCompletedAndGetNext={this.props.markCurrentBlockCompletedAndGetNext}
         onAddCharacterProfile={this.handleAddCharacterProfile.bind(this)}
       />
     )
@@ -107,7 +113,7 @@ const mapStateToProps = (store) => ({
   characterProfiles: store.book.currentBook.characterProfiles,
   bookName: store.book.currentBook.bookName,
   currentHighlightPredictedName: store.book.currentHighlightPredictedName,
-  currentBlockId: store.book.currentBook.lastBlockIndexWorkedOn,
+  currentBlockId: store.book.currentBook.currentBlockWorkingOn.blockId,
   autoConfirmPredictedName: store.config.autoConfirmPredictedName,
   autoConfirmNarration: store.config.autoConfirmNarration,
 })
@@ -116,6 +122,7 @@ const mapDispatchToProps = {
   handleConfirmedNameOnPreSnippet: actions.handleConfirmedNameOnPreSnippet,
   getNameSuggestion: actions.getNameSuggestion,
   handleToggledConfig: actions.handleToggledConfig,
+  markCurrentBlockCompletedAndGetNext: actions.markCurrentBlockCompletedAndGetNext,
 }
 CharacterListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(LogOnRender(CharacterListContainer)))
 export default CharacterListContainer

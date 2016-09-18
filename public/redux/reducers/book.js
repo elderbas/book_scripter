@@ -2,6 +2,8 @@ import { combineReducers } from 'redux'
 const responseToFetchBook = response => response.body
 const responseToNameSuggestion = response => response.body.characterProfilesSuggested
 
+const idOfPreviousPreSnippetHighlightedDefault = -1
+
 const requestSuccessFailure = (mainName) => ((state = false, action) => {
   switch (action.type) {
     case `${mainName}_REQUEST`:
@@ -38,7 +40,7 @@ const currentBook = (state = {}, action) => {
       let { snippets, preSnippets } = fetchedBook.currentBlockWorkingOn
       // get data from pre snippets
       // kinda sloppy, but just set to last id set
-      let idOfPreviousPreSnippetHighlighted = -1;
+      let idOfPreviousPreSnippetHighlighted = idOfPreviousPreSnippetHighlightedDefault;
       let newSnippets = snippets.map((snippet) => {
         idOfPreviousPreSnippetHighlighted = snippet.matchingPreSnippetId
         return {
@@ -47,6 +49,8 @@ const currentBook = (state = {}, action) => {
         }
         return snippets
       })
+      // no reason to have this. the
+      delete fetchedBook.lastBlockIndexWorkedOn
       fetchedBook.currentBlockWorkingOn.snippets = newSnippets
       return {
         ...fetchedBook,
@@ -55,6 +59,19 @@ const currentBook = (state = {}, action) => {
 
     case 'ADD_CHARACTER_PROFILE':
       return { ...state, characterProfiles: [...state.characterProfiles, action.characterProfile] }
+
+    case 'UPDATE_CURRENT_BLOCK':
+      console.log('action.response', action.response);
+      let nextBlock = action.response.body.nextBlock
+      console.log('newBlock', nextBlock);
+      // need to consider when we run out of blocks
+      let newStateFromNewBlock = {
+        ...state,
+        currentBlockWorkingOn: nextBlock,
+        idOfPreviousPreSnippetHighlighted: idOfPreviousPreSnippetHighlightedDefault
+      }
+      console.log('newStateFromNewBlock', newStateFromNewBlock);
+      return newStateFromNewBlock
     default:
       return state
   }

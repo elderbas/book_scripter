@@ -4,7 +4,7 @@ import Root from './components/Root'
 import configureStore from './redux/configureStore'
 const store = configureStore()
 global.log = {
-  whenRender: true
+  whenRender: false
 }
 
 ReactDOM.render(

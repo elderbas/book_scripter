@@ -70,9 +70,6 @@ describe('classifyPreSnippetArrangement', () => {
       new PreSnippet(`“No way”`, 'speech', 4),
     ]
     someLex2 = buildCustomLexicon([new CharacterProfile('Bob')], ['pointed out'])
-    console.log('!@JOH!KJ@HBJ!HK@BJ!HK@BHJK!@BJHK!@!@');
-    console.log('someLex2 === someLex', someLex2 === someLex);
-    console.log('!@JOH!KJ@HBJ!HK@BJ!HK@BHJK!@BJHK!@!@');
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, 0, QUANTITY_TO_GRAB_EACH_SIDE);
     let res = classifyPreSnippetArrangement(
       preSnippetExtendedObj, someLex2)

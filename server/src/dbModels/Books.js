@@ -4,29 +4,30 @@ let Block = require('../classes/Classes').Block;
 let Snippet = require('../classes/Classes').Snippet;
 let Books = require('./mongooseModels').Books;
 let errorMessages = require('../../constants/erroMessages');
+let logger = require('../../../dopeAssHelpers').logger
 // you can think of a schema as an INTERFACE. it doesn't do anything,
 // it just tells you how it should look and its requirements. like a wishlist
 
 // plan to use it for just knowing which books exists, probably for a list of books they can continue working on
-let _getNamesOfBooksLoaded = () => {
+let getNamesOfBooksLoaded = () => {
   return new Promise((fulfill, reject) => {
     Books.find({}, (e, arrOfBooks) => {
       if (e) { return reject(e); }
       fulfill({bookNames: _.map(arrOfBooks, 'bookName')});
     });
   });
-};//end _getNamesOfBooksLoaded
+};//end getNamesOfBooksLoaded
 
 // creates all pre snippets for all blocks based on text blobs
-let _addBook = (bookName, textBlobs) => {
+let addBook = (bookName, textBlobs) => {
   // setDefaultsOnInsert, upsert
   return new Promise((fulfill, reject) => {
     // from text blobs to pre snippets
-    let blocks = _.map(textBlobs, (textBlob) => {
+    let blocks = _.map(textBlobs, (textBlob, index) => {
       let preSnippets = createPreSnippetsFromTextBlob(textBlob);
       // set all pre snippets in a block to an id (although maybe we don't need to because their index in the array will be enough)
       preSnippets.forEach((pS, i) => pS.id = i);
-      return new Block(preSnippets);
+      return new Block(preSnippets, [], undefined, index);
     });
     blocks[0].status = 'in progress'; // first one will be in progress
     let newBook = new Books({bookName, blocks, lastBlockIndexWorkedOn: 0});
@@ -40,12 +41,12 @@ let _addBook = (bookName, textBlobs) => {
       fulfill(book);
     });
   });
-};//end _addBook
+};//end addBook
 
 // convenience function for providing data on start to get started
-let _addBookAndGetStarted = (bookName, textBlobs) => {
+let addBookAndGetStarted = (bookName, textBlobs) => {
   return new Promise((fulfill, reject) => {
-    _addBook(bookName, textBlobs).then(bookDocJustAdded => {
+    addBook(bookName, textBlobs).then(bookDocJustAdded => {
       let toSend = {
         bookName: bookDocJustAdded.bookName,
         characterProfiles: bookDocJustAdded.characterProfiles,
@@ -58,16 +59,16 @@ let _addBookAndGetStarted = (bookName, textBlobs) => {
   });
 };
 
-const _dropModel = () => {
+const dropModel = () => {
   return new Promise((fulfill, reject) => {
     Books.remove({}, (err) => {
       if (err) {return reject(err);}
       fulfill(`books dropped from Mongodb`);
     });
   });
-};//end _dropModel
+};//end dropModel
 
-const _getCharacterProfiles = (bookName) => {
+const getCharacterProfiles = (bookName) => {
   return new Promise((fulfill, reject) => {
     Books.findOne({bookName}, (err, bookDoc) => {
       if (err) {return reject(err);}
@@ -76,7 +77,7 @@ const _getCharacterProfiles = (bookName) => {
   });
 };
 
-const _getCharacterProfilesAndVerbSpokeSynonyms = (bookName) => {
+const getCharacterProfilesAndVerbSpokeSynonyms = (bookName) => {
   return new Promise((fulfill, reject) => {
     Books.findOne({bookName}, (err, bookDoc) => {
       if (err) {return reject(err);}
@@ -90,7 +91,7 @@ const _getCharacterProfilesAndVerbSpokeSynonyms = (bookName) => {
 
 // TODO NOT DONE, was just copy/pasted over mostly
 // fulfill 'true' if saved correctly
-const _addVerbSpokeSynonym = (bookName, verbSpokeSynonymStr) => {
+const addVerbSpokeSynonym = (bookName, verbSpokeSynonymStr) => {
   return new Promise((fulfill, reject) => {
     Books.findOne({bookName},(err, bookDoc) => {
       if (err) {return reject(err);}
@@ -112,7 +113,7 @@ const _addVerbSpokeSynonym = (bookName, verbSpokeSynonymStr) => {
 * output: the characterProfiles array with the new charProf added
 * throws error when: the newCharProfile has a non-unique displayName
 * */
-const _addCharacterProfile = (bookName, newCharProfile) => {
+const addCharacterProfile = (bookName, newCharProfile) => {
   // let updateQuery = {$push: {characterProfiles: newCharProfile}};
   // let opts = {'new': true, runValidators: true};
   return new Promise((fulfill, reject) => {
@@ -132,7 +133,7 @@ const _addCharacterProfile = (bookName, newCharProfile) => {
   });
 };
 
-const _getBlocks = (bookName) => {
+const getBlocks = (bookName) => {
   return new Promise((fulfill, reject) => {
     Books.findOne({bookName}, (err, bookDoc) => {
       if (err) {return reject(err);}
@@ -144,8 +145,8 @@ const _getBlocks = (bookName) => {
   });
 };
 
-const _getBlockByIndex = (bookName, indexOfBlockToGet) => {
-  return _getBlocks(bookName).then((blocks) => {
+const getBlockByIndex = (bookName, indexOfBlockToGet) => {
+  return getBlocks(bookName).then((blocks) => {
     return new Promise((fulfill, reject) => {
       fulfill(blocks[indexOfBlockToGet]);
     });
@@ -153,7 +154,7 @@ const _getBlockByIndex = (bookName, indexOfBlockToGet) => {
 };
 
 // returns boolean for whether update was successful
-const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt, optObjToAssign) => {
+const updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt, optObjToAssign) => {
   return new Promise((fulfill, reject) => {
     let setObj = {};
     setObj[`blocks.${indexToUpdateBlockAt}`] = Object.assign({}, newBlockSubDoc, (optObjToAssign || {}))
@@ -164,13 +165,18 @@ const _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt, optObj
   });
 };
 
-const _getBookInfo = (bookName) => {
+const getBookInfo = (bookName) => {
   return new Promise((fulfill, reject) => {
     Books.findOne({bookName}, (err, bookDoc) => {
       if (err) {return reject(err);}
       let toSend = {
         bookName: bookDoc.bookName,
         characterProfiles: bookDoc.characterProfiles,
+
+        //lastBlockIndexWorkedOn is used so when they do getBookInfo later,
+        // they'll just get the most recently worked on block.
+        // whenever a block gets marked as finished, lastBlockIndexWorkedOn will be
+        // set to the next one grabbed
         lastBlockIndexWorkedOn: bookDoc.lastBlockIndexWorkedOn,
         currentBlockWorkingOn: bookDoc.blocks[bookDoc.lastBlockIndexWorkedOn], // should be index 0
         blockStatuses: _.map(bookDoc.blocks, 'status')
@@ -181,8 +187,7 @@ const _getBookInfo = (bookName) => {
 }
 
 
-// _updateBlockById = (bookName, newBlockSubDoc, indexToUpdateBlockAt) => {
-const _nameConfirmedOnPreSnippet = (bookName, blockId, preSnippetId, displayNameConfirmed, snippetType) => {
+const nameConfirmedOnPreSnippet = (bookName, blockId, preSnippetId, displayNameConfirmed, snippetType) => {
   let setObj = {}, pushObj = {};
   setObj[`blocks.${blockId}.preSnippets.${preSnippetId}.personConfirmedNormalized`] = displayNameConfirmed
   pushObj[`blocks.${blockId}.snippets`] = new Snippet(displayNameConfirmed, preSnippetId, snippetType)
@@ -196,35 +201,52 @@ const _nameConfirmedOnPreSnippet = (bookName, blockId, preSnippetId, displayName
 }
 
 const setBlockAsCompletedAndGetNext = (bookName, blockId) => {
-  let setObj = {};
-  setObj[`blocks.${blockId}.status`] = 'completed'
+  let $set = { [`blocks.${blockId}.status`]: 'completed' };
   return new Promise((fulfill, reject) => {
-    Books.findOneAndUpdate({bookName}, {"$set": setObj}, {new: true}, (err, bookDoc) => {
+    Books.findOneAndUpdate({bookName}, {$set}, {new: true}, (err, bookDoc) => {
       if (err) { return reject(err) }
       let nextBlock = bookDoc.blocks[blockId + 1]
-      fulfill({
-        statusOfBlockIdSent: bookDoc.blocks[blockId].status,
-        nextBlock: (nextBlock === undefined) ? null : nextBlock
-      })
+      // we're at the end of the blocks, so just send back null
+      if (nextBlock === undefined) {
+        fulfill({
+          statusOfBlockIdSent: bookDoc.blocks[blockId].status,
+          nextBlock: null
+        })
+      }
+      else {
+        // if there's a way to do a condition update on the possibly non-existent block then
+        // that way should replace this
+        let $set2 = { 
+          [`blocks.${blockId + 1}.status`]: 'in progress',
+          lastBlockIndexWorkedOn: blockId + 1
+        };
+        Books.findOneAndUpdate({bookName}, {$set: $set2}, {new: true}, (err, evenNewerBookDoc) => {
+          if (err) { return reject(err) }
+          fulfill({
+            statusOfBlockIdSent: evenNewerBookDoc.blocks[blockId].status,
+            nextBlock: evenNewerBookDoc.blocks[blockId + 1]
+          })
+        })
+      }
     })
   })
 }
 
 const booksExport = {
   // schema: bookSchema,
-  getCharacterProfilesAndVerbSpokeSynonyms: _getCharacterProfilesAndVerbSpokeSynonyms,
-  getNamesOfBooksLoaded: _getNamesOfBooksLoaded,
-  getCharacterProfiles: _getCharacterProfiles,
-  addBookAndGetStarted: _addBookAndGetStarted,
-  addCharacterProfile: _addCharacterProfile,
-  addVerbSpokeSynonym: _addVerbSpokeSynonym,
-  getBlockByIndex: _getBlockByIndex,
-  updateBlockById: _updateBlockById,
-  dropModel: _dropModel,
-  getBlocks: _getBlocks,
-  addBook: _addBook,
-  getBookInfo: _getBookInfo,
-  nameConfirmedOnPreSnippet: _nameConfirmedOnPreSnippet,
+  getCharacterProfilesAndVerbSpokeSynonyms,
+  getNamesOfBooksLoaded,
+  getCharacterProfiles,
+  addBookAndGetStarted,
+  addCharacterProfile,
+  addVerbSpokeSynonym,
+  getBlockByIndex,
+  updateBlockById,
+  dropModel,
+  getBlocks,
+  addBook,
+  getBookInfo,
+  nameConfirmedOnPreSnippet,
   setBlockAsCompletedAndGetNext,
 };
 module.exports = booksExport;

@@ -7,14 +7,24 @@ const predictedNameBtnStyle = {
   padding: '5px'
 }
 
-let CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet,
-  autoConfirmNarration, autoConfirmPredictedName,
+let CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet, currentBlockId,
+  autoConfirmNarration, autoConfirmPredictedName, markCurrentBlockCompletedAndGetNext, bookName,
 characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleConfig}) => {
     // debugger;
     if (currentHighlightedPreSnippet === undefined) {
+      console.log('yesh');
       return (
         <div>
-          No pre snippets left to select characters for
+          <br />
+          <strong>:D</strong>
+          <br /> <br />
+          <button
+            className="button is-primary is-bold"
+            onClick={() => {
+              markCurrentBlockCompletedAndGetNext(currentBlockId, bookName)
+            }}>
+            Snippets All Look Good
+          </button>
         </div>
       )
     }
@@ -37,7 +47,7 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
   characterItems = charProfilesToDisplay.map(({displayName, aliases}) => {
     return (
       <li key={displayName} onClick={() => onCharacterSelected(displayName)}>
-        <span className="displayName">{`${displayName} - ${aliases.join(',')}`}</span>
+        <span className="displayName">{`${displayName}${!!aliases.length ? ' - ' + aliases.join(',') : ''}`}</span>
       </li>
     )
   })

@@ -20,9 +20,9 @@ let shadowStyle = {
 let PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet, idOfPreviousPreSnippetHighlighted}) => {
   if (currentHighlightedPreSnippet === undefined) {
     return (
-      <div style={preSnippetListWrapper}>
-        Sweet! You're all done with this block.
-        Verify Snippets are correct and confirm you're ready to move to the next block.
+      <div>
+        <br />
+        Sweet! You're all done with this block. Verify Snippets are correct and confirm you're ready to move to the next block.
       </div>
     )
   }
@@ -35,7 +35,6 @@ let PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet, idOfPreviou
   return (
     <div style={preSnippetListWrapper}>
       {preSnipTags}
-
     </div>
   )
 }

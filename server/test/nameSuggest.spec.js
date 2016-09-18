@@ -55,7 +55,6 @@ describe('!--nameSuggest--!', () => {
       let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
       let output = null;
       let res = nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj)
-      console.log('res', res);
       expect(res).to.deep.equal(output)
     });
 

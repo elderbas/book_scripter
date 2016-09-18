@@ -174,7 +174,7 @@ describe('<-- Books collection-->\n', () => {
     describe(`.getBlockByIndex`, () => {
       it(`object with 'preSnippets', 'snippets', and 'status' key`, function (done) {
         Books.getBlockByIndex(bookNameBeingUsed, 0).then(blockDoc => {
-          expect(blockDoc).to.have.all.keys(['preSnippets', 'snippets', 'status']);
+          expect(blockDoc).to.have.all.keys(['preSnippets', 'snippets', 'status', 'blockId']);
           done();
         }).catch(done);
       });

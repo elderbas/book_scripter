@@ -20,6 +20,7 @@ let PreSnippet = require('../../src/classes/PreSnippet');
 let testDatasets = '/Users/bscherm/SideProjects/book_scripter/server/test/dataSets';
 let async = require('async');
 const MONGO_DB_URL = config.db.mongodb[ENV];
+const logger = require('../../../dopeAssHelpers').logger
 
 describe(`No uploaded book first`, () => {
   before((done) => {
@@ -52,21 +53,24 @@ describe(`Uploaded book first`, () => {
 
   describe(`No uploaded book first`, () => {
     beforeEach((done) => {
-      mongoose.connection.collections['books'].drop(function(err) {
-        done();
-      });
+      mongoose.connection.collections['books'].drop(() => done());
     });
     it('GET - /api/books/ - With no books uploaded yet, GET /api/books returns empty array', (done) => {
-      request(app)
-      .get(`/api/books`)
-      .expect({bookNames: []}, done)
+      // for some reason the beforEach doesn't remove the book before it gets to this
+      // but this works
+      mongoose.connection.collections['books'].drop(() => {
+        request(app)
+          .get(`/api/books`)
+          .expect({bookNames: []}, done)
+      });
+
     });
   })
 
   describe(`Book uploaded first`, () => {
     beforeEach((done) => {
       mongoose.connection.collections['books'].drop(function(err) {
-        uploadBook(done)
+        uploadBook(done, 'got_piece')
       });
     });
 
@@ -76,6 +80,7 @@ describe(`Uploaded book first`, () => {
         lastBlockIndexWorkedOn: 0,
         characterProfiles: [],
         currentBlockWorkingOn: {
+          blockId: 0,
           status: 'in progress',
           snippets: [],
           preSnippets: [
@@ -91,10 +96,10 @@ describe(`Uploaded book first`, () => {
         blockStatuses: ['in progress']
       };
       request(app)
-      .post('/api/books/')
-      .attach('file', `${testDatasets}/testBook.txt`)
-      .send()
-      .expect(defaultExpectedResponse, done)
+        .post('/api/books/')
+        .attach('file', `${testDatasets}/testBook.txt`)
+        .send()
+        .expect(defaultExpectedResponse, done)
     });
 
     /* the verbs might go into their own collection later*/
@@ -138,9 +143,6 @@ describe(`Uploaded book first`, () => {
     });
 
     it(`GET - /api/books/suggestion - receive an OCCUPIED array of characterProfile(s) when there's a match on an 'alias'`, function (done) {
-      let characterProfilesToExpect = [
-        {displayName: 'Holliday Inn', aliases: ['Bob']}
-      ];
       async.series([
         function(cb) { addCharacterProfile(cb, 'Holliday Inn', ['Bob']) },
         function(cb) { requestSuggestion(cb, 'Bob') },
@@ -183,16 +185,24 @@ describe(`Uploaded book first`, () => {
       })
     });
 
-    // it(`POST - /api/books/block/next - block to be completed exists, and exists next`, function (done) {
-    //   markBlockAsFinishedAndGetNext(done, 0, 'got_piece', (err, res) => {
-    //     expect(res.body.nextBlock.status).to.equal('in progress')
-    //     expect(res.body.nextBlock.preSnippets).to.be.above(0)
-    //     expect(res.body.nextBlock.snippets).to.have.lengthOf(0)
-    //     expect(res.body.statusOfBlockIdSent).to.equal('completed')
-    //   })
-    // });
+    it(`POST - /api/books/block/next - block to be completed exists, and next block exists too`, function (done) {
+      async.series([
+        function(cb) { uploadBook(cb, 'biggerTestBook') },
+        function (cb) {
+          let thisBlockId = 0
+          markBlockAsFinishedAndGetNext(cb, thisBlockId, 'biggerTestBook', (err, res) => {
+            expect(res.body.nextBlock.status).to.equal('in progress')
+            expect(res.body.nextBlock.preSnippets).to.be.length.above(0)
+
+            // having the block id here should be built in and not added last minute like this
+            expect(res.body.nextBlock.blockId).to.equal(thisBlockId + 1)
+            expect(res.body.nextBlock.snippets).to.have.lengthOf(0)
+            expect(res.body.statusOfBlockIdSent).to.equal('completed')
+          })
+        }
+      ], done);
+    });
   })
-  
 
 
   after((done) => {
@@ -208,46 +218,29 @@ describe(`Uploaded book first`, () => {
 
 function markBlockAsFinishedAndGetNext(cb, blockId, bookName, expectFnSync) {
   return request(app)
-  .post('/api/books/block/next')
-  .query({ bookName, blockId})
-  .expect(200)
-  .end((err, res) => {
-    expectFnSync(err, res)
-    cb()
-  })
+    .post('/api/books/block/next')
+    .send({ bookName, blockId})
+    .expect(200)
+    .end((err, res) => {
+      expectFnSync(err, res)
+      cb()
+    })
 }
 
 
 
-
-
-const expectedResultUploadedBook = {
-  bookName: 'got_piece',
-  lastBlockIndexWorkedOn: 0,
-  characterProfiles: [],
-  currentBlockWorkingOn: {
-    status: 'in progress',
-    snippets: [],
-    preSnippets: [
-      new PreSnippet('Chapter 1', 'narration', 0),
-      new PreSnippet('\n\n', 'whitespace', 1),
-      new PreSnippet('“ABC”', 'speech', 2),
-      new PreSnippet(' ', 'whitespace', 3),
-      new PreSnippet('Bob said.', 'narration', 4),
-      new PreSnippet(' ', 'whitespace', 5),
-      new PreSnippet('“DEF”', 'speech', 6),
-    ],
-  },
-  blockStatuses: ['in progress']
-};
-function uploadBook(cb) {
+function uploadBook(cb, fileName) {
   cb = cb || function () {};
-  let expectedResponse = expectedResultUploadedBook;
   return request(app)
     .post('/api/books/')
-    .attach('file', `${testDatasets}/got_piece.txt`)
+    .attach('file', `${testDatasets}/${fileName}.txt`)
     .send()
-    .expect(expectedResponse, cb);
+    .end((err, res) => {
+      expect(res.body).to.include.keys([
+        'bookName', 'characterProfiles', 'lastBlockIndexWorkedOn', 'currentBlockWorkingOn', 'blockStatuses'
+      ])
+      cb()
+    })
 }
 
 function addCharacterProfile (cb, displayName, aliases) {

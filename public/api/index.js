@@ -3,10 +3,10 @@ import superagent from 'superagent'
 
 const genericEnd = (fulfill, reject) => (err, response) => {
   if (err) {
-    // console.log(err);
+    console.log(err);
     reject(err)
   }
-  // console.log('response', response);
+  console.log('response', response);
   fulfill(response);
 }
 
@@ -57,11 +57,11 @@ export const addCharacterProfile = (displayName, aliases, bookName) =>
       .end(genericEnd(fulfill, reject))
   })
 
-export const getBlockByIndex = (blockId, bookName) => {
+export const markCurrentBlockCompletedAndGetNext = (blockId, bookName) => {
   return new Promise((fulfill, reject) => {
-    superagent.get('/api/book/block')
-      .send({ blockId, bookName })
-      .end(genericEnd(fulfill, reject))
+    superagent.post('/api/books/block/next')
+    .send({ bookName, blockId})
+    .end(genericEnd(fulfill, reject))
   })
 }
 

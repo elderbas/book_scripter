@@ -60,7 +60,16 @@ export const handleToggledConfig = (baseName) => (dispatch) => {
   dispatch({type: 'TOGGLE_AUTO_' + baseName})
 }
 
-
+export const markCurrentBlockCompletedAndGetNext = (blockId, bookName) => (dispatch) => {
+  api.markCurrentBlockCompletedAndGetNext(blockId, bookName)
+  .then(
+    (response) => {
+    console.log('inside response of api.markCurrentBlockCompletedAndGetNext', response);
+    dispatch({type: 'UPDATE_CURRENT_BLOCK', response})
+    console.log('response', response);
+  },
+    (err) => console.error('ERROR in actions.markCurrentBlockCompletedAndGetNext', err))
+}
 
 
 

@@ -5,7 +5,7 @@ GET NEXT BLOCK
 GET NEXT BLOCK
 GET NEXT BLOCK
 
-
+// need to consider when we run out of blocks (just getting the last one at the moment)
 
 Nice to have -
 Instead of going at a time, do a 'Pre script analysis'
