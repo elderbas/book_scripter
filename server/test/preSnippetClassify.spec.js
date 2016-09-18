@@ -32,8 +32,8 @@ describe('!--preSnippetClassify--!', () => {
     });
 
     it(`predictedCharacterNameNormalized not set if no names on the lexicon indicate`, function () {
-      charList = [ {displayName: 'Charlie', aliases: []} ];
-      inputPreSnippet.text = 'Harry';
+      charList = [ {displayName: 'Luke', aliases: []} ];
+      inputPreSnippet.text = 'Vader';
       output.text = inputPreSnippet.text;
       output.classification = 'NAR()';
       output.predictedCharacterNameNormalized = null;
@@ -44,7 +44,7 @@ describe('!--preSnippetClassify--!', () => {
 
     it(`VSS still gets picked up even if there isn't a name to go with it`, function () {
       charList = [ {displayName: 'Charlie', aliases: []} ];
-      inputPreSnippet.text = 'asked Harry.';
+      inputPreSnippet.text = 'asked John.';
       output.text = inputPreSnippet.text;
       output.classification = 'NAR(VERB_SYNONYM_TO_SPOKE)';
       output.predictedCharacterNameNormalized = null;

@@ -15,7 +15,6 @@ const SP = ltt.SPEECH
 const M_NL = ltt.WS_MULTI_NEWLINE
 const WS_SS = ltt.WS_SINGLE_SPACE
 
-
 describe('classifyPreSnippetArrangement', () => {
   it('exists as a function', function () {
     expect(typeof classifyPreSnippetArrangement).to.equal('function');
@@ -48,7 +47,7 @@ describe('classifyPreSnippetArrangement', () => {
   });
 
 
-
+  let someLex, someLex2;
   it(`WSMNL WSsingle, nar blank, nar PSS VSS, speech`, function () {
     const preSnippetIdSpeechSelected = 2;
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
@@ -57,8 +56,9 @@ describe('classifyPreSnippetArrangement', () => {
       arrangementComplete: `NAR(),${ltt.WS_MULTI_NEWLINE}|${ltt.WS_SINGLE_SPACE},NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH},${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH}`,
       nonSingleSpaceArrangement: `NAR(),WS_MULTI_NEWLINE|NAR(PERSON_CONFIRMED VERB_SYNONYM_TO_SPOKE),WS_MULTI_NEWLINE,SPEECH,WS_MULTI_NEWLINE,SPEECH`
     };
+    someLex = buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
     expect(
-      classifyPreSnippetArrangement(preSnippetExtendedObj, buildCustomLexicon([new CharacterProfile('Gared')], ['urged']))
+      classifyPreSnippetArrangement(preSnippetExtendedObj, someLex)
     ).to.deep.equal(OUTPUT)
   });
   it(`dickin around`, function () {
@@ -69,13 +69,13 @@ describe('classifyPreSnippetArrangement', () => {
       new PreSnippet(` `, 'whitespace', 3),
       new PreSnippet(`“No way”`, 'speech', 4),
     ]
+    someLex2 = buildCustomLexicon([new CharacterProfile('Bob')], ['pointed out'])
+    console.log('!@JOH!KJ@HBJ!HK@BJ!HK@BHJK!@BJHK!@!@');
+    console.log('someLex2 === someLex', someLex2 === someLex);
+    console.log('!@JOH!KJ@HBJ!HK@BJ!HK@BHJK!@BJHK!@!@');
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, 0, QUANTITY_TO_GRAB_EACH_SIDE);
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     let res = classifyPreSnippetArrangement(
-      preSnippetExtendedObj, buildCustomLexicon([new CharacterProfile('Bob')], ['pointed out']))
-    console.log('res', res);
+      preSnippetExtendedObj, someLex2)
   });
 
   it('PERSON PRONOUN - just arrangementComplete', () => {

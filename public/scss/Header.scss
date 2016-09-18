@@ -1,26 +1,25 @@
 .Header-component {
-  $navHeight: 50px;
-  background-color: dodgerblue;
-  height: $navHeight;
-  color: $offBlack;
-  display: inline-block;
-  width: 100%;
-
-
-  .logo {
-    display: inline-block;
-    margin-left: 15px;
-    font-size: 30px;
-    line-height: $navHeight;
-    font-weight: 100;
-  }
-  ul {
-    list-style-type: none;
-    line-height: $navHeight;
-    float: right;
-    li {
-      display: inline;
-      margin-right: 20px;
-    }
-  }
+  //$navHeight: 50px;
+  //background-color: dodgerblue;
+  //height: $navHeight;
+  //display: inline-block;
+  //width: 100%;
+  //
+  //
+  //.logo {
+  //  display: inline-block;
+  //  margin-left: 15px;
+  //  font-size: 30px;
+  //  line-height: $navHeight;
+  //  font-weight: 100;
+  //}
+  //ul {
+  //  list-style-type: none;
+  //  line-height: $navHeight;
+  //  float: right;
+  //  li {
+  //    display: inline;
+  //    margin-right: 20px;
+  //  }
+  //}
 }

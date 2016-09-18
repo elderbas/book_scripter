@@ -48,15 +48,15 @@ describe('!--nameSuggest--!', () => {
     });
 
     it(`null if nothing to suggest`, function () {
-      const preSnippetIdSpeechSelected = 2;
+      const preSnippetIdSpeechSelected = 14;
       let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
-      let customLex = buildCustomLexicon([new CharacterProfile('Charlie')], ['urged']);
+      let customLex = buildCustomLexicon([new CharacterProfile('Charlie')], ['suggested']);
 
       let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
       let output = null;
-      expect(
-        nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj)
-      ).to.deep.equal(output)
+      let res = nameSuggest(classifiedPreSnippetArrangementObj, preSnippetExtendedObj)
+      console.log('res', res);
+      expect(res).to.deep.equal(output)
     });
 
     it(`indicatorJustToRight`, function () {
