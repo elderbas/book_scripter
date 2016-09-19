@@ -50,10 +50,7 @@ export const confirmNameOnPreSnippet = ({bookName, blockId, preSnippetId, displa
 export const addCharacterProfile = (displayName, aliases, bookName) =>
   new Promise((fulfill, reject) => {
     superagent.post('/api/books/characters')
-      .send({
-        bookName,
-        characterProfileToAdd: {displayName, aliases}
-      })
+      .send({ bookName, characterProfileToAdd: {displayName, aliases} })
       .end(genericEnd(fulfill, reject))
   })
 

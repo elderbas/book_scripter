@@ -28,15 +28,18 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
         </div>
       )
     }
-    if (currentHighlightPredictedName !== 'none' && currentHighlightPredictedName !== null) {
-      return (
-        <div style={{width: '50px'}}>
-          <button style={predictedNameBtnStyle} onClick={() => onCharacterSelected(currentHighlightPredictedName)}>
-            {currentHighlightPredictedName}
-          </button>
-        </div>
-      )
-    }
+    /* replace with a Spinner of the same size of the character list? There's no reason to completely remove this
+     * that only makes the page go swiwompus. And/Or disable the character list stuff so they can't accidently
+     * select something twice? */
+    // if (currentHighlightPredictedName !== 'none' && currentHighlightPredictedName !== null) {
+    //   return (
+    //     <div style={{width: '50px'}}>
+    //       <button style={predictedNameBtnStyle} onClick={() => onCharacterSelected(currentHighlightPredictedName)}>
+    //         {currentHighlightPredictedName}
+    //       </button>
+    //     </div>
+    //   )
+    // }
 
 
   let characterItems, charProfilesToDisplay;
@@ -45,7 +48,11 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
     : characterProfiles
 
   characterItems = charProfilesToDisplay.map((charProfile) => (
-    <CharacterListItemContainer characterProfile={charProfile} key={charProfile.displayName} />
+    <CharacterListItemContainer
+      onCharacterConfirmed={onCharacterSelected}
+      characterProfile={charProfile}
+      key={charProfile.displayName}
+    />
   ))
 
   let _charToAddNameTxtBxRef, _csvAliasesTxtBxRef

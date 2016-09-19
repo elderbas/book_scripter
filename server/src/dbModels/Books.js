@@ -123,7 +123,7 @@ const addCharacterProfile = (bookName, newCharProfile) => {
       if (_.some(bookDoc.characterProfiles, (cP) => cP.displayName === newCharProfile.displayName)) {
         return reject(new Error(errorMessages.characterProfileUnique))
       }
-      // there's no duplicate if we get to here so we can add just fine
+
       bookDoc.characterProfiles.push(newCharProfile);
       bookDoc.save((err) => {
         if (err) {return reject(err);}

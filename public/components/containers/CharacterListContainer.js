@@ -36,7 +36,6 @@ class CharacterListContainer extends React.Component {
     this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
   }
   handleCharacterSelected (charDisplayName, someProps) {
-    console.log('inside handleCharacterSelected');
     someProps.handleConfirmedNameOnPreSnippet({
       bookName: someProps.bookName,
       blockId: someProps.currentBlockId,
@@ -49,7 +48,6 @@ class CharacterListContainer extends React.Component {
 
   // automatically get predicted name when the preSnippet coming up is speech type
   componentWillReceiveProps (nextProps) {
-    console.log('inside componentWillReceiveProps');
     if (this.props.currentHighlightedPreSnippet && nextProps.currentHighlightedPreSnippet) {
       let { currentHighlightPredictedName, currentHighlightedPreSnippet } = nextProps
 
@@ -57,7 +55,7 @@ class CharacterListContainer extends React.Component {
       if (currentHighlightPredictedName !== 'none' &&
           currentHighlightPredictedName !== null &&
           this.props.currentHighlightedPreSnippet.id === nextProps.currentHighlightedPreSnippet.id &&
-        nextProps.autoConfirmPredictedName === true) {
+          nextProps.autoConfirmPredictedName === true) {
         this.handleCharacterSelected(currentHighlightPredictedName, nextProps)
       }
 

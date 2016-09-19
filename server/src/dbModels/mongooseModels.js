@@ -8,7 +8,8 @@ let models = {};
 
 let characterProfileSchema = new Schema({
   displayName: String, // this needs to be unique but I'm not sure how to enforce uniqueness, except at the application level
-  aliases: [String]
+  aliases: [String],
+  charId: {type: Number, unique: true, required: true}
 });
 
 /*blocks

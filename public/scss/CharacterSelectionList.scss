@@ -38,11 +38,16 @@
       }
 
       .char-list-item-isEditing-wrapper {
-        width: 95%;
+        width: 100%;
         box-sizing: border-box;
         input {
+          &[name=displayName] {
+            width: 26%;
+          }
+          &[name=aliases] {
+            width: 73%;
+          }
           box-sizing: border-box;
-          width: 49%;
           margin-top: 1px;
           margin-left: 1px;
           margin-bottom: 1px;

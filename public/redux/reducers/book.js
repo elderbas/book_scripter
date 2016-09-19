@@ -58,6 +58,7 @@ const currentBook = (state = {}, action) => {
       }
 
     case 'ADD_CHARACTER_PROFILE':
+      console.log('action.characterProfile', action.characterProfile);
       return { ...state, characterProfiles: [...state.characterProfiles, action.characterProfile] }
 
     case 'UPDATE_CURRENT_BLOCK':
