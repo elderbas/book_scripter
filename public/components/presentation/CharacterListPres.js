@@ -2,6 +2,7 @@
 import React, {PropTypes} from 'react'
 import trim from 'lodash/trim'
 import LogOnRender from '../hoc/LogOnRender'
+import CharacterListItemContainer from '../containers/CharacterListItemContainer'
 
 const predictedNameBtnStyle = {
   padding: '5px'
@@ -43,16 +44,9 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
     ? [{displayName: 'Narration', aliases: []}]
     : characterProfiles
 
-  characterItems = charProfilesToDisplay.map(({displayName, aliases}) => {
-    return (
-      <li key={displayName} onClick={() => onCharacterSelected(displayName)}>
-        {/*<i style={gearStyle} className="fa fa-cog"></i>*/}
-        <span className="displayName">
-          {`${displayName}${!!aliases.length ? ' - ' + aliases.join(',') : ''}`}
-        </span>
-      </li>
-    )
-  })
+  characterItems = charProfilesToDisplay.map((charProfile) => (
+    <CharacterListItemContainer characterProfile={charProfile} key={charProfile.displayName} />
+  ))
 
   let _charToAddNameTxtBxRef, _csvAliasesTxtBxRef
   return (
@@ -79,14 +73,11 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
       }}>
         <input type="text" ref={(c) => _charToAddNameTxtBxRef = c } placeholder="New primary display name"/>
         <input type="text" ref={(c) => _csvAliasesTxtBxRef = c } placeholder="comma separated list of aliases"/>
-        <button type="submit" className="button is-small">Add New Character Name</button>
-        <button type="submit" className="button is-small">Edit Characters</button>
+        <button type="submit" className="button is-small"><i className="fa fa-plus"></i></button>
       </form>
 
       <div className="charListWrapper">
-        <ul>
-          {characterItems}
-        </ul>
+        <ul>{characterItems}</ul>
       </div>
     </div>
   )
