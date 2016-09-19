@@ -6,13 +6,14 @@ import LogOnRender from '../hoc/LogOnRender'
 const predictedNameBtnStyle = {
   padding: '5px'
 }
-
+const gearStyle = {
+  position: 'relative',
+  left: '-131px'
+}
 let CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet, currentBlockId,
   autoConfirmNarration, autoConfirmPredictedName, markCurrentBlockCompletedAndGetNext, bookName,
 characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleConfig}) => {
-    // debugger;
     if (currentHighlightedPreSnippet === undefined) {
-      console.log('yesh');
       return (
         <div>
           <br />
@@ -20,23 +21,21 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
           <br /> <br />
           <button
             className="button is-primary is-bold"
-            onClick={() => {
-              markCurrentBlockCompletedAndGetNext(currentBlockId, bookName)
-            }}>
+            onClick={() => markCurrentBlockCompletedAndGetNext(currentBlockId, bookName)}>
             Snippets All Look Good
           </button>
         </div>
       )
     }
     if (currentHighlightPredictedName !== 'none' && currentHighlightPredictedName !== null) {
-    return (
-      <div style={{width: '50px'}}>
-        <button style={predictedNameBtnStyle} onClick={() => onCharacterSelected(currentHighlightPredictedName)}>
-          {currentHighlightPredictedName}
-        </button>
-      </div>
-    )
-  }
+      return (
+        <div style={{width: '50px'}}>
+          <button style={predictedNameBtnStyle} onClick={() => onCharacterSelected(currentHighlightPredictedName)}>
+            {currentHighlightPredictedName}
+          </button>
+        </div>
+      )
+    }
 
 
   let characterItems, charProfilesToDisplay;
@@ -47,7 +46,10 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
   characterItems = charProfilesToDisplay.map(({displayName, aliases}) => {
     return (
       <li key={displayName} onClick={() => onCharacterSelected(displayName)}>
-        <span className="displayName">{`${displayName}${!!aliases.length ? ' - ' + aliases.join(',') : ''}`}</span>
+        {/*<i style={gearStyle} className="fa fa-cog"></i>*/}
+        <span className="displayName">
+          {`${displayName}${!!aliases.length ? ' - ' + aliases.join(',') : ''}`}
+        </span>
       </li>
     )
   })
@@ -59,13 +61,13 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
              checked={autoConfirmNarration}
              name="auto_narration"
              onChange={() => onToggleConfig('CONFIRM_NARRATION')} />
-      <label htmlFor="auto_narration">Auto Confirm Narration types</label>
+      <label htmlFor="auto_narration"> Auto Confirm Narration types</label>
       <br />
       <input type="checkbox"
              checked={autoConfirmPredictedName}
              name="auto_predicted_name"
              onChange={() => onToggleConfig('CONFIRM_PREDICTED_NAME')}/>
-      <label htmlFor="auto_predicted_name">Auto Confirm Predicted Names</label>
+      <label htmlFor="auto_predicted_name"> Auto Confirm Predicted Names</label>
       <br />
       <form action="#" style={{display: 'inline-block'}} onSubmit={(e) => {
         e.preventDefault();
@@ -77,7 +79,8 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
       }}>
         <input type="text" ref={(c) => _charToAddNameTxtBxRef = c } placeholder="New primary display name"/>
         <input type="text" ref={(c) => _csvAliasesTxtBxRef = c } placeholder="comma separated list of aliases"/>
-        <button type="submit" className="button-success pure-button">Add new character name</button>
+        <button type="submit" className="button is-small">Add New Character Name</button>
+        <button type="submit" className="button is-small">Edit Characters</button>
       </form>
 
       <div className="charListWrapper">

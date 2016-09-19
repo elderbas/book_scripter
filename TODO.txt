@@ -1,11 +1,7 @@
 !!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
 
-FIRST PRIORITY
-GET NEXT BLOCK
-GET NEXT BLOCK
-GET NEXT BLOCK
 
-// need to consider when we run out of blocks (just getting the last one at the moment)
+Add aliases to a character profile AFTER having initially it
 
 Nice to have -
 Instead of going at a time, do a 'Pre script analysis'
@@ -20,6 +16,9 @@ in the withWsMatchers -> have it check against multiple matches, so you can
     want it to match anything there, so it might be easier to have it just create
     all the variations and pass it to an array for it to check against all of em
 
+
+BRAINSTORM:
+    insteaf of hard coded strings to match the objects, why not have functions instead?
 
 Have a way that we can test some withWsMatchers that I'm unsure of? like it'll
 send a suggestion but

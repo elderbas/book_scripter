@@ -39,6 +39,15 @@ withWsMatchers.push({
   whichMatcher: 'alternatingSpeechABA'
 });
 
+// Gared did not rise to the bait. He was an old man, past fifty, and he had seen the lordlings come and go. “Dead is dead,” he said. “We have no business with the dead.” <- last speech here
+withWsMatchers.push({
+  arrangementTextMatcher: `${SP},${WS_SS},${NAR_PR_VSS},${WS_SS}|`,
+  getNameOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][3].personConfirmedNormalized,
+  whichMatcher: 'inferPronounFromJustToLeft'
+});
+
+
+
 // maybe some of these can have a % of certainty?
 
 // condensed for space
@@ -64,12 +73,7 @@ withWsMatchers.push({
 
 
 
-// Gared did not rise to the bait. He was an old man, past fifty, and he had seen the lordlings come and go. “Dead is dead,” he said. “We have no business with the dead.” <- last speech here
-withWsMatchers.push({
-  arrangementTextMatcher: `${SP},${WS_SS},${NAR_PR_VSS},${WS_SS}|`,
-  getNameOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][3].personConfirmedNormalized,
-  whichMatcher: 'inferPronounFromJustToLeft'
-});
+
 
 
 
