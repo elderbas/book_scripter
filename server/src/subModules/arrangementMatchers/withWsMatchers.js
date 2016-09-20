@@ -58,6 +58,7 @@ function getInferFromJustOverTheNarPermutations() {
     'PastTense',
     'PERSON_CONFIRMED',
     'PERSON_PRONOUN',
+    'VERB_SYNONYM_TO_SPOKE',
   ]
   let spaceConcat = (x, y) => `${x} ${y}`
   let permutations = []
@@ -66,13 +67,14 @@ function getInferFromJustOverTheNarPermutations() {
       permutations.push(spaceConcat(type1, type2))
     })
   })
-  return baseNarTagTypes.concat(permutations).map((narTagArranVari) => {
+  let variations = baseNarTagTypes.concat(permutations).map((narTagArranVari) => {
     return {
       arrangementTextMatcher: `${SP},${WS_SS},\`NAR(${narTagArranVari})\`,${WS_SS}|`,
       getNameOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][3].personConfirmedNormalized,
       whichMatcher: `inferFromJustOverTheNar-${narTagArranVari}`
     }
   })
+  return variations.concat([""])
 }
 /* IDEA FOR WATCHER
  * arrangementTextMatcher: `${SP},${WS_SS},${NAR*},${WS_SS}|`,

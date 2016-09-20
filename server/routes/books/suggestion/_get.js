@@ -67,9 +67,7 @@ function getSuggestedName (req, res) {
         });
 
       }
-      console.log('just BEFORE getNameSuggestion log');
       if (process.env.NODE_ENV === 'development' && _.get(global, 'log.getNameSuggestion')) {
-        console.log('inside getNameSuggestion log');
         let suggestionLogObj = {
           speechText: block.preSnippets[speechPreSnippetIdSelected],
           nameSuggestOutput,

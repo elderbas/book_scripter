@@ -1,5 +1,5 @@
 #!/usr/bin/osascript
-
+#not optimized for anybody but me yet
 # Could also add
 # run mongod IF it isnt running
 # open webstorm IF it isnt running
