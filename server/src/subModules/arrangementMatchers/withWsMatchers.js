@@ -46,6 +46,12 @@ withWsMatchers.push({
   whichMatcher: 'inferPronounFromJustToLeft'
 });
 
+/* IDEA FOR WATCHER
+ * arrangementTextMatcher: `${SP},${WS_SS},${NAR*},${WS_SS}|`,
+ * just get it out of the speech at [LEFT][3]
+ * but the nar needs to be anything (I think, at the very ) */
+
+
 
 
 // maybe some of these can have a % of certainty?

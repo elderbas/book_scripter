@@ -1,7 +1,16 @@
 !!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
 
+Snippets Styling
+- more standout text color inside bars
+- shorter bars in height
+- bulma header style for title "Snippets"
 
-Add aliases to a character profile AFTER having initially it
+CharacterList Styling
+- Scrolling for character list
+
+CharacterList functionality
+- pop up latest confirmed characters to top of list (don't change them any other way)
+
 
 Nice to have -
 Instead of going at a time, do a 'Pre script analysis'
