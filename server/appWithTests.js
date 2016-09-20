@@ -28,7 +28,7 @@ global.logger = (a, b) => {
 };
 
 global.errorHandler = (req, res, errorMsg, statusCode) => {
-  return res.status(statusCode).json({errorMessage: errorMsg});
+  return res.status(statusCode).send({errorMessage: errorMsg});
 };
 
 let express = require('express');

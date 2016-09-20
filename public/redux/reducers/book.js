@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
+
 const responseToFetchBook = response => response.body
 const responseToNameSuggestion = response => response.body.characterProfilesSuggested
-
 const idOfPreviousPreSnippetHighlightedDefault = -1
 
 const requestSuccessFailure = (mainName) => ((state = false, action) => {
@@ -58,21 +58,27 @@ const currentBook = (state = {}, action) => {
       }
 
     case 'ADD_CHARACTER_PROFILE':
-      console.log('action.characterProfile', action.characterProfile);
       return { ...state, characterProfiles: [...state.characterProfiles, action.characterProfile] }
 
     case 'UPDATE_CURRENT_BLOCK':
-      console.log('action.response', action.response);
       let nextBlock = action.response.body.nextBlock
-      console.log('newBlock', nextBlock);
       // need to consider when we run out of blocks
       let newStateFromNewBlock = {
         ...state,
         currentBlockWorkingOn: nextBlock,
         idOfPreviousPreSnippetHighlighted: idOfPreviousPreSnippetHighlightedDefault
       }
-      console.log('newStateFromNewBlock', newStateFromNewBlock);
       return newStateFromNewBlock
+    case 'UPDATE_CHARACTER_PROFILE_ALIASES': {
+      return {
+        ...state,
+        characterProfiles: state.characterProfiles.map((cp) => {
+          return (cp._id === action.newCharProfile._id)
+            ? { ...cp, aliases: action.newCharProfile.aliases }
+            : cp
+        })
+      }
+    }
     default:
       return state
   }

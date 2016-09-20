@@ -1,4 +1,5 @@
 let _ = require('lodash');
+let Schema = require('mongoose').Schema
 let createPreSnippetsFromTextBlob = require('../createPreSnippetsFromTextBlob');
 let Block = require('../classes/Classes').Block;
 let Snippet = require('../classes/Classes').Snippet;
@@ -232,6 +233,17 @@ const setBlockAsCompletedAndGetNext = (bookName, blockId) => {
   })
 }
 
+const modifyCharacterProfileAliases = (bookName, newCharacterProfile) => {
+  let query = { bookName, 'characterProfiles._id': newCharacterProfile._id}
+  let $set = { "characterProfiles.$.aliases": newCharacterProfile.aliases }
+  return new Promise((fulfill, reject) => {
+    Books.findOneAndUpdate(query, {$set}, (err, bookDoc) => {
+      if (err) { reject(err) }
+      fulfill(bookDoc !== null)
+    })
+  });
+}
+
 const booksExport = {
   // schema: bookSchema,
   getCharacterProfilesAndVerbSpokeSynonyms,
@@ -248,5 +260,6 @@ const booksExport = {
   getBookInfo,
   nameConfirmedOnPreSnippet,
   setBlockAsCompletedAndGetNext,
+  modifyCharacterProfileAliases,
 };
 module.exports = booksExport;

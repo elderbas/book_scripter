@@ -2,28 +2,36 @@
 import React from 'react'
 import trim from 'lodash/trim'
 import isEqual from 'lodash/isEqual'
+import { connect } from 'react-redux'
+import * as actions from '../../redux/actions'
 
 class CharacterListItemContainer extends React.Component {
   constructor (props) {
     super(props)
     // these are just temp to hold while they're typing.
-    this.state = { isEditing: false, displayName: '', aliases: '' }
+    this.state = { isEditing: false, aliases: '' }
   }
-  handleNameChange (e) {
-    this.setState({ displayName: e.target.value })
-  }
+  // handleNameChange (e) {
+  //   this.setState({ displayName: e.target.value })
+  // }
   handleAliasChange (e) {
     this.setState({ aliases: e.target.value })
   }
   handleCharacterProfileChange (charProfile) {
-    let displayNameSame = charProfile.displayName === this.state.displayName.trim()
-    let aliasesSame = true;
-    if (charProfile.aliases.length === 0 && this.state.aliases === '') {
-      aliasesSame = isEqual(charProfile.aliases.sort(), this.state.aliases.split(',').map(trim).sort())
-    }
+    let tempAliases = this.state.aliases.split(',').map(trim).sort().filter(x => x !== '')
+    let aliasesSame = isEqual(charProfile.aliases.sort(), tempAliases)
+
     // verify aliases are joinable back into an array
-    if (displayNameSame || aliasesSame) {
-      alert('Noticed a difference - sending off change')
+    if (!aliasesSame) {
+      console.log('this.props.modifyCharacterProfileAliases', this.props.modifyCharacterProfileAliases);
+      console.log('this.props.bookName', this.props.bookName);
+      this.props.modifyCharacterProfileAliases(this.props.bookName, {
+        ...charProfile,
+        aliases: tempAliases
+      })
+      this.setState({
+        isEditing: false
+      })
     } else {
       alert('No change made.')
     }
@@ -55,7 +63,7 @@ class CharacterListItemContainer extends React.Component {
             <i className="fa fa-check-circle"></i>
           </div>
           <div className="is-inline-block char-list-item-isEditing-wrapper">
-            <input type="text" name="displayName" value={this.state.displayName} placeholder="Ex. Bob Smith" onChange={this.handleNameChange.bind(this)}/>
+            <input type="text" name="displayName" value={cP.displayName} readOnly className="is-disabled"/>
             <input type="text" name="aliases" value={this.state.aliases} placeholder="Ex.- Mr. Smith, Bob, Jan's Dad" onChange={this.handleAliasChange.bind(this)} />
           </div>
         </li>
@@ -72,5 +80,13 @@ class CharacterListItemContainer extends React.Component {
   }
 }
 
-
+const mapStateToProps = (store, ownProps) => {
+  return {
+    bookName: store.book.currentBook.bookName
+  }
+}
+const mapDispatchToProps = {
+  modifyCharacterProfileAliases: actions.modifyCharacterProfileAliases
+}
+CharacterListItemContainer = connect(mapStateToProps, mapDispatchToProps)(CharacterListItemContainer)
 export default CharacterListItemContainer

@@ -162,14 +162,29 @@ describe('<-- Books collection-->\n', () => {
       it(`no more after this one`, function (done) {
         let newCharProf = new CharacterProfile('Garen');
         Books.setBlockAsCompletedAndGetNext(bookNameBeingUsed, 0).then((resp) => {
-
           done();
         }).catch(done);
       });
-
-
     });//end .setBlockAsCompletedAndGetNext
-
+    describe(`.modifyCharacterProfileAliases`, () => {
+      it(`modify aliases of character after added`, function (done) {
+        let newCharProf = new CharacterProfile('Garen');
+        Books.addCharacterProfile(bookNameBeingUsed, newCharProf)
+        .then(({characterProfiles}) => {
+          expect(characterProfiles[0].displayName).to.equal('Garen');
+          let _id = characterProfiles[0]._id
+          // only the aliases and _id are necessary
+          Books.modifyCharacterProfileAliases(bookNameBeingUsed, {aliases: ['G Money'], _id})
+          .then((updateWorked) => {
+            expect(updateWorked).to.be.true
+            Books.getCharacterProfiles(bookNameBeingUsed).then((characterProfiles) => {
+              expect(characterProfiles[0].aliases[0]).to.equal('G Money')
+              done()
+            })
+          }).catch((err) => {console.log('err', err);done()})
+        })
+      });
+    })
     
     describe(`.getBlockByIndex`, () => {
       it(`object with 'preSnippets', 'snippets', and 'status' key`, function (done) {

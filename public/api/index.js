@@ -62,5 +62,15 @@ export const markCurrentBlockCompletedAndGetNext = (blockId, bookName) => {
   })
 }
 
+export const modifyCharacterProfileAliases = (bookName, newCharacterProfile) => {
+  return new Promise((fulfill, reject) => {
+    superagent.post('/api/books/characters/edit')
+    .send({ bookName, newCharacterProfile})
+    .end(genericEnd(fulfill, reject))
+  })
+}
+
+
+
 // export const getBookInfo = (bookName) =>
 

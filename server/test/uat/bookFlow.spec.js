@@ -137,44 +137,41 @@ describe(`Uploaded book first`, () => {
         ], done);
       });
 
-      it(`POST - /api/books/characters/edit - can modify a character's display name`, function (done) {
-        let currentCharacterProfile = {displayName: 'Bob', aliases: [], id: 0}
-        let newCharacterProfile = {displayName: 'Bobby', aliases: [], id: 0}
+      it(`POST - /api/books/characters/edit - can modify a character's aliases (displayName is permanent)`, function (done) {
+        let currentCharacterProfile = { displayName: 'Bob', aliases: [], _id: null }
+        let modifiedCharacterProfile = { displayName: 'Bob', aliases: ['Bob Smith'], _id: null }
+        let idOfCharProfileBeingExamined;
         async.series([
-          function(cb) { addCharacterProfile(cb, 'Bob', []) },
-          function(cb) { modifyCharacterProfile(cb, currentCharacterProfile, newCharacterProfile) },
+          function(cb) { addCharacterProfile(cb, 'Bob', [], (err, {body: {upToDateCharacterProfiles}}) => {
+            let bobProfile = _.find(upToDateCharacterProfiles, cp => cp.displayName === 'Bob')
+            idOfCharProfileBeingExamined = currentCharacterProfile._id = modifiedCharacterProfile._id = bobProfile._id
+          }) },
+          function(cb) { addCharacterProfile(cb, 'Filler Person', ['Fill', 'Mr. Fill']) },
+          function(cb) { modifyCharacterProfileAliases(cb, modifiedCharacterProfile, (err, res) => {
+            expect(res.body.updateWorked).to.be.true
+          }) },
         ], done);
       });
 
-      it(`POST - /api/books/characters/edit - can modify a character's aliases`, function (done) {
-        let currentCharacterProfile = {displayName: 'Bob', aliases: [], id: 0}
-        let newCharacterProfile = {displayName: 'Bob', aliases: ['Ro Sham Bo', 'Big Bob'], id: 0}
-        expect(false).to.equal(true)
-        // async.series([
-        //   function(cb) { addCharacterProfile(cb, 'Bob', []) },
-        //   function(cb) { modifyCharacterProfile(cb, currentCharacterProfile, newCharacterProfile) },
-        // ], done);
+      it(`POST - /api/books/characters/edit - false if no _id is sent`, function (done) {
+        let modifiedCharacterProfile = {displayName: 'Bob Lassinger', aliases: ['Big Bobby', 'Bambino'] }
+        async.series([
+          function(cb) { addCharacterProfile(cb, 'Bob', []) },
+          function(cb) { modifyCharacterProfileAliases(cb, modifiedCharacterProfile, (err, res) => {
+            expect(res.body.updateWorked).to.be.false
+          }) },
+        ], done);
       });
-
-      it(`POST - /api/books/characters/edit - can modify a character's display name and aliases`, function (done) {
-        let currentCharacterProfile = {displayName: 'Bob', aliases: []}
-        let newCharacterProfile = {displayName: 'Bob Lassinger', aliases: ['Big Bobby', 'Bambino']}
-        expect(false).to.equal(true)
-        // async.series([
-        //   function(cb) { addCharacterProfile(cb, 'Bob', []) },
-        //   function(cb) { modifyCharacterProfile(cb, currentCharacterProfile, newCharacterProfile) },
-        // ], done);
-      });
-
-      it(`POST - /api/books/characters/edit - sends error if changing a name results in `, function (done) {
-        let currentCharacterProfile = {displayName: 'Bob', aliases: []}
-        let newCharacterProfile = {displayName: 'Bob Lassinger', aliases: ['Big Bobby', 'Bambino']}
-        expect(false).to.equal(true)
-        // async.series([
-        //   function(cb) { addCharacterProfile(cb, 'Bob', []) },
-        //   function(cb) { modifyCharacterProfile(cb, currentCharacterProfile, newCharacterProfile) },
-        // ], done);
-      });
+      //
+      // it(`POST - /api/books/characters/edit - sends error if changing a name results in `, function (done) {
+      //   let currentCharacterProfile = {displayName: 'Bob', aliases: [] }
+      //   let newCharacterProfile = {displayName: 'Bob Lassinger', aliases: ['Big Bobby', 'Bambino'] }
+      //   expect(false).to.equal(true)
+      //   // async.series([
+      //   //   function(cb) { addCharacterProfile(cb, 'Bob', []) },
+      //   //   function(cb) { modifyCharacterProfileAliases(cb, currentCharacterProfile, newCharacterProfile) },
+      //   // ], done);
+      // });
     })
 
 
@@ -232,13 +229,10 @@ describe(`Uploaded book first`, () => {
       async.series([
         function(cb) { uploadBook(cb, 'biggerTestBook') },
         function (cb) {
-          let thisBlockId = 0
-          markBlockAsFinishedAndGetNext(cb, thisBlockId, 'biggerTestBook', (err, res) => {
+          markBlockAsFinishedAndGetNext(cb, 0, 'biggerTestBook', (err, res) => {
             expect(res.body.nextBlock.status).to.equal('in progress')
             expect(res.body.nextBlock.preSnippets).to.be.length.above(0)
-
             // having the block id here should be built in and not added last minute like this
-            expect(res.body.nextBlock.blockId).to.equal(thisBlockId + 1)
             expect(res.body.nextBlock.snippets).to.have.lengthOf(0)
             expect(res.body.statusOfBlockIdSent).to.equal('completed')
           })
@@ -286,24 +280,7 @@ function uploadBook(cb, fileName) {
     })
 }
 
-function addCharacterProfile (cb, displayName, aliases) {
-  cb = cb || function () {};
-  return request(app)
-    .post('/api/books/characters')
-    .send({
-      bookName: 'got_piece',
-      characterProfileToAdd: { displayName, aliases }
-    })
-    .expect(200)
-    .end((err, res) => {
-      expect(err).to.not.exist;
-      // Note this only works with one char prof in response
-      expect(res.body.upToDateCharacterProfiles[0]).to.include.keys('_id');
-      expect(res.body.upToDateCharacterProfiles[0].displayName).to.equal(displayName);
-      expect(res.body.upToDateCharacterProfiles[0].aliases.length).to.equal(aliases.length);
-      cb();
-    });
-}
+
 
 
 function requestSuggestion(cb, nameToMatch) {
@@ -426,14 +403,31 @@ function getBlockById (cb, blockId, expectedLengthPreSnippets, expectedLengthSni
     })
 }
 
-function modifyCharacterProfile(cb, oldCharProfile, newCharProfile) {
+function addCharacterProfile (cb, displayName, aliases, upToDateCharProfilesCallback) {
   cb = cb || function () {};
   return request(app)
+  .post('/api/books/characters')
+  .send({
+    bookName: 'got_piece',
+    characterProfileToAdd: { displayName, aliases }
+  })
+  .expect(200)
+  .end((err, res) => {
+    upToDateCharProfilesCallback && upToDateCharProfilesCallback(err, res)
+    cb();
+  });
+}
+
+function modifyCharacterProfileAliases(cb, newCharacterProfile, expectFn) {
+  cb = cb || function () {};
+  console.log('modify char prof');
+  return request(app)
     .post('/api/books/characters/edit')
-    .send({ bookName: 'got_piece', oldCharProfile, newCharProfile })
+    .send({ bookName: 'got_piece', newCharacterProfile })
     .expect(200)
     .end((err, res) => {
-      console.log('res.body UAT place', res.body);
+      expect(err).to.not.be.ok
+      expectFn(err, res)
       cb()
     })
 }

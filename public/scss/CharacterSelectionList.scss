@@ -43,6 +43,7 @@
         input {
           &[name=displayName] {
             width: 26%;
+            cursor: not-allowed;
           }
           &[name=aliases] {
             width: 73%;

@@ -1,5 +1,4 @@
 import * as api from '../api'
-import findIndex from 'lodash/findIndex'
 
 export const fetchBooks = () => (dispatch) => {
   dispatch({type: 'FETCH_BOOKS_REQUEST'})
@@ -51,6 +50,7 @@ export const addCharacterProfile = (displayName, aliases, bookName) => (dispatch
   api.addCharacterProfile(displayName, aliases, bookName)
   .then((response) => {
     console.log('response', response);
+    console.log('response', response);
     dispatch({type: 'ADD_CHARACTER_PROFILE', characterProfile: {displayName, aliases}})
   })
   .catch((err) => console.error('ERROR in actions.addCharacterProfile', err))
@@ -63,16 +63,23 @@ export const handleToggledConfig = (baseName) => (dispatch) => {
 
 export const markCurrentBlockCompletedAndGetNext = (blockId, bookName) => (dispatch) => {
   api.markCurrentBlockCompletedAndGetNext(blockId, bookName)
-  .then(
-    (response) => {
-    console.log('inside response of api.markCurrentBlockCompletedAndGetNext', response);
+  .then((response) => {
     dispatch({type: 'UPDATE_CURRENT_BLOCK', response})
-    console.log('response', response);
-  },
+    },
     (err) => console.error('ERROR in actions.markCurrentBlockCompletedAndGetNext', err))
 }
 
-
+export const modifyCharacterProfileAliases = (bookName, newCharProfile) => (dispatch) => {
+  api.modifyCharacterProfileAliases(bookName, newCharProfile)
+  .then((response) => {
+    if (response.body.updateWorked) {
+      dispatch({type: 'UPDATE_CHARACTER_PROFILE_ALIASES', newCharProfile})
+    }
+  })
+  .catch((err) => {
+    console.log('ERR in modifyCharacterProfileAliases', err);
+  })
+}
 
 
 

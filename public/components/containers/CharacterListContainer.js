@@ -33,6 +33,7 @@ class CharacterListContainer extends React.Component {
     if (displayName.trim('') === '') {
       return alert('Need a valid displayName')
     }
+    console.log('displayName', displayName, aliases);
     this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
   }
   handleCharacterSelected (charDisplayName, someProps) {
