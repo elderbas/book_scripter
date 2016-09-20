@@ -13,9 +13,9 @@ const ulStyle = {
 let BooksUploadedList = ({ bookList, areBeingFetched }) => {
   let list = bookList.map(b => (
       <li key={b}>
-        <Link to={`/scripter/${b}`}>{b}</Link>
-         -
-        <a href={"api/books/json?bookName=" + b}> Download JSON file of current book </a>
+        <Link to={`/scripter/${b}`}> {b} </Link>
+          -
+        <a href={"api/books/json?bookName=" + b}> <i className="fa fa-download"></i> </a>
       </li>
   ))
   return areBeingFetched ? <Loading text='Books being fetched' /> : (
