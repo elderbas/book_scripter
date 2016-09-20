@@ -4,10 +4,9 @@ const lexiconTagTypes = require('../constants/lexiconTagTypes');
 let nlp = require('nlp_compromise');
 let newLex = nlp.lexicon();
 // let newLex = {};
-newLex['gared'] = 'PERSON_CONFIRMED';
-newLex['pointed out'] = 'VERB_SYNONYM_TO_SPOKE';
-
-let res = nlp.text('Gared pointed out.', {lexicon: newLex})
+newLex['will'] = 'PERSON_CONFIRMED';
+// newLex['pointed out'] = 'VERB_SYNONYM_TO_SPOKE';
+let res = nlp.text('Will went in front of the wagon.', {lexicon: newLex})
 console.log(JSON.stringify(res, null, 4));
 
 

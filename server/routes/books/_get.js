@@ -4,6 +4,7 @@ let _ = require('lodash')
 
 router.get('/', getBookNames);
 router.get('/info', getBookInfoByName);
+router.get('/json', getJsonFileOfCurrentBook);
 
 function getBookNames (req, res) {
   Books.getNamesOfBooksLoaded()
@@ -40,4 +41,14 @@ function filterOutUnnecessaryDataOnPreSnippetForFrontend (preSnippet) {
   delete preSnippet.personConfirmedNormalized
   delete preSnippet.predictedCharacterNameNormalized
   return preSnippet
+}
+
+function getJsonFileOfCurrentBook(req, res) {
+  Books.getEntireBook(req.query.bookName).then((bookDoc) => {
+    res.set({
+      "Content-Disposition": `attachment; filename=${req.query.bookName}.json`,
+      "Content-Type": "application/json"
+    });
+    res.send(JSON.stringify(bookDoc, null, 4));
+  })
 }

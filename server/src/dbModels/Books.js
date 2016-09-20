@@ -244,6 +244,16 @@ const modifyCharacterProfileAliases = (bookName, newCharacterProfile) => {
   });
 }
 
+const getEntireBook = (bookName) => {
+  return new Promise((fulfill, reject) => {
+    Books.findOne({bookName}, (err, bookDoc) => {
+      console.log('err', err);
+      console.log('bookDoc', bookDoc);
+      fulfill(bookDoc)
+    })
+  });
+}
+
 const booksExport = {
   // schema: bookSchema,
   getCharacterProfilesAndVerbSpokeSynonyms,
@@ -261,5 +271,6 @@ const booksExport = {
   nameConfirmedOnPreSnippet,
   setBlockAsCompletedAndGetNext,
   modifyCharacterProfileAliases,
+  getEntireBook,
 };
 module.exports = booksExport;
