@@ -3,6 +3,7 @@ import React, {PropTypes} from 'react'
 import Loading from '../Loading'
 import { Link } from 'react-router'
 import LogOnRender from '../hoc/LogOnRender'
+import ReactTooltip from 'react-tooltip'
 
 const ulStyle = {
   listStyleType: 'none',
@@ -14,8 +15,11 @@ let BooksUploadedList = ({ bookList, areBeingFetched }) => {
   let list = bookList.map(b => (
       <li key={b}>
         <Link to={`/scripter/${b}`}> {b} </Link>
-          -
-        <a href={"api/books/json?bookName=" + b}> <i className="fa fa-download"></i> </a>
+          -&nbsp;
+        <a href={"api/books/json?bookName=" + b} data-tip="JSON file of book script so far">
+          <i className="fa fa-download"></i>
+        </a>
+        <ReactTooltip />
       </li>
   ))
   return areBeingFetched ? <Loading text='Books being fetched' /> : (
