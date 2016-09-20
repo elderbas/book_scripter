@@ -24,12 +24,12 @@ const checkArrangementForMatches = (preSnippetArrangement, preSnippetExtended, m
 // classifyPreSnippetArrangement(...) produces -> preSnippetClassifiedArrangementObj
 // grabExtendingPreSnippets(...) produces -> preSnippetExtendedObj
 const nameSuggest = (preSnippetClassifiedArrangementObj, preSnippetExtendedObj) => {
-  let nonSsArrangementNameMatch = checkArrangementForMatches(
-    preSnippetClassifiedArrangementObj.nonSingleSpaceArrangement, preSnippetExtendedObj.nonSingleSpace, arrangementMatchers.nonSsMatchers
-  );
-  let nonWsNameMatch = checkArrangementForMatches(
-    preSnippetClassifiedArrangementObj.nonWhiteSpaceArrangement, preSnippetExtendedObj.nonWhiteSpace, arrangementMatchers.nonWsMatchers
-  );
+  // let nonSsArrangementNameMatch = checkArrangementForMatches(
+  //   preSnippetClassifiedArrangementObj.nonSingleSpaceArrangement, preSnippetExtendedObj.nonSingleSpace, arrangementMatchers.nonSsMatchers
+  // );
+  // let nonWsNameMatch = checkArrangementForMatches(
+  //   preSnippetClassifiedArrangementObj.nonWhiteSpaceArrangement, preSnippetExtendedObj.nonWhiteSpace, arrangementMatchers.nonWsMatchers
+  // );
   let withWsArrangementNameMatch = checkArrangementForMatches(
     preSnippetClassifiedArrangementObj.arrangementComplete, preSnippetExtendedObj.allExtended, arrangementMatchers.withWsMatchers
   );
@@ -37,14 +37,14 @@ const nameSuggest = (preSnippetClassifiedArrangementObj, preSnippetExtendedObj) 
     // console.log('withWsArrangementNameMatch', withWsArrangementNameMatch);
     return withWsArrangementNameMatch
   }
-  if (nonSsArrangementNameMatch) {
-    // console.log('nonSsArrangementNameMatch');
-    return nonSsArrangementNameMatch;
-  }
-  else if (nonWsNameMatch) {
-    // console.log('no whitey');
-    return nonWsNameMatch;
-  }
+  // if (nonSsArrangementNameMatch) {
+  //   // console.log('nonSsArrangementNameMatch');
+  //   return nonSsArrangementNameMatch;
+  // }
+  // else if (nonWsNameMatch) {
+  //   // console.log('no whitey');
+  //   return nonWsNameMatch;
+  // }
   else {
     return null;
   }

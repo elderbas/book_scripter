@@ -12,7 +12,6 @@ const SP = ltt.SPEECH
 const M_NL = ltt.WS_MULTI_NEWLINE
 const WS_SS = ltt.WS_SINGLE_SPACE
 const P_PR = ltt.PERSON_PRONOUN
-
 /* remember, '|' represents THE speech preSnippet in question*/
 
 // left part of - “Some,” Will muttered. “The wind, m’lord.”
@@ -39,13 +38,42 @@ withWsMatchers.push({
   whichMatcher: 'alternatingSpeechABA'
 });
 
-// Gared did not rise to the bait. He was an old man, past fifty, and he had seen the lordlings come and go. “Dead is dead,” he said. “We have no business with the dead.” <- last speech here
+
+// temporary fix until getting the function version going
+withWsMatchers.push(...getInferFromJustOverTheNarPermutations())
+
+// this one may be obsolete compared to just above
 withWsMatchers.push({
   arrangementTextMatcher: `${SP},${WS_SS},${NAR_PR_VSS},${WS_SS}|`,
   getNameOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][3].personConfirmedNormalized,
   whichMatcher: 'inferPronounFromJustToLeft'
 });
 
+
+
+// this is a hack until
+// getting a more coherent nar tag type arranger
+function getInferFromJustOverTheNarPermutations() {
+  let baseNarTagTypes = [
+    'PastTense',
+    'PERSON_CONFIRMED',
+    'PERSON_PRONOUN',
+  ]
+  let spaceConcat = (x, y) => `${x} ${y}`
+  let permutations = []
+  baseNarTagTypes.forEach((type1) => {
+    baseNarTagTypes.forEach((type2) => {
+      permutations.push(spaceConcat(type1, type2))
+    })
+  })
+  return baseNarTagTypes.concat(permutations).map((narTagArranVari) => {
+    return {
+      arrangementTextMatcher: `${SP},${WS_SS},\`NAR(${narTagArranVari})\`,${WS_SS}|`,
+      getNameOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][3].personConfirmedNormalized,
+      whichMatcher: `inferFromJustOverTheNar-${narTagArranVari}`
+    }
+  })
+}
 /* IDEA FOR WATCHER
  * arrangementTextMatcher: `${SP},${WS_SS},${NAR*},${WS_SS}|`,
  * just get it out of the speech at [LEFT][3]

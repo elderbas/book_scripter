@@ -52,9 +52,7 @@ describe('classifyPreSnippetArrangement', () => {
     const preSnippetIdSpeechSelected = 2;
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
     const OUTPUT = {
-      nonWhiteSpaceArrangement: `NAR()|NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.SPEECH},${ltt.SPEECH}`,
       arrangementComplete: `NAR(),${ltt.WS_MULTI_NEWLINE}|${ltt.WS_SINGLE_SPACE},NAR(${ltt.PERSON_CONFIRMED} ${ltt.VERB_SYNONYM_TO_SPOKE}),${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH},${ltt.WS_MULTI_NEWLINE},${ltt.SPEECH}`,
-      nonSingleSpaceArrangement: `NAR(),WS_MULTI_NEWLINE|NAR(PERSON_CONFIRMED VERB_SYNONYM_TO_SPOKE),WS_MULTI_NEWLINE,SPEECH,WS_MULTI_NEWLINE,SPEECH`
     };
     someLex = buildCustomLexicon([new CharacterProfile('Gared')], ['urged'])
     expect(

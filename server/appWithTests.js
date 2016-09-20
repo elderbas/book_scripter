@@ -11,7 +11,8 @@ let path = require('path');
 // WARNING - using writeFileSync and some of these are really slow
 global.log = {
   preSnippetClassify: true, // will notice a difference
-  getNameSuggestion: true // reasonably quick
+  getNameSuggestion: true, // reasonably quick
+  // classifyPreSnippetArrangement: true
 }
 
 let ENV = process.env.NODE_ENV

@@ -38,6 +38,8 @@ it seems like the only truly useful ones are the complete ones. got a lot of inc
 hits for the others
 
 
+Refactor to use Electron instead of Express backend
+
 Checkbox (marked true by default) for confirming you want narration types
 automatically just marked as narration
 
