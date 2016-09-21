@@ -1,12 +1,18 @@
 !!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
 
+Last chosen character goes to bottom of list (not top because it's easier to see the bottom
+while you're looking at the pre snippets below the character list)
+
+CharacterList Styling
+- Scrolling for character list
+
+
 Snippets Styling
 - more standout text color inside bars
 - shorter bars in height
 - bulma header style for title "Snippets"
 
-CharacterList Styling
-- Scrolling for character list
+
 
 CharacterList functionality
 - pop up latest confirmed characters to top of list (don't change them any other way)
@@ -25,6 +31,7 @@ in the withWsMatchers -> have it check against multiple matches, so you can
     want it to match anything there, so it might be easier to have it just create
     all the variations and pass it to an array for it to check against all of em
 
+Show % of the book done
 
 BRAINSTORM:
     insteaf of hard coded strings to match the objects, why not have functions instead?

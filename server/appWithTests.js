@@ -12,6 +12,7 @@ let path = require('path');
 global.log = {
   preSnippetClassify: true, // will notice a difference
   getNameSuggestion: true, // reasonably quick
+  checkArrangementForMatches: true,
   // classifyPreSnippetArrangement: true
 }
 

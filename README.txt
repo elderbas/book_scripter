@@ -7,7 +7,8 @@ npm run back-test
 api tests
 npm run back-api-test
 
-
+changes to frontend code will update automatically with React Hot Reloader,
+but changes to backend need to have 'npm run start' re done
 dev server
 npm run start
 go to http://localhost:3000

@@ -26,11 +26,20 @@ let PreSnippetExhibit = ({preSnippets, currentHighlightedPreSnippet, idOfPreviou
       </div>
     )
   }
-  let indexToShowPreSnippetsIncludingShadow = (idOfPreviousPreSnippetHighlighted === -1) ? 0 : idOfPreviousPreSnippetHighlighted
-  let preSnipTags = preSnippets.slice(indexToShowPreSnippetsIncludingShadow).map(({text, id}) => {
-    if (id === currentHighlightedPreSnippet.id) { return <span style={highlightedStyle} key={id}>{text}</span> }
-    else if (id === idOfPreviousPreSnippetHighlighted) { return <span style={shadowStyle} key={id}>{text}</span> }
-    else { return <span key={id}>{text}</span> }
+  const quantityShadowsBeforeCurrhighlightIdAllowed = 6
+  const isVisible = (idBeingExamined) => idBeingExamined > currentHighlightedPreSnippet.id
+  const isShadow = (idBeingExamined) => idBeingExamined >= currentHighlightedPreSnippet.id - quantityShadowsBeforeCurrhighlightIdAllowed && idBeingExamined < currentHighlightedPreSnippet.id && idBeingExamined >= 0
+  let preSnipTags = []
+  preSnippets.forEach(({text, id}) => {
+    if (id === currentHighlightedPreSnippet.id) {
+      preSnipTags.push(<span style={highlightedStyle} key={id}>{text}</span>)
+    }
+    else if (isShadow(id)) {
+      preSnipTags.push(<span style={shadowStyle} key={id}>{text}</span>)
+    }
+    else if (isVisible(id)) {
+      preSnipTags.push(<span key={id}>{text}</span>)
+    }
   })
   return (
     <div style={preSnippetListWrapper}>

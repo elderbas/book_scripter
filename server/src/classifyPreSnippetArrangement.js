@@ -4,7 +4,16 @@ const preSnippetClassify = require('./preSnippetClassify');
 const fs = require('fs')
 
 
-const grabClassificationsAsJoinedStrings = (arrOfPreSnips) => arrOfPreSnips.map(s => s.classification).join(',');
+const grabClassificationsAsJoinedStrings = (arrOfPreSnips) => {
+  let newArrOfPreSnips = []
+  arrOfPreSnips.forEach(s => {
+    if (s) {
+      newArrOfPreSnips.push(s.classification)
+    }
+  })
+  // arrOfPreSnips.map(s => s.classification).join(',')
+  return newArrOfPreSnips.join(',')
+}
 const classifyPreSnippetArrangement = (extendedPreSnippetsObj, customLexicon) => {
   let output = {};
   const classifiedSnippets = [

@@ -49,8 +49,6 @@ export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId
 export const addCharacterProfile = (displayName, aliases, bookName) => (dispatch) => {
   api.addCharacterProfile(displayName, aliases, bookName)
   .then((response) => {
-    console.log('response', response);
-    console.log('response', response);
     dispatch({type: 'ADD_CHARACTER_PROFILE', characterProfile: {displayName, aliases}})
   })
   .catch((err) => console.error('ERROR in actions.addCharacterProfile', err))

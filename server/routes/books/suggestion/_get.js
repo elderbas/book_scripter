@@ -72,8 +72,7 @@ function getSuggestedName (req, res) {
           speechText: block.preSnippets[speechPreSnippetIdSelected],
           nameSuggestOutput,
           preSnippetArrangementObj,
-          profilesToSuggest,
-          charProfiles: charProfsAndVSS.characterProfiles
+          profilesToSuggest
         }
         fs.writeFileSync(`${_serverDir_}/log/nameSuggest.txt`, JSON.stringify(suggestionLogObj, null, 4) + '\n\n')
       }

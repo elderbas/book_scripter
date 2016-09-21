@@ -6,13 +6,7 @@ const _ = require('lodash');
 const narrationType = (preSnip, customLexicon) => {
   let classifyingPieces = [];
   let nlpTextOutput = nlp.text(preSnip.text, {lexicon: customLexicon});
-  if (process.env.NODE_ENV === 'development' && _.get(global, 'log.preSnippetClassify')) {
-    let logObj = {
-      preSnipText: preSnip.text,
-      sentences: nlpTextOutput.sentences
-    }
-    fs.writeFileSync(`${_serverDir_}/log/preSnippetClassify.txt`, '!!!!!!\n\n' + JSON.stringify(logObj, null, 4))
-  }
+
 
   nlpTextOutput.sentences.forEach((sentence) => {
     sentence.terms.forEach((term) => {
@@ -29,6 +23,13 @@ const narrationType = (preSnip, customLexicon) => {
       }
     });
   });
+  if (process.env.NODE_ENV === 'development' && _.get(global, 'log.preSnippetClassify')) {
+    let logObj = {
+      preSnipText: preSnip.text,
+      nlpTextOutput
+    }
+    fs.writeFileSync(`${_serverDir_}/log/preSnippetClassify.log`, '!!!!!!\n\n' + JSON.stringify(logObj, null, 4))
+  }
 
   preSnip.classification = `NAR(${classifyingPieces.join(' ')})`;
   return preSnip;

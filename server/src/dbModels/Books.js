@@ -238,6 +238,7 @@ const modifyCharacterProfileAliases = (bookName, newCharacterProfile) => {
   let $set = { "characterProfiles.$.aliases": newCharacterProfile.aliases }
   return new Promise((fulfill, reject) => {
     Books.findOneAndUpdate(query, {$set}, (err, bookDoc) => {
+      console.log('bookDoc', bookDoc);
       if (err) { reject(err) }
       fulfill(bookDoc !== null)
     })

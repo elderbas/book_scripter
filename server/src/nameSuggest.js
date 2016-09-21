@@ -1,16 +1,37 @@
 'use strict';
 const _ = require('lodash');
 const arrangementMatchers = require('./arrangementMatchers');
+const fs = require('fs')
 
 const checkArrangementForMatches = (preSnippetArrangement, preSnippetExtended, matchers) => {
+  let isDevAndLogging = process.env.NODE_ENV === 'development' && _.get(global, 'log.checkArrangementForMatches')
+  let logData  = {}
+
   let namedSuggestedObj = {suggestedName: null, whichMatcher: null};
-  let matched = _.find(matchers, (m) => {
+  let matched = _.find(matchers, (m, i) => {
+    if (isDevAndLogging) {
+      logData[i] = {}
+      logData[i].preSnippetArrangement = preSnippetArrangement
+      logData[i]['m.arrangementTextMatcher'] = m.arrangementTextMatcher
+      logData[i]['preSnipIncludesArrangementTextMatcher'] = preSnippetArrangement.includes(m.arrangementTextMatcher)
+      logData[i]['whichMatcher'] = m.whichMatcher
+    }
     return preSnippetArrangement.includes(m.arrangementTextMatcher)
   });
+
+  if (isDevAndLogging) {
+    let data = {
+      logData,
+      name: !matched ? 'not matched': matched.getNameOut(preSnippetExtended)
+    }
+    let pre = '!x!X!X!X!X!X1x1x!X!X!X1x1xX!X!X!x!XX!!X!X!X1x1xX!!X!X1x!X!x!X!X!X'
+    fs.writeFileSync(`${_serverDir_}/log/checkArrangementForMatches.log`, pre + '\n' + JSON.stringify(data, null, 4) + '\n\n')
+  }
   if (!matched) {
     return null;
   }
   let name = matched.getNameOut(preSnippetExtended);
+
   if (!name) {
     return null;
   }
