@@ -1,12 +1,11 @@
 // BookScripterContainer
-import React, {PropTypes} from 'react'
+import React, { PropTypes } from 'react'
 import BookScripterPres from '../presentation/BookScripterPres'
 import Loading from '../Loading'
 import LogOnRender from '../hoc/LogOnRender'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
-import isUndefined from 'lodash/isUndefined'
 
 class BookScripterContainer extends React.Component {
   componentDidMount () {
@@ -14,7 +13,7 @@ class BookScripterContainer extends React.Component {
   }
 
   render() {
-    if (isUndefined(this.props.bookName)) {
+    if (this.props.bookName === undefined) {
       return <Loading text="Retrieving book details" />
     }
 

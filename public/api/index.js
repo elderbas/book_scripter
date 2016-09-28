@@ -6,7 +6,6 @@ const genericEnd = (fulfill, reject) => (err, response) => {
     console.log(err);
     reject(err)
   }
-  console.log('response', response);
   fulfill(response);
 }
 

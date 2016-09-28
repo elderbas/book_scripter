@@ -14,3 +14,8 @@ end run_in_new_window
 run_in_new_window("npm run back-api-test") # acceptance test
 run_in_new_window("npm run back-test") # backend unit test (including DB models)
 run_in_new_window("npm run start") # webpack start
+
+# logs
+run_in_new_window("tail -f server/log/preSnippetClassify.log")
+run_in_new_window("tail -f server/log/nameSuggest.txt")
+run_in_new_window("tail -f server/log/checkArrangementForMatches.log")

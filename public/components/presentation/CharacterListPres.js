@@ -3,7 +3,7 @@ import React, {PropTypes} from 'react'
 import trim from 'lodash/trim'
 import LogOnRender from '../hoc/LogOnRender'
 import CharacterListItemContainer from '../containers/CharacterListItemContainer'
-
+import KeepScrollBottom from '../KeepScrollBottom'
 const predictedNameBtnStyle = {
   padding: '5px'
 }
@@ -82,10 +82,11 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
         <input type="text" ref={(c) => _csvAliasesTxtBxRef = c } placeholder="comma separated list of aliases"/>
         <button type="submit" className="button is-small"><i className="fa fa-plus"></i></button>
       </form>
-
-      <div className="charListWrapper">
-        <ul>{characterItems}</ul>
-      </div>
+        <div className="charListWrapper">
+          <KeepScrollBottom style={{overflow: 'auto', height: '100px'}}>
+            <ul>{characterItems}</ul>
+          </KeepScrollBottom>
+        </div>
     </div>
   )
 }

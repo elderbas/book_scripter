@@ -5,6 +5,10 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
 import LogOnRender from '../hoc/LogOnRender'
+import get from 'lodash/get'
+const _ = {
+  get: get
+}
 
 /* this component is a bit hefty */
 
@@ -37,6 +41,7 @@ class CharacterListContainer extends React.Component {
     this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
   }
   handleCharacterSelected (charDisplayName, someProps) {
+    console.log('handleCharacterSelected!', someProps);
     someProps.handleConfirmedNameOnPreSnippet({
       bookName: someProps.bookName,
       blockId: someProps.currentBlockId,
@@ -49,32 +54,37 @@ class CharacterListContainer extends React.Component {
 
   // automatically get predicted name when the preSnippet coming up is speech type
   componentWillReceiveProps (nextProps) {
-    if (this.props.currentHighlightedPreSnippet && nextProps.currentHighlightedPreSnippet) {
-      let { currentHighlightPredictedName, currentHighlightedPreSnippet } = nextProps
-
-      // we got a predicted value for a name back, so just automatically confirm it
-      if (currentHighlightPredictedName !== 'none' &&
-          currentHighlightPredictedName !== null &&
-          this.props.currentHighlightedPreSnippet.id === nextProps.currentHighlightedPreSnippet.id &&
-          nextProps.autoConfirmPredictedName === true) {
-        this.handleCharacterSelected(currentHighlightPredictedName, nextProps)
+    // when id is same as before, ignore?
+    // when id is different, use new id
+    let thisCurrHighlightPreSnippet = _.get(this, 'props.currentHighlightedPreSnippet')
+    let nextCurrHighlightPreSnippet = _.get(nextProps, 'currentHighlightedPreSnippet')
+    console.log('this.props', this.props);
+    console.log('nextProps', nextProps);
+    // dont have highlighted pre snippet yet
+    if (!thisCurrHighlightPreSnippet || !nextCurrHighlightPreSnippet) {
+      return
+    }
+    // Coming up first time on next highlighted pre snippet
+    if (thisCurrHighlightPreSnippet.id !== nextCurrHighlightPreSnippet.id) {
+      if (nextCurrHighlightPreSnippet.type === 'speech' && nextProps.currentHighlightPredictedName === null) {
+        return this.getNameSuggestion(nextCurrHighlightPreSnippet)
       }
-
-      // we know currently inspected preSnippet is just a narration type so let's confirm it as such
-      if (this.props.currentHighlightedPreSnippet.id !== nextProps.currentHighlightedPreSnippet.id && nextProps.autoConfirmNarration === true) {
-        if (currentHighlightedPreSnippet.type === 'narration') {
-          this.handleCharacterSelected('Narration', nextProps)
-        }
+      else if (nextCurrHighlightPreSnippet.type === 'narration' && nextProps.autoConfirmNarration === true) {
+        return this.handleCharacterSelected('Narration', nextProps)
       }
+    }
 
-      // current one coming in is speech type and we havent gotten back a response yet
-      if (currentHighlightedPreSnippet && currentHighlightedPreSnippet.type === 'speech' && currentHighlightPredictedName === null) {
-        this.getNameSuggestion(nextProps.currentHighlightedPreSnippet)
-      }
+    // handles when a prediction match is made, otherwise it will default to letting the user select the character
+    if (nextProps.currentHighlightPredictedName !== null && nextProps.currentHighlightPredictedName !== 'none' &&
+        nextCurrHighlightPreSnippet.type === 'speech' && nextProps.autoConfirmPredictedName === true &&
+        this.props.currentHighlightPredictedName !== nextProps.currentHighlightPredictedName) {
+      return this.handleCharacterSelected(nextProps.currentHighlightPredictedName, nextProps)
     }
   }
 
   componentDidMount() {
+    // should also try to predict character immediately and not just narration type?
+    console.log('componentDidMount this.props', this.props);
     if (this.props.currentHighlightedPreSnippet) {
       if (this.props.currentHighlightedPreSnippet.type === 'narration') {
         this.handleCharacterSelected('Narration', this.props)

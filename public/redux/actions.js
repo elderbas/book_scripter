@@ -40,8 +40,8 @@ export const handleConfirmedNameOnPreSnippet = ({bookName, blockId, preSnippetId
   .then((response) => {
     let newSnippet = response.body[response.body.length - 1]
     newSnippet.text = preSnippetText
+    dispatch({type: 'RESET_PREDICTED_NAME'})
     dispatch({type: 'ADD_SNIPPET', snippet: newSnippet })
-    dispatch({type: 'RESET_PREDICTED_NAME'}) // reset predicted name after last preSnippet has been removed
   })
   .catch((err) => console.error('ERROR in handleConfirmedNameOnPreSnippet', err))
 }

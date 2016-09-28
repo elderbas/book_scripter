@@ -2,3 +2,8 @@ https://radimrehurek.com/gensim/
 https://research.googleblog.com/2016/05/announcing-syntaxnet-worlds-most.html
 
 reverse text generation
+
+
+shows how to get the "salience" of a character in a sentence
+good for stuff that "might" be a VSS but don't have the word added
+https://cloud.google.com/blog/big-data/2016/07/using-the-cloud-natural-language-api-to-analyze-harry-potter-and-the-new-york-times

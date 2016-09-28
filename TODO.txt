@@ -1,10 +1,17 @@
 !!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
 
+// there's some duplication to the Snippets list going on after I added this
+// maybe it's re-rendering something inside reducer for currentBook 'ADD_SNIPPET'
+// and the passive to run stuff is going
+
+
 Last chosen character goes to bottom of list (not top because it's easier to see the bottom
 while you're looking at the pre snippets below the character list)
 
-CharacterList Styling
-- Scrolling for character list
+
+
+reset a given block. delete all snippets for it, and reset the other stuff to null
+
 
 
 Snippets Styling

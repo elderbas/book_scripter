@@ -1,7 +1,7 @@
 // Snippets
 import React, {PropTypes} from 'react'
-let jsonStringifyPretty = require('json-pretty')
 import LogOnRender from '../hoc/LogOnRender'
+import KeepScrollBottom from '../KeepScrollBottom'
 
 let styleByType = {
   parseError: {
@@ -15,17 +15,13 @@ let styleByType = {
   }
 }
 let snippetStyle = {
-  // border: '1px solid black',
   marginBottom: '5px',
-  padding: '5px'
+  padding: '2px'
 }
 let snipScrollStyle = {
-  whiteSpace: 'pre-wrap', height: '170px', overflow: 'scroll'
+  whiteSpace: 'pre-wrap', height: '170px', overflow: 'auto'
 }
 class Snippets extends React.Component {
-  componentDidUpdate () {
-    this.refs.snipscroll.scrollTop = this.refs.snipscroll.scrollHeight
-  }
   render() {
     let snippetTags = this.props.snippets.map(({text, snippetType, characterDisplayName}, index) => {
       return (
@@ -39,9 +35,9 @@ class Snippets extends React.Component {
       <div>
         <h2>Snippets</h2>
         <br />
-        <div ref="snipscroll" style={snipScrollStyle}>
+        <KeepScrollBottom style={snipScrollStyle}>
           {snippetTags}
-        </div>
+        </KeepScrollBottom>
       </div>
     )
   }

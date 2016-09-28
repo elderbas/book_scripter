@@ -16,6 +16,19 @@ const requestSuccessFailure = (mainName) => ((state = false, action) => {
   }
 })
 
+
+const reduceCharacterProfilesAddSnippet = (state, action) => {
+  if (action.snippet.snippetType !== 'speech') { return state }
+  else if (Array.isArray(state) && state.length > 0) {
+    // only do it for speech types, other wise there isn't a matching char profile to go with it
+    let prioritizedCharProfile = state.find(cp => action.snippet.characterDisplayName === cp.displayName)
+    return state.filter((cp) => cp.displayName !== prioritizedCharProfile.displayName).concat([prioritizedCharProfile])
+  }
+  else {
+    return state
+  }
+}
+
 const currentBook = (state = {}, action) => {
   switch (action.type) {
     case 'ADD_SNIPPET':
@@ -25,7 +38,10 @@ const currentBook = (state = {}, action) => {
         currentBlockWorkingOn: {
           ...state.currentBlockWorkingOn,
           snippets: [ ...state.currentBlockWorkingOn.snippets, action.snippet ]
-        }
+        },
+        // there's some duplication to the Snippets list going on after I added this
+        // maybe it's re-rendering something
+        characterProfiles: reduceCharacterProfilesAddSnippet(state.characterProfiles, action)
       }
       return newState
 
