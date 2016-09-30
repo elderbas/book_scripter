@@ -2,8 +2,14 @@
 import React, { PropTypes } from 'react'
 
 class KeepScrollBottom extends React.Component {
-  componentDidUpdate () {
+  setScrollVal () {
     this.refs.snipscroll.scrollTop = this.refs.snipscroll.scrollHeight
+  }
+  componentDidUpdate () {
+    this.setScrollVal()
+  }
+  componentDidMount () {
+    this.setScrollVal()
   }
 
   render() {

@@ -7,3 +7,6 @@ reverse text generation
 shows how to get the "salience" of a character in a sentence
 good for stuff that "might" be a VSS but don't have the word added
 https://cloud.google.com/blog/big-data/2016/07/using-the-cloud-natural-language-api-to-analyze-harry-potter-and-the-new-york-times
+
+tallies for new patternies looking at
+https://docs.google.com/spreadsheets/d/19DR0IbWjAiZuvdg6ydqMsCJAOWI6j6kCp4Wn4CRO_g8/edit#gid=0

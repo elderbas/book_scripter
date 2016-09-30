@@ -8,20 +8,27 @@ const narrationType = (preSnip, customLexicon) => {
   let nlpTextOutput = nlp.text(preSnip.text, {lexicon: customLexicon});
 
 
-  nlpTextOutput.sentences.forEach((sentence) => {
-    sentence.terms.forEach((term) => {
+  nlpTextOutput.sentences.forEach((sentence, i) => {
+    /*
+      i === 0 to avoid something like this...
+      “Stop that!” the woman said. Bran heard the sudden slap of flesh on flesh, then the man’s laughter.
+      (which was matched as if it were as "said Bran")
+    */
+    if (i === 0) {
+      sentence.terms.forEach((term) => {
 
-      // since we added custom lexicon types based on this hash, if the current term's tag type matches
-      // one of these, then it's one we care about looking for
-      let termType = lexiconTagTypes[term.tag];
-      // wont execute for all sentences, if the first sentence contains 2 classifying pieces already
-      if (termType && classifyingPieces.length <= 1) {
-        if (termType === lexiconTagTypes.PERSON_CONFIRMED) {
-          preSnip.predictedCharacterNameNormalized = term.normal;
+        // since we added custom lexicon types based on this hash, if the current term's tag type matches
+        // one of these, then it's one we care about looking for
+        let termType = lexiconTagTypes[term.tag];
+        // wont execute for all sentences, if the first sentence contains 2 classifying pieces already
+        if (termType && classifyingPieces.length <= 1) {
+          if (termType === lexiconTagTypes.PERSON_CONFIRMED) {
+            preSnip.predictedCharacterNameNormalized = term.normal;
+          }
+          classifyingPieces.push(termType);
         }
-        classifyingPieces.push(termType);
-      }
-    });
+      });
+    }
   });
   if (process.env.NODE_ENV === 'development' && _.get(global, 'log.preSnippetClassify')) {
     let logObj = {

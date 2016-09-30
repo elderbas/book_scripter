@@ -10,9 +10,9 @@ let path = require('path');
 // tail -f server/log/<key>.txt
 // WARNING - using writeFileSync and some of these are really slow
 global.log = {
-  preSnippetClassify: false, // will notice a difference
-  getNameSuggestion: false, // reasonably quick
-  checkArrangementForMatches: false,
+  preSnippetClassify: true, // will notice a difference
+  getNameSuggestion: true, // reasonably quick
+  checkArrangementForMatches: true,
   // classifyPreSnippetArrangement: true
 }
 

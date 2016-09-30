@@ -5,23 +5,24 @@ const fs = require('fs')
 
 const checkArrangementForMatches = (preSnippetArrangement, preSnippetExtended, matchers) => {
   let isDevAndLogging = process.env.NODE_ENV === 'development' && _.get(global, 'log.checkArrangementForMatches')
-  let logData  = {}
+  let logData  = []
 
   let namedSuggestedObj = {suggestedName: null, whichMatcher: null};
   let matched = _.find(matchers, (m, i) => {
     if (isDevAndLogging) {
-      logData[i] = {}
-      logData[i].preSnippetArrangement = preSnippetArrangement
-      logData[i]['m.arrangementTextMatcher'] = m.arrangementTextMatcher
-      logData[i]['preSnipIncludesArrangementTextMatcher'] = preSnippetArrangement.includes(m.arrangementTextMatcher)
-      logData[i]['whichMatcher'] = m.whichMatcher
+      let logDataItem = {}
+      logDataItem.preSnippetArrangement = preSnippetArrangement
+      logDataItem['m.arrangementTextMatcher'] = m.arrangementTextMatcher
+      logDataItem['preSnipIncludesArrangementTextMatcher'] = preSnippetArrangement.includes(m.arrangementTextMatcher)
+      logDataItem['whichMatcher'] = m.whichMatcher
+      logData.push(logDataItem)
     }
     return preSnippetArrangement.includes(m.arrangementTextMatcher)
   });
 
   if (isDevAndLogging) {
     let data = {
-      logData,
+      logData: logData.filter(ld => ld['preSnipIncludesArrangementTextMatcher'] === true),
       name: !matched ? 'not matched': matched.getNameOut(preSnippetExtended)
     }
     let pre = '!x!X!X!X!X!X1x1x!X!X!X1x1xX!X!X!x!XX!!X!X!X1x1xX!!X!X1x!X!x!X!X!X'
@@ -72,28 +73,3 @@ const nameSuggest = (preSnippetClassifiedArrangementObj, preSnippetExtendedObj) 
 };
 
 module.exports = nameSuggest;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

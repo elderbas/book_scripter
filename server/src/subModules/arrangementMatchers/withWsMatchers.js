@@ -56,6 +56,7 @@ withWsMatchers.push({
 
 // temporary fix until getting the function version going
 withWsMatchers.push(...getInferFromJustOverTheNarPermutations())
+
 // this one may be obsolete compared to just above
 withWsMatchers.push({
   arrangementTextMatcher: `${SP},${WS_SS},${NAR_PR_VSS},${WS_SS}|`,
@@ -219,9 +220,24 @@ IN GUESSING BY USING NAR(PERSON,PASTTENSE
 * */
 
 
+/*
+"I have to leave" , <- Albert
+"whoa" bob said "go get it" , <- Bob twice
+"is that what you think?" <- Albert
+ML|ML
+pick the second to last person speaking from point of |
+loneSpeech,useSecondToLast
+*/
 
+/*
+ML,NAR()|
+if it doesnt match anything, then pass the NAR to GCNLP,
+*/
 
-
+/*
+ML|NAR()
+if it doesnt match anything, then pass the NAR to GCNLP,
+*/
 
 
 
