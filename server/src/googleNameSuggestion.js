@@ -1,0 +1,2 @@
+// googleNameSuggestion.js
+
