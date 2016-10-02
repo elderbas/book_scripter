@@ -304,7 +304,6 @@ function requestSuggestion(cb, nameToMatch) {
       else {
         expect(res.body.characterProfilesSuggested.length).to.equal(0)
       }
-
       cb();
     });
 }

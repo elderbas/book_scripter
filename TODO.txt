@@ -1,14 +1,5 @@
-!!!Pay attention to notification on Github for problem with Ser Waymar Royce being split up
-
-// there's some duplication to the Snippets list going on after I added this
-// maybe it's re-rendering something inside reducer for currentBook 'ADD_SNIPPET'
-// and the passive to run stuff is going
-
-
-Last chosen character goes to bottom of list (not top because it's easier to see the bottom
-while you're looking at the pre snippets below the character list)
-
-
+Edit a speaker of a Snippet
+(also search for the preSnippet and change the confirmed name)
 
 reset a given block. delete all snippets for it, and reset the other stuff to null
 
@@ -86,5 +77,3 @@ clicking on X near name confirms you want to delete it
 
 Reachers
 Animate the square around the current speech, to move to surround the next speech after selected
-
-

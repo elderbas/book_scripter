@@ -8,9 +8,9 @@ let grabExtendingPreSnippets = require('../src/grabExtendingPreSnippets')
 let classifyPreSnippetArrangement = require('../src/classifyPreSnippetArrangement')
 const quoteify = (str) => `“${str}”`;
 let nTTG = require('../src/narrationTextToGCNLP');
-describe('!--googleNameSuggestion--!', () => {
+describe('!--narrationTextToGCNLP--!', () => {
   it('exists as a function', function () {
-    expect(typeof gNS).to.equal('function');
+    expect(typeof nTTG).to.equal('function');
   });
 
   let count, preSnippetList, QUANTITY_TO_GRAB_EACH_SIDE = 6;

@@ -3,7 +3,7 @@ const fs = require('fs')
 const lexiconTagTypes = require('../constants/lexiconTagTypes');
 let nlp = require('nlp_compromise');
 const _ = require('lodash');
-const narrationType = (preSnip, customLexicon) => {
+const narrationType = (preSnip, customLexicon, ignoreNarMetaData) => {
   let classifyingPieces = [];
   let nlpTextOutput = nlp.text(preSnip.text, {lexicon: customLexicon});
 
@@ -38,7 +38,7 @@ const narrationType = (preSnip, customLexicon) => {
     fs.writeFileSync(`${_serverDir_}/log/preSnippetClassify.log`, '!!!!!!\n\n' + JSON.stringify(logObj, null, 4))
   }
 
-  preSnip.classification = `NAR(${classifyingPieces.join(' ')})`;
+  preSnip.classification = (ignoreNarMetaData === true) ? 'NAR' : `NAR(${classifyingPieces.join(' ')})`;
   return preSnip;
 };
 
@@ -78,10 +78,10 @@ const whitespaceType = (preSnip) => {
  * only playing attention to tag types in
  * lexiconTagTypes hash
  * */
-const preSnippetClassify = (preSnip, customLexicon) => {
+const preSnippetClassify = (preSnip, customLexicon, ignoreNarMetaData) => {
   customLexicon = customLexicon || nlp.lexicon();
   if (preSnip.type === 'narration') {
-    return narrationType(preSnip, customLexicon);
+    return narrationType(preSnip, customLexicon, ignoreNarMetaData);
   }
   else if (preSnip.type === 'whitespace') {
     return whitespaceType(preSnip);

@@ -21,17 +21,17 @@ const grabExtendingPreSnippets = (preSnippetList, indexSelected, quantityToGrabO
   // the selected speech at time to analyze arrangements
   let allExtended = [leftPreSnips.reverse(), rightPreSnips];
 
-  const nonWhiteSpace = [
-    _.reject(allExtended[0], s => s.type === 'whitespace'),
-    _.reject(allExtended[1], s => s.type === 'whitespace'),
-  ];
+  // const nonWhiteSpace = [
+  //   _.reject(allExtended[0], s => s.type === 'whitespace'),
+  //   _.reject(allExtended[1], s => s.type === 'whitespace'),
+  // ];
 
   const nonSingleSpace = [
     _.filter(allExtended[0], s => (s.type === 'whitespace' && s.text !== ' ') || s.type !== 'whitespace'),
     _.filter(allExtended[1], s => (s.type === 'whitespace' && s.text !== ' ') || s.type !== 'whitespace')
   ];
 
-  return { allExtended, nonWhiteSpace, nonSingleSpace };
+  return { allExtended, /*nonWhiteSpace,*/ nonSingleSpace };
 };
 
 

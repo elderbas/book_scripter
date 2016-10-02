@@ -43,18 +43,11 @@ function getSuggestedName (req, res) {
     .then((block) => {
 
 
-      // let prettyJson = (x) => JSON.stringify(x, null, 4)
-      // console.log(`block -`, prettyJson(block));
-      // console.log('specific pre snippet', prettyJson(block.preSnippets[speechPreSnippetIdSelected]));
       // TODO change to readFile instead of sync (but for now that'd make it ugly <_>)
       let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
-      // console.log('existing CHAR PROFILES', prettyJson(charProfsAndVSS.characterProfiles));
       customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, commonSpokenSynonyms.concat(charProfsAndVSS.verbSpokeSynonyms));
-      // console.log('block.preSnippets', block.preSnippets);
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, speechPreSnippetIdSelected, 6);
-      // console.log('preSnippetExtendedObj', prettyJson(preSnippetExtendedObj.nonSingleSpace));
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
-      // console.log('preSnippetArrangementObj', prettyJson(preSnippetArrangementObj));
       let nameSuggestOutput = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
       let profilesToSuggest;
       if (_.isNull(nameSuggestOutput)) {
@@ -76,7 +69,6 @@ function getSuggestedName (req, res) {
         }
         fs.writeFileSync(`${_serverDir_}/log/nameSuggest.txt`, JSON.stringify(suggestionLogObj, null, 4) + '\n\n')
       }
-
       res.send({characterProfilesSuggested: profilesToSuggest});
     })
     .catch((err) => {

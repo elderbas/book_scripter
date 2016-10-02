@@ -55,6 +55,9 @@ withWsMatchers.push({
 
 
 // temporary fix until getting the function version going
+// only need to do this because doing a .includes check means that in order to
+// have the functionality of just checking a NAR() with ANYTHING, it has to have every possible
+// variation in there. Ideally regex is possible but this seemed faster for the moment
 withWsMatchers.push(...getInferFromJustOverTheNarPermutations())
 
 // this one may be obsolete compared to just above

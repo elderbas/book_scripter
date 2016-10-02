@@ -238,7 +238,6 @@ const modifyCharacterProfileAliases = (bookName, newCharacterProfile) => {
   let $set = { "characterProfiles.$.aliases": newCharacterProfile.aliases }
   return new Promise((fulfill, reject) => {
     Books.findOneAndUpdate(query, {$set}, (err, bookDoc) => {
-      console.log('bookDoc', bookDoc);
       if (err) { reject(err) }
       fulfill(bookDoc !== null)
     })
@@ -248,8 +247,6 @@ const modifyCharacterProfileAliases = (bookName, newCharacterProfile) => {
 const getEntireBook = (bookName) => {
   return new Promise((fulfill, reject) => {
     Books.findOne({bookName}, (err, bookDoc) => {
-      console.log('err', err);
-      console.log('bookDoc', bookDoc);
       fulfill(bookDoc)
     })
   });
