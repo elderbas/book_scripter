@@ -73,11 +73,27 @@ describe('!--narrationTextToGCNLP--!', () => {
     nTTG(nonSingleSpaceArrangement, nonSingleSpace, mockGoogleCloudLanguageClient(null, mockGoogleResponse))
     .then((result) => {
       expect(result.predictedEntity.name).to.equal('Ned')
-      expect(result.ruleName).to.equal('high sal subj')
+      expect(result.ruleName).to.equal('single high sal subj')
       done()
     })
     .catch(done)
+  });
 
+  it(`result is null for unmatched rule`, function (done) {
+    const preSnippetIdSpeechSelected = 14;
+    let pSEO = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
+    let cPSA = classifyPreSnippetArrangement(pSEO, undefined, true);
+    const mockGoogleResponse = {
+      entities: { other: [ {name: 'Ned', salience: 1} ], },
+      tokens: []
+    }
+
+    nTTG(cPSA.nonSingleSpaceArrangement, pSEO.nonSingleSpace, mockGoogleCloudLanguageClient(null, mockGoogleResponse))
+    .then((result) => {
+      expect(result).to.equal(null)
+      done()
+    })
+    .catch(done)
   });
 });//end describe('createPreSnippetsFromTextBlob'
 

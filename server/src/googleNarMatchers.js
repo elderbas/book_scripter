@@ -24,6 +24,12 @@ const filterObject = (filteringObj, predicate) => {
 * possibleLabelTypes - null for all OR array of string names to filter (possible - 'NSUBJ', 'POSS', 'NSUBJPASS'),
 * maximumNumberOfEntitiesAllowed - after all filtering, how many entities are allowed to be left
 * */
+// a given pattern matched means now there are rules to be checked on the
+// google response based on any entities encountered and their entity classification
+// an entity's salience, and what an entity's token type is
+// these rules have been created based on hand labeling GoT book 1 and sending
+// each nar to Google NLP API and verifying what patterns are necessary to
+// make a match happen based on Google's response
 const ruleMatcherCreator = (ruleName, inclusiveMinimumSalience, possibleEntityTypes, possibleLabelTypes, maximumNumberOfEntitiesAllowed) => {
   return (annotation) => {
     let entities = _.get(annotation, 'entities')
@@ -49,7 +55,7 @@ const ruleMatcherCreator = (ruleName, inclusiveMinimumSalience, possibleEntityTy
         // Note: this could be a problem if we want 'people' to get more preference than a type such as 'place',
         // but then we probably just wouldn't want that in our 'possibleLabelTypes' at that point
         let predictedEntity = _.maxBy(entitiesFilteredConsideringLabelTypes, 'salience')
-        if (predictedEntity.salience >= inclusiveMinimumSalience) {
+        if (_.get(predictedEntity, 'salience') >= inclusiveMinimumSalience) {
           return { predictedEntity, ruleName }
         }
       }
@@ -58,24 +64,25 @@ const ruleMatcherCreator = (ruleName, inclusiveMinimumSalience, possibleEntityTy
   }
 }
 
+
+let singleHighSalSubj = ruleMatcherCreator('single high sal subj', 50, ['people'], ['NSUBJ'], 1)
 const googleNarMatchers = [
   {
     arrangementTextMatcher: `${M_NL},NAR|${M_NL}`,
     getNarrationTextOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][0],
     whichMatcher: 'strandedWithNarOnLEFT',
-    // a given pattern matched means now there are rules to be checked on the
-    // google response based on any entities encountered and their entity classification
-    // an entity's salience, and what an entity's token type is
-    // these rules have been created based on hand labeling GoT book 1 and sending
-    // each nar to Google NLP API and verifying what patterns are necessary to
-    // make a match happen based on Google's response
+    googleResponseRuleMatchers: [
+      singleHighSalSubj
+    ]
   },
   {
     arrangementTextMatcher: `${M_NL}|NAR,${M_NL}`,
     getNarrationTextOut: (extendedPreSnippets) => extendedPreSnippets[RIGHT][1],
-    whichMatcher: 'strandedWithNarOnRIGHT'
+    whichMatcher: 'strandedWithNarOnRIGHT',
+    googleResponseRuleMatchers: [
+      singleHighSalSubj
+    ]
   },
-
   // eventually want to do something with this right nar, to verify the gender of speaker, and check for
   // genered pronoun of 'he/she' to help narrow down a possible 'people' entity on the left if there were
   // a dispute between which it would be referring to
@@ -84,7 +91,7 @@ const googleNarMatchers = [
     getNarrationTextOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][0],
     whichMatcher: 'NarsBeDoubleTeaminAndWhoKnowsWhatFurtherRIGHT',
     googleResponseRuleMatchers: [
-      ruleMatcherCreator('high sal subj', 50, ['people'], ['NSUBJ'], 1)
+      singleHighSalSubj
     ]
   }
 ]
