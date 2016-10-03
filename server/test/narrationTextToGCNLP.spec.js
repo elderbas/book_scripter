@@ -8,6 +8,17 @@ let grabExtendingPreSnippets = require('../src/grabExtendingPreSnippets')
 let classifyPreSnippetArrangement = require('../src/classifyPreSnippetArrangement')
 const quoteify = (str) => `“${str}”`;
 let nTTG = require('../src/narrationTextToGCNLP');
+
+let mockGoogleCloudLanguageClient = (expectedErr, expectedAnnotateResponse) => {
+  return function language() {
+    return {
+      annotate (textToSend, options, cb) {
+        cb(expectedErr, expectedAnnotateResponse)
+      }
+    }
+  }
+}
+
 describe('!--narrationTextToGCNLP--!', () => {
   it('exists as a function', function () {
     expect(typeof nTTG).to.equal('function');
@@ -45,10 +56,12 @@ describe('!--narrationTextToGCNLP--!', () => {
     ];
   })
 
-  it(`1 entity - 1 'person', 50+ salience, NSUBJ`, function () {
+  it(`1 entity - 1 'person', 50+ salience, NSUBJ`, function (done) {
     const preSnippetIdSpeechSelected = 14;
     let preSnippetExtendedObj = grabExtendingPreSnippets(preSnippetList, preSnippetIdSpeechSelected, QUANTITY_TO_GRAB_EACH_SIDE);
     let classifiedPreSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, undefined, true);
+    let { nonSingleSpaceArrangement } = classifiedPreSnippetArrangementObj
+    let { nonSingleSpace } = preSnippetExtendedObj
     const mockGoogleResponse = {
       entities: { people: [ {name: 'Ned', salience: 65.123} ], },
       tokens: [{
@@ -56,9 +69,15 @@ describe('!--narrationTextToGCNLP--!', () => {
         dependencyEdge: {label: 'NSUBJ'}
       }]
     }
-    expect(
-      nTTG(classifiedPreSnippetArrangementObj.nonSingleSpaceArrangement, preSnippetExtendedObj.nonSingleSpace, mockGoogleResponse)
-    ).to.deep.equal('Ned')
+
+    nTTG(nonSingleSpaceArrangement, nonSingleSpace, mockGoogleCloudLanguageClient(null, mockGoogleResponse))
+    .then((result) => {
+      expect(result.predictedEntity.name).to.equal('Ned')
+      expect(result.ruleName).to.equal('high sal subj')
+      done()
+    })
+    .catch(done)
+
   });
 });//end describe('createPreSnippetsFromTextBlob'
 
