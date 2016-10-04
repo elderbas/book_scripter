@@ -6,6 +6,18 @@ let grabExtendingPreSnippets = require(`${_serverDir_}/src/grabExtendingPreSnipp
 let buildCustomLexicon = require(`${_serverDir_}/src/buildCustomLexicon`);
 let classifyPreSnippetArrangement = require(`${_serverDir_}/src/classifyPreSnippetArrangement`);
 let validateType = require('../../../utilityFunks').validateType
+const narrationTextToGCNLP = require(`${_serverDir_}/src/narrationTextToGCNLP`)
+const googleLanguage = require('@google-cloud/language');
+let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
+
+// this should really only end up being 1 person, but I was thinking there might be a probability based thing later
+// so set it up to be multiple based
+const getCharacterProfilesMatchingAName = (charProfsAndVSS, nameSuggested) => {
+  return _.filter(charProfsAndVSS.characterProfiles, (cp) => {
+    let displayName = cp.displayName.toLowerCase(), suggestedName = nameSuggested.toLowerCase()
+    return displayName === suggestedName || _.some(cp.aliases, a => a.toLowerCase() === suggestedName)
+  });
+}
 
 // /api/books/suggestion
 router.get('/', getSuggestedName);
@@ -42,33 +54,50 @@ function getSuggestedName (req, res) {
     })
     .then((block) => {
 
-
-      // TODO change to readFile instead of sync (but for now that'd make it ugly <_>)
-      let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
       customLex = buildCustomLexicon(charProfsAndVSS.characterProfiles, commonSpokenSynonyms.concat(charProfsAndVSS.verbSpokeSynonyms));
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, speechPreSnippetIdSelected, 6);
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
       let nameSuggestOutput = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
-      let profilesToSuggest;
-      if (_.isNull(nameSuggestOutput)) {
-        profilesToSuggest = [];
+      if (nameSuggestOutput === null) { // attempt to get suggestion from google cloud nlp prediction
+        let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, undefined, true);
+        return narrationTextToGCNLP(
+          preSnippetArrangementObj.nonSingleSpaceArrangement, preSnippetExtendedObj.nonSingleSpace, googleLanguage
+        )
+        .then((nameSuggestObj) => {
+          let profilesToSuggest;
+          if (nameSuggestObj === null) {
+            profilesToSuggest = [];
+          }
+          else {
+            profilesToSuggest = getCharacterProfilesMatchingAName(charProfsAndVSS, nameSuggestObj.predictedEntity.name)
+          }
+          console.log('!!!!!!!!---------!!!!!!!!!!!');
+          console.log('profilesToSuggest GOOGLE', profilesToSuggest);
+          return profilesToSuggest
+        })
+        .catch((err) => {
+          if (err) {
+            console.log('ERR in _get suggestion for google cloud api', err, err.message);
+            errorHandler(req, res, `Server error @ GET /api/books/suggestion using book - '${bookName}'`, 500);
+          }
+        })
       }
       else {
-        profilesToSuggest = _.filter(charProfsAndVSS.characterProfiles, (cp) => {
-          let displayName = cp.displayName.toLowerCase(), suggestedName = nameSuggestOutput.suggestedName.toLowerCase()
-          return displayName === suggestedName || _.some(cp.aliases, a => a.toLowerCase() === suggestedName)
-        });
-
-      }
-      if (process.env.NODE_ENV === 'development' && _.get(global, 'log.getNameSuggestion')) {
-        let suggestionLogObj = {
-          speechText: block.preSnippets[speechPreSnippetIdSelected],
-          nameSuggestOutput,
-          preSnippetArrangementObj,
-          profilesToSuggest
+        let profilesToSuggest = getCharacterProfilesMatchingAName(charProfsAndVSS, nameSuggestOutput.suggestedName)
+        if (process.env.NODE_ENV === 'development' && _.get(global, 'log.getNameSuggestion')) {
+          let suggestionLogObj = {
+            speechText: block.preSnippets[speechPreSnippetIdSelected],
+            nameSuggestOutput,
+            preSnippetArrangementObj,
+            profilesToSuggest
+          }
+          fs.writeFileSync(`${_serverDir_}/log/nameSuggest.txt`, JSON.stringify(suggestionLogObj, null, 4) + '\n\n')
         }
-        fs.writeFileSync(`${_serverDir_}/log/nameSuggest.txt`, JSON.stringify(suggestionLogObj, null, 4) + '\n\n')
+        // res.send({characterProfilesSuggested: profilesToSuggest});
+        return profilesToSuggest
       }
+    })
+    .then((profilesToSuggest) => {
       res.send({characterProfilesSuggested: profilesToSuggest});
     })
     .catch((err) => {

@@ -13,6 +13,7 @@ global.log = {
   preSnippetClassify: true, // will notice a difference
   getNameSuggestion: true, // reasonably quick
   checkArrangementForMatches: true,
+  googleNameSuggestion: true,
   // classifyPreSnippetArrangement: true
 }
 

@@ -8,3 +8,4 @@ misc_ignored/
 */db/*
 server/log/*
 npm-debug.log
+server/config/*

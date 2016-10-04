@@ -3,7 +3,19 @@ Edit a speaker of a Snippet
 
 reset a given block. delete all snippets for it, and reset the other stuff to null
 
+add ability to test accuracy given a hand labeled set
+add loading symbol for requesting nameSuggestion (custom/nlp comp or google cloud)
 
+add to README.md how to setup config file for google cloud NLP
+
+add appropriate logging for narrationTextToGCNLP
+- sentence sentence sent
+- entities found (filtered down to important keys)
+- tokens found (filtered down to important keys)
+- which matcher
+
+
+make google language api option only available if they mark that they have a .json key file
 
 Snippets Styling
 - more standout text color inside bars
