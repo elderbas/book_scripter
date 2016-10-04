@@ -77,7 +77,7 @@ const googleNarMatchers = [
   },
   {
     arrangementTextMatcher: `${M_NL}|NAR,${M_NL}`,
-    getNarrationTextOut: (extendedPreSnippets) => extendedPreSnippets[RIGHT][1],
+    getNarrationTextOut: (extendedPreSnippets) => extendedPreSnippets[RIGHT][0],
     whichMatcher: 'strandedWithNarOnRIGHT',
     googleResponseRuleMatchers: [
       singleHighSalSubj

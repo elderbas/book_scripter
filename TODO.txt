@@ -14,6 +14,14 @@ add appropriate logging for narrationTextToGCNLP
 - tokens found (filtered down to important keys)
 - which matcher
 
+on a new block load, send first pre snippet for prediction, speech or narration
+
+
+add caveat for triple worded names not being good at detecting name in sentence (until nlp comp ugrades that)
+
+add a separate logging for all suggestion results
+- what pattern matched, what name - analyze later which are most accurate
+
 
 make google language api option only available if they mark that they have a .json key file
 
