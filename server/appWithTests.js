@@ -9,11 +9,14 @@ let path = require('path');
 // do a global text search for _.get(global, 'log.<key>') to find it
 // tail -f server/log/<key>.txt
 // WARNING - using writeFileSync and some of these are really slow
+global.useGooglePredict = true
+
 global.log = {
   preSnippetClassify: true, // will notice a difference
   getNameSuggestion: true, // reasonably quick
   checkArrangementForMatches: true,
   googleNameSuggestion: true,
+  googleMetaDataResponse: true
   // classifyPreSnippetArrangement: true
 }
 

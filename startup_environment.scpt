@@ -19,3 +19,4 @@ run_in_new_window("npm run start") # webpack start
 run_in_new_window("tail -f server/log/preSnippetClassify.log")
 run_in_new_window("tail -f server/log/nameSuggest.txt")
 run_in_new_window("tail -f server/log/checkArrangementForMatches.log")
+run_in_new_window("tail -f server/log/googleMetaDataResponse.log")

@@ -66,13 +66,14 @@ const ruleMatcherCreator = (ruleName, inclusiveMinimumSalience, possibleEntityTy
 
 
 let singleHighSalSubj = ruleMatcherCreator('single high sal subj', 50, ['people'], ['NSUBJ'], 1)
+let singleHighSalSubjPoss = ruleMatcherCreator('single high sal poss', 50, ['people'], ['NSUBJ', 'POSS'], 1)
 const googleNarMatchers = [
   {
     arrangementTextMatcher: `${M_NL},NAR|${M_NL}`,
     getNarrationTextOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][0],
     whichMatcher: 'strandedWithNarOnLEFT',
     googleResponseRuleMatchers: [
-      singleHighSalSubj
+      singleHighSalSubjPoss
     ]
   },
   {
@@ -80,7 +81,7 @@ const googleNarMatchers = [
     getNarrationTextOut: (extendedPreSnippets) => extendedPreSnippets[RIGHT][0],
     whichMatcher: 'strandedWithNarOnRIGHT',
     googleResponseRuleMatchers: [
-      singleHighSalSubj
+      singleHighSalSubjPoss
     ]
   },
   // eventually want to do something with this right nar, to verify the gender of speaker, and check for
@@ -91,9 +92,36 @@ const googleNarMatchers = [
     getNarrationTextOut: (extendedPreSnippets) => extendedPreSnippets[LEFT][0],
     whichMatcher: 'NarsBeDoubleTeaminAndWhoKnowsWhatFurtherRIGHT',
     googleResponseRuleMatchers: [
-      singleHighSalSubj
+      singleHighSalSubjPoss
     ]
   }
 ]
+
+// future prediction rules
+/*
+  if no entities found in this nar, use second to last speaker
+
+  ML,nar|
+*/
+
+/*
+  if multiple people found, use the highest salience
+
+  ML,nar|
+*/
+
+/*
+  use same rule as NSUBJ as you would for comming across POSS
+
+  ML,nar|
+  or
+  |NAR
+*/
+
+
+
+
+
+
 
 module.exports = googleNarMatchers;

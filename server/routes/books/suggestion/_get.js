@@ -9,6 +9,8 @@ let validateType = require('../../../utilityFunks').validateType
 const narrationTextToGCNLP = require(`${_serverDir_}/src/narrationTextToGCNLP`)
 const googleLanguage = require('@google-cloud/language');
 let commonSpokenSynonyms = JSON.parse(fs.readFileSync(`${_serverDir_}/db_helper/common_spoken_synonyms.json`).toString());
+let getNameSuggestionLog = require(`${_serverDir_}/logHelper.js`)('getNameSuggestion')
+
 
 // this should really only end up being 1 person, but I was thinking there might be a probability based thing later
 // so set it up to be multiple based
@@ -23,9 +25,6 @@ const getCharacterProfilesMatchingAName = (charProfsAndVSS, nameSuggested) => {
 router.get('/', getSuggestedName);
 let nameSuggest = require(`${_serverDir_}/src/nameSuggest`);
 function getSuggestedName (req, res) {
-  // const longStars = '************************************************************************************'
-  // const longStars2 = [longStars,longStars].join('')
-  // console.log(longStars2, longStars2, longStars2);
   const bookName = _.get(req, 'query.bookName');
   const tempBlockId = _.get(req, 'query.blockId');
   const tempSpeechPreSnippetIdSelected = _.get(req, 'query.speechPreSnippetIdSelected');
@@ -58,7 +57,7 @@ function getSuggestedName (req, res) {
       let preSnippetExtendedObj = grabExtendingPreSnippets(block.preSnippets, speechPreSnippetIdSelected, 6);
       let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, customLex);
       let nameSuggestOutput = nameSuggest(preSnippetArrangementObj, preSnippetExtendedObj);
-      if (nameSuggestOutput === null) { // attempt to get suggestion from google cloud nlp prediction
+      if (nameSuggestOutput === null && _.get(global, 'useGooglePredict')) { // attempt to get suggestion from google cloud nlp prediction
         let preSnippetArrangementObj = classifyPreSnippetArrangement(preSnippetExtendedObj, undefined, true);
         return narrationTextToGCNLP(
           preSnippetArrangementObj.nonSingleSpaceArrangement, preSnippetExtendedObj.nonSingleSpace, googleLanguage
@@ -83,17 +82,16 @@ function getSuggestedName (req, res) {
         })
       }
       else {
-        let profilesToSuggest = getCharacterProfilesMatchingAName(charProfsAndVSS, nameSuggestOutput.suggestedName)
-        if (process.env.NODE_ENV === 'development' && _.get(global, 'log.getNameSuggestion')) {
-          let suggestionLogObj = {
-            speechText: block.preSnippets[speechPreSnippetIdSelected],
-            nameSuggestOutput,
-            preSnippetArrangementObj,
-            profilesToSuggest
-          }
-          fs.writeFileSync(`${_serverDir_}/log/nameSuggest.txt`, JSON.stringify(suggestionLogObj, null, 4) + '\n\n')
-        }
-        // res.send({characterProfilesSuggested: profilesToSuggest});
+        let profilesToSuggest = (nameSuggestOutput === null )
+          ? []
+          : getCharacterProfilesMatchingAName(charProfsAndVSS, nameSuggestOutput.suggestedName)
+
+        getNameSuggestionLog({
+          speechText: block.preSnippets[speechPreSnippetIdSelected],
+          nameSuggestOutput,
+          preSnippetArrangementObj,
+          profilesToSuggest
+        })
         return profilesToSuggest
       }
     })

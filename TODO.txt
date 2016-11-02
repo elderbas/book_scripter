@@ -3,6 +3,10 @@ Edit a speaker of a Snippet
 
 reset a given block. delete all snippets for it, and reset the other stuff to null
 
+label mode vs predict via ML mode
+
+
+
 add ability to test accuracy given a hand labeled set
 add loading symbol for requesting nameSuggestion (custom/nlp comp or google cloud)
 

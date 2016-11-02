@@ -83,7 +83,7 @@ characterProfiles, currentHighlightPredictedName, onCharacterSelected, onToggleC
         <button type="submit" className="button is-small"><i className="fa fa-plus"></i></button>
       </form>
         <div className="charListWrapper">
-          <KeepScrollBottom style={{overflow: 'auto', maxHeight: '100px'}}>
+          <KeepScrollBottom style={{overflow: 'auto', maxHeight: '210px'}}>
             <ul>{characterItems}</ul>
           </KeepScrollBottom>
         </div>
