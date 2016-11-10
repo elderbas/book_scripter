@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
 
 const responseToFetchBook = response => response.body
-const responseToNameSuggestion = response => response.body.characterProfilesSuggested
 const idOfPreviousPreSnippetHighlightedDefault = -1
 
 const requestSuccessFailure = (mainName) => ((state = false, action) => {
@@ -99,28 +98,11 @@ const currentBook = (state = {}, action) => {
       return state
   }
 }
-const currentHighlightPredictedName = (state = null, action) => {
-  switch (action.type) {
-    case 'FETCH_NAME_SUGGESTION_SUCCESS':
-      let namesSuggested = responseToNameSuggestion(action.response)
-      let valueToUseForName = (namesSuggested.length > 0) ? namesSuggested[0].displayName : 'none';
-      return valueToUseForName
-
-    case 'RESET_PREDICTED_NAME':
-      return null
-    default:
-      return state
-  }
-}
-
-
 
 const book = combineReducers({
   isBeingFetched: requestSuccessFailure('FETCH_BOOK'),
   isBeingUploaded: requestSuccessFailure('UPLOAD_BOOK'),
-  isFetchingNameSuggestion: requestSuccessFailure('FETCH_NAME_SUGGESTION'),
-  currentBook,
-  currentHighlightPredictedName,
+  currentBook
 })
 
 export default book

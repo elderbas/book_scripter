@@ -17,7 +17,6 @@ const createAutoConfirm = (baseName) => {
 
 const config =  combineReducers({
   autoConfirmNarration: createAutoConfirm('CONFIRM_NARRATION'),
-  autoConfirmPredictedName: createAutoConfirm('CONFIRM_PREDICTED_NAME'),
 })
 
 export default config

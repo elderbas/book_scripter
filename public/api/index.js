@@ -31,13 +31,6 @@ export const getBookInfo = (bookName) =>
       .end(genericEnd(fulfill, reject))
   })
 
-export const getNameSuggestion = ({ bookName, blockId, speechPreSnippetIdSelected }) =>
-  new Promise((fulfill, reject) => {
-    superagent.get('/api/books/suggestion')
-      .query({ bookName, blockId, speechPreSnippetIdSelected })
-      .end(genericEnd(fulfill, reject))
-  })
-
 export const confirmNameOnPreSnippet = ({bookName, blockId, preSnippetId, displayName, snippetType}) =>
   new Promise((fulfill, reject) => {
     superagent.post('/api/books/multi/nameConfirmedOnPreSnippet')

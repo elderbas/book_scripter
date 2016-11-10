@@ -18,14 +18,6 @@ export const uploadBook = (fileToUpload) => (dispatch) => {
   )
 }
 
-export const getNameSuggestion = ({ bookName, blockId, speechPreSnippetIdSelected }) => (dispatch) => {
-  dispatch({type: 'FETCH_NAME_SUGGESTION_REQUEST'})
-  api.getNameSuggestion({ bookName, blockId, speechPreSnippetIdSelected })
-  .then(
-    (response) => dispatch({type: 'FETCH_NAME_SUGGESTION_SUCCESS', speechPreSnippetIdSelected, response }),
-    (err) => dispatch({type: 'FETCH_NAME_SUGGESTION_FAILURE', message: err.message || 'Error with fetching name suggestion'})
-  )
-}
 export const getBookInfo = (bookName) => (dispatch) => {
   dispatch({type: 'FETCH_BOOK_REQUEST'})
   api.getBookInfo(bookName)

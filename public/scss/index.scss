@@ -6,7 +6,12 @@
 //
 //  font-family: "Helvetica Neue Light", Helvetica, arial;
 //}
+body {
+  // when user was getting towards end of labeling a page block,
+  // it was not lining up very well for when two labels in a row would occur
 
+  min-height: 2000px;
+}
 // COLORS
 $offBlack: #2e2e2e;
 

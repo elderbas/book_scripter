@@ -41,6 +41,10 @@ function getSuggestedName (req, res) {
     ], (x) => x === false)) {
     return res.send('Missing query param to /api/books/suggestion');
   }
+
+  if (_.get(global, 'usePrediction') === false) {
+    return res.send({characterProfilesSuggested: []});
+  }
   // I feel like Im being redundant in getting these individual values, depending on how MongoDB
   // works there might be a more memory performant way? Maybe it would be the same memory
   let customLex, charProfsAndVSS;

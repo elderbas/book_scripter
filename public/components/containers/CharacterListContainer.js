@@ -18,26 +18,10 @@ const _ = {
  * CURRENT character being selected
  * PREDICTED CHARACTER displaying and able to be selected*/
 class CharacterListContainer extends React.Component {
-  getNameSuggestion (newHighlightedPreSnippet) {
-    console.log('inside getNameSuggestion');
-    // debugger;
-    if (newHighlightedPreSnippet.type === 'speech') {
-      this.props.getNameSuggestion({
-        bookName: this.props.bookName,
-        blockId: this.props.currentBlockId,
-        speechPreSnippetIdSelected: newHighlightedPreSnippet.id
-      })
-    }
-
-  }
-
-
-
   handleAddCharacterProfile (displayName, aliases) {
     if (displayName.trim('') === '') {
       return alert('Need a valid displayName')
     }
-    console.log('displayName', displayName, aliases);
     this.props.addCharacterProfile(displayName, aliases, this.props.bookName)
   }
   handleCharacterSelected (charDisplayName, someProps) {
@@ -52,50 +36,31 @@ class CharacterListContainer extends React.Component {
     })
   }
 
-  // automatically get predicted name when the preSnippet coming up is speech type
+  // set as narration if it's a narration type
   componentWillReceiveProps (nextProps) {
-    // when id is same as before, ignore?
-    // when id is different, use new id
     let thisCurrHighlightPreSnippet = _.get(this, 'props.currentHighlightedPreSnippet')
     let nextCurrHighlightPreSnippet = _.get(nextProps, 'currentHighlightedPreSnippet')
-    console.log('this.props', this.props);
-    console.log('nextProps', nextProps);
     // dont have highlighted pre snippet yet
     if (!thisCurrHighlightPreSnippet || !nextCurrHighlightPreSnippet) {
       return
     }
     // Coming up first time on next highlighted pre snippet
     if (thisCurrHighlightPreSnippet.id !== nextCurrHighlightPreSnippet.id) {
-      if (nextCurrHighlightPreSnippet.type === 'speech' && nextProps.currentHighlightPredictedName === null) {
-        return this.getNameSuggestion(nextCurrHighlightPreSnippet)
-      }
-      else if (nextCurrHighlightPreSnippet.type === 'narration' && nextProps.autoConfirmNarration === true) {
+      if (nextCurrHighlightPreSnippet.type === 'narration' && nextProps.autoConfirmNarration === true) {
         return this.handleCharacterSelected('Narration', nextProps)
       }
-    }
-
-    // handles when a prediction match is made, otherwise it will default to letting the user select the character
-    if (nextProps.currentHighlightPredictedName !== null && nextProps.currentHighlightPredictedName !== 'none' &&
-        nextCurrHighlightPreSnippet.type === 'speech' && nextProps.autoConfirmPredictedName === true &&
-        this.props.currentHighlightPredictedName !== nextProps.currentHighlightPredictedName) {
-      return this.handleCharacterSelected(nextProps.currentHighlightPredictedName, nextProps)
     }
   }
 
   componentDidMount() {
-    // should also try to predict character immediately and not just narration type?
-    console.log('componentDidMount this.props', this.props);
-    if (this.props.currentHighlightedPreSnippet) {
-      if (this.props.currentHighlightedPreSnippet.type === 'narration') {
-        this.handleCharacterSelected('Narration', this.props)
-      }
+    if (_.get(this, 'props.currentHighlightedPreSnippet.type') === 'narration') {
+      this.handleCharacterSelected('Narration', this.props)
     }
   }
   render() {
     return (
       <CharacterListPres
         autoConfirmNarration={this.props.autoConfirmNarration}
-        autoConfirmPredictedName={this.props.autoConfirmPredictedName}
         currentHighlightedPreSnippet={this.props.currentHighlightedPreSnippet}
         characterProfiles={this.props.characterProfiles}
         currentHighlightPredictedName={this.props.currentHighlightPredictedName}
@@ -123,13 +88,11 @@ const mapStateToProps = (store) => ({
   bookName: store.book.currentBook.bookName,
   currentHighlightPredictedName: store.book.currentHighlightPredictedName,
   currentBlockId: store.book.currentBook.currentBlockWorkingOn.blockId,
-  autoConfirmPredictedName: store.config.autoConfirmPredictedName,
   autoConfirmNarration: store.config.autoConfirmNarration,
 })
 const mapDispatchToProps = {
   addCharacterProfile: actions.addCharacterProfile,
   handleConfirmedNameOnPreSnippet: actions.handleConfirmedNameOnPreSnippet,
-  getNameSuggestion: actions.getNameSuggestion,
   handleToggledConfig: actions.handleToggledConfig,
   markCurrentBlockCompletedAndGetNext: actions.markCurrentBlockCompletedAndGetNext,
 }
