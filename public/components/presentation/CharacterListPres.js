@@ -1,5 +1,5 @@
 // CharacterListPres
-import React, {PropTypes} from 'react'
+import React from 'react'
 import trim from 'lodash/trim'
 import sortBy from 'lodash/sortBy'
 import LogOnRender from '../hoc/LogOnRender'
@@ -13,26 +13,14 @@ const gearStyle = {
 }
 let CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet, currentBlockId, autoConfirmNarration,
   markCurrentBlockCompletedAndGetNext, bookName, characterProfiles, onCharacterSelected, onToggleConfig}) => {
-    if (currentHighlightedPreSnippet === undefined) {
-      return (
-        <div>
-          <br />
-          <strong>:D</strong>
-          <br /> <br />
-          <button
-            className="button is-primary is-bold"
-            onClick={() => markCurrentBlockCompletedAndGetNext(currentBlockId, bookName)}>
-            Snippets All Look Good
-          </button>
-        </div>
-      )
-    }
+
 
   let characterItems, charProfilesToDisplay;
-  charProfilesToDisplay = (currentHighlightedPreSnippet.type === 'narration')
-    ? [{displayName: 'Narration', aliases: []}]
-    : characterProfiles
-
+  // Note: commenting this out because visually it's awkward to replace the entire thing with only 1 item, and then go back. Feels like bad UX
+  // charProfilesToDisplay = (currentHighlightedPreSnippet.type === 'narration')
+  //   ? [{displayName: 'Narration', aliases: []}]
+  //   : characterProfiles
+  charProfilesToDisplay = characterProfiles
   characterItems = sortBy(charProfilesToDisplay, 'displayName').map((charProfile) => (
     <CharacterListItemContainer
       onCharacterConfirmed={onCharacterSelected}
@@ -44,11 +32,11 @@ let CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet, 
   let _charToAddNameTxtBxRef, _csvAliasesTxtBxRef
   return (
     <div className="CharacterSelectionList-component">
-      <input type="checkbox"
-             checked={autoConfirmNarration}
-             name="auto_narration"
-             onChange={() => onToggleConfig('CONFIRM_NARRATION')} />
-      <label htmlFor="auto_narration"> Auto Confirm Narration types</label>
+      {/*<input type="checkbox"*/}
+             {/*checked={autoConfirmNarration}*/}
+             {/*name="auto_narration"*/}
+             {/*onChange={() => onToggleConfig('CONFIRM_NARRATION')} />*/}
+      {/*<label htmlFor="auto_narration"> Auto Confirm Narration types</label>*/}
       <br />
       <form action="#" style={{display: 'inline-block'}} onSubmit={(e) => {
         e.preventDefault();
@@ -63,7 +51,7 @@ let CharacterListPres = ({ onAddCharacterProfile, currentHighlightedPreSnippet, 
         <button type="submit" className="button is-small"><i className="fa fa-plus"></i></button>
       </form>
       <div className="charListWrapper">
-        <div style={{overflow: 'auto', maxHeight: '510px'}}>
+        <div style={{overflow: 'auto', maxHeight: '310px'}}>
           <ul>{characterItems}</ul>
         </div>
       </div>

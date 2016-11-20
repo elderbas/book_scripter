@@ -1,6 +1,7 @@
 // CharacterListContainer
 import React, {PropTypes} from 'react'
 import CharacterListPres from '../presentation/CharacterListPres'
+import MostRecentCharactersSelectedListPres from '../presentation/MostRecentCharactersSelectedListPres'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import * as actions from '../../redux/actions'
@@ -58,43 +59,63 @@ class CharacterListContainer extends React.Component {
     }
   }
   render() {
+    if (this.props.currentHighlightedPreSnippet === undefined) {
+      return (
+        <div>
+          <br />
+          <strong>:D</strong>
+          <br /> <br />
+          <button
+            className="button is-primary is-bold"
+            onClick={() => this.props.markCurrentBlockCompletedAndGetNext(this.props.currentBlockId, this.props.bookName)}>
+            Snippets All Look Good
+          </button>
+        </div>
+      )
+    }
     return (
-      <CharacterListPres
-        autoConfirmNarration={this.props.autoConfirmNarration}
-        currentHighlightedPreSnippet={this.props.currentHighlightedPreSnippet}
-        characterProfiles={this.props.characterProfiles}
-        currentHighlightPredictedName={this.props.currentHighlightPredictedName}
-        onCharacterSelected={(x) => this.handleCharacterSelected.bind(this)(x, this.props)}
-        onToggleConfig={(baseName) => this.props.handleToggledConfig(baseName)}
-        currentBlockId={this.props.currentBlockId}
-        bookName={this.props.bookName}
-        markCurrentBlockCompletedAndGetNext={this.props.markCurrentBlockCompletedAndGetNext}
-        onAddCharacterProfile={this.handleAddCharacterProfile.bind(this)}
-      />
+      <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}>
+        <CharacterListPres
+          onCharacterSelected={(displayName) => this.handleCharacterSelected.bind(this)(displayName, this.props)}
+          currentHighlightPredictedName={this.props.currentHighlightPredictedName}
+          onToggleConfig={(baseName) => this.props.handleToggledConfig(baseName)}
+          currentHighlightedPreSnippet={this.props.currentHighlightedPreSnippet}
+          onAddCharacterProfile={this.handleAddCharacterProfile.bind(this)}
+          autoConfirmNarration={this.props.autoConfirmNarration}
+          characterProfiles={this.props.characterProfiles}
+          currentBlockId={this.props.currentBlockId}
+          bookName={this.props.bookName}
+        />
+        <MostRecentCharactersSelectedListPres
+          onCharacterSelected={(displayName) => this.handleCharacterSelected.bind(this)(displayName, this.props)}
+          mostRecentCharacterProfilesUsed={this.props.mostRecentCharacterProfilesUsed}
+        />
+      </div>
     )
   }
 }
 
 CharacterListContainer.propTypes = {
   currentHighlightedPreSnippet: PropTypes.object, // add shape
-  currentBlockId: PropTypes.number.isRequired,
   characterProfiles: PropTypes.array.isRequired,
+  currentBlockId: PropTypes.number.isRequired,
   bookName: PropTypes.string.isRequired,
   // currentHighlightPredictedName, null, none, predicted name ?not sure how to do that
 }
 
 const mapStateToProps = (store) => ({
-  characterProfiles: store.book.currentBook.characterProfiles,
-  bookName: store.book.currentBook.bookName,
+  mostRecentCharacterProfilesUsed: store.book.currentBook.mostRecentCharacterProfilesUsed,
   currentHighlightPredictedName: store.book.currentHighlightPredictedName,
   currentBlockId: store.book.currentBook.currentBlockWorkingOn.blockId,
+  characterProfiles: store.book.currentBook.characterProfiles,
   autoConfirmNarration: store.config.autoConfirmNarration,
+  bookName: store.book.currentBook.bookName,
 })
 const mapDispatchToProps = {
-  addCharacterProfile: actions.addCharacterProfile,
-  handleConfirmedNameOnPreSnippet: actions.handleConfirmedNameOnPreSnippet,
-  handleToggledConfig: actions.handleToggledConfig,
   markCurrentBlockCompletedAndGetNext: actions.markCurrentBlockCompletedAndGetNext,
+  handleConfirmedNameOnPreSnippet: actions.handleConfirmedNameOnPreSnippet,
+  addCharacterProfile: actions.addCharacterProfile,
+  handleToggledConfig: actions.handleToggledConfig,
 }
 CharacterListContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(LogOnRender(CharacterListContainer)))
 export default CharacterListContainer

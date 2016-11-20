@@ -1,3 +1,24 @@
+Undo button.
+
+on entering new block, it doesn't automatically do narration types (it should, especially since now it is on auto and doesn't let them select it)
+
+Refactor out anything that would automatically confirm non-narration types. That's not scalable so we don't want it anymore
+
+for initialization, instead of just grabbing 5 off the character list to fill the most recently used character list, store the most recently used on BE and use that for initializing
+
+
+
+
+add an event listener for scrolling the mouse, so that if it reaches the top or bottom of the character list, it doesnt think you want to keep scrolling
+on the page, thereby making it accidently jump the page in a direction and it messes up how you had it
+check for if youre at the top of the frame already, and if it is, disregard the scrolling event further?
+
+
+
+For the prediction. If there's a name like "the maester", which isnt that specific. look back about 20 snippets and see if a different name contains that (not an exact
+string check, but just contains), and use that one
+
+
 Edit a speaker of a Snippet
 (also search for the preSnippet and change the confirmed name)
 

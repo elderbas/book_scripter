@@ -15,20 +15,28 @@ const requestSuccessFailure = (mainName) => ((state = false, action) => {
   }
 })
 
+const MAX_CP_TO_DISPLAY_RECENT_USED_LIST = 5;
 
-const reduceCharacterProfilesAddSnippet = (state, action) => {
-  if (action.snippet.snippetType !== 'speech') { return state }
-  else if (Array.isArray(state) && state.length > 0) {
-    // only do it for speech types, other wise there isn't a matching char profile to go with it
-    let prioritizedCharProfile = state.find(cp => action.snippet.characterDisplayName === cp.displayName)
-    return state.filter((cp) => cp.displayName !== prioritizedCharProfile.displayName).concat([prioritizedCharProfile])
+const determineRecentCPList = (state, displayName) => {
+  if (displayName === 'Narration') { // dont adjust the most frequently used list for Narration
+    return state.mostRecentCharacterProfilesUsed
   }
-  else {
-    return state
+  // if the mostRecentCharacterProfilesUsed already has a CP by display name, then do nothing
+  let cpToMaybeAddToRecentList = state.mostRecentCharacterProfilesUsed.find(cp => cp.displayName === displayName)
+  if (!cpToMaybeAddToRecentList) {
+    // if it doesnt and we already have the max number of recent CP to display, then shift oldest one, and push it on
+    if (state.mostRecentCharacterProfilesUsed.length >= MAX_CP_TO_DISPLAY_RECENT_USED_LIST) {
+      // we don't have it on the recent list already, so lets grab it from the cplist and add it
+      return state.mostRecentCharacterProfilesUsed.slice(1).concat([state.characterProfiles.find(cp => cp.displayName === displayName)])
+    }
+    return state.mostRecentCharacterProfilesUsed.concat([state.characterProfiles.find(cp => cp.displayName === displayName)])
   }
+  // no change necessary
+  return state.mostRecentCharacterProfilesUsed
 }
 
 const currentBook = (state = {}, action) => {
+  console.log('action.snippet', action.snippet);
   switch (action.type) {
     case 'ADD_SNIPPET':
       let newState =  {
@@ -38,10 +46,9 @@ const currentBook = (state = {}, action) => {
           ...state.currentBlockWorkingOn,
           snippets: [ ...state.currentBlockWorkingOn.snippets, action.snippet ]
         },
-        // there's some duplication to the Snippets list going on after I added this
-        // maybe it's re-rendering something
-        characterProfiles: reduceCharacterProfilesAddSnippet(state.characterProfiles, action)
+        mostRecentCharacterProfilesUsed: determineRecentCPList(state, action.snippet.characterDisplayName)
       }
+      console.log('newState', newState);
       return newState
 
     case 'FETCH_BOOK_SUCCESS':
@@ -64,12 +71,14 @@ const currentBook = (state = {}, action) => {
         }
         return snippets
       })
-      // no reason to have this. the
+      // no reason to have this in the front end at the moment, so just removing to not clog up stuff
       delete fetchedBook.lastBlockIndexWorkedOn
       fetchedBook.currentBlockWorkingOn.snippets = newSnippets
+      console.log('fetchedBook.characterProfiles', fetchedBook.characterProfiles);
       return {
         ...fetchedBook,
-        idOfPreviousPreSnippetHighlighted
+        idOfPreviousPreSnippetHighlighted,
+        mostRecentCharacterProfilesUsed: []
       }
 
     case 'ADD_CHARACTER_PROFILE':

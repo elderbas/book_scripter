@@ -1,5 +1,5 @@
 // ExtractionZonePres
-import React, {PropTypes} from 'react'
+import React from 'react'
 import CharacterListContainer from '../containers/CharacterListContainer'
 import PreSnippetExhibit from '../containers/PreSnippetExhibit'
 import LogOnRender from '../hoc/LogOnRender'
@@ -13,7 +13,5 @@ let ExtractionZonePres = (props) => {
   )
 }
 
-
-ExtractionZonePres.propTypes = {}
 ExtractionZonePres = LogOnRender(ExtractionZonePres)
 export default ExtractionZonePres

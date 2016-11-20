@@ -45,6 +45,7 @@ function filterOutUnnecessaryDataOnPreSnippetForFrontend (preSnippet) {
 
 function getJsonFileOfCurrentBook(req, res) {
   Books.getEntireBook(req.query.bookName).then((bookDoc) => {
+
     res.set({
       "Content-Disposition": `attachment; filename=${req.query.bookName}.json`,
       "Content-Type": "application/json"
@@ -52,3 +53,10 @@ function getJsonFileOfCurrentBook(req, res) {
     res.send(JSON.stringify(bookDoc, null, 4));
   })
 }
+
+
+/*
+* book name
+* character list
+*
+* */

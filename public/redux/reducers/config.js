@@ -2,7 +2,7 @@
 import { combineReducers } from 'redux'
 
 const createAutoConfirm = (baseName) => {
-  return (state = false, action) => {
+  return (state = true, action) => {
     switch (action.type) {
       case `TOGGLE_AUTO_${baseName}`:
         return !state

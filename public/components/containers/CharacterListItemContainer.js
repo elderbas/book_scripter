@@ -23,8 +23,6 @@ class CharacterListItemContainer extends React.Component {
 
     // verify aliases are joinable back into an array
     if (!aliasesSame) {
-      console.log('this.props.modifyCharacterProfileAliases', this.props.modifyCharacterProfileAliases);
-      console.log('this.props.bookName', this.props.bookName);
       this.props.modifyCharacterProfileAliases(this.props.bookName, {
         ...charProfile,
         aliases: tempAliases
